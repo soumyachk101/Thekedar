@@ -140,9 +140,6 @@ An agent hallucinates when its context is stuffed with irrelevant code and its g
 
 ## Docs
 
-- [PRD — what & why](docs/PRD.md)
-- [TRD — how, exactly](docs/TRD.md)
-- [Architecture deep-dive](docs/ARCHITECTURE.md)
 - [Install guide (all tools)](INSTALL.md)
 - [Roadmap](ROADMAP.md)
 - [Contributing](CONTRIBUTING.md)
