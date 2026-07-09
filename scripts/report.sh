@@ -45,7 +45,7 @@ for c in "$TK/changes"/task-*.md; do
   [ -n "$n" ] && fix_loops=$((fix_loops + n))
 done
 
-changelogs="$(ls "$TK/changes"/task-*.md 2>/dev/null | wc -l | tr -d ' ')"
+changelogs="$(find "$TK/changes" -maxdepth 1 -name 'task-*.md' 2>/dev/null | wc -l | tr -d ' ')"
 
 # ---- compose ----
 {

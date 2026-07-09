@@ -48,7 +48,10 @@ has "gate verdict format survives flattening" "VERDICT: PASS | FAIL" "$OUT"
 # custom output path works
 ( cd "$SB" && CLAUDE_PROJECT_DIR="$SB" bash "$SB/.thekedar/scripts/export-agents-md.sh" "$SB/CUSTOM.md" >/dev/null 2>&1 ); code=$?
 check "custom output path exits 0" 0 "$code"
-[ -f "$SB/CUSTOM.md" ] && printf '     ok: custom output path written\n' \
-  || { printf '   FAIL: custom output missing\n'; fails=$((fails + 1)); }
+if [ -f "$SB/CUSTOM.md" ]; then
+  printf '     ok: custom output path written\n'
+else
+  printf '   FAIL: custom output missing\n'; fails=$((fails + 1))
+fi
 
 exit "$fails"

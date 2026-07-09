@@ -22,7 +22,7 @@ trap 'chmod -R u+w "$SB" 2>/dev/null; rm -rf "$SB"' EXIT
 # 1. valid event → exit 0 + ledger line with the file path
 CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" < "$FIX/valid-edit.json"; code=$?
 check "valid edit event exits 0" 0 "$code"
-LEDGER="$(ls "$SB/.thekedar/changes/"ledger-*.md 2>/dev/null | head -n1)"
+LEDGER="$(find "$SB/.thekedar/changes" -maxdepth 1 -name 'ledger-*.md' 2>/dev/null | head -n1)"
 check_grep "ledger line written with file path" "src/auth/login.ts" "${LEDGER:-/nonexistent}"
 check_grep "ledger has table header" "| Time | Tool | File |" "${LEDGER:-/nonexistent}"
 

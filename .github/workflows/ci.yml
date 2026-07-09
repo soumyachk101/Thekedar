@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show environment (jq/python3 are optional-if-present, never required)
+        run: |
+          bash --version | head -n1
+          git --version
+          command -v jq >/dev/null && jq --version || echo "jq: not present (fallback path will run)"
+          command -v python3 >/dev/null && python3 --version || echo "python3: not present"
+
+      - name: Run test suite
+        run: bash tests/run-all.sh
+
+      - name: Doctor self-check (fresh scratch install)
+        run: |
+          SB="$(mktemp -d)"
+          git -C "$SB" init -q
+          ( cd "$SB" && bash "$GITHUB_WORKSPACE/install.sh" --full )
+          bash "$SB/.thekedar/scripts/doctor.sh"

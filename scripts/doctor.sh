@@ -109,10 +109,10 @@ else
 fi
 
 # ---- .thekedar state ----
-[ -d "$PROJ/.thekedar/tasks" ]   && ok ".thekedar/tasks/ exists"   || bad ".thekedar/tasks/ missing"
-[ -d "$PROJ/.thekedar/changes" ] && ok ".thekedar/changes/ exists" || bad ".thekedar/changes/ missing"
-[ -f "$PROJ/.thekedar/PROJECT_STATE.md" ] && ok "PROJECT_STATE.md present" || bad "PROJECT_STATE.md missing"
-[ -f "$PROJ/.thekedar/config.md" ] && ok "config.md present" || warn "config.md missing (defaults apply)"
+if [ -d "$PROJ/.thekedar/tasks" ]; then ok ".thekedar/tasks/ exists"; else bad ".thekedar/tasks/ missing"; fi
+if [ -d "$PROJ/.thekedar/changes" ]; then ok ".thekedar/changes/ exists"; else bad ".thekedar/changes/ missing"; fi
+if [ -f "$PROJ/.thekedar/PROJECT_STATE.md" ]; then ok "PROJECT_STATE.md present"; else bad "PROJECT_STATE.md missing"; fi
+if [ -f "$PROJ/.thekedar/config.md" ]; then ok "config.md present"; else warn "config.md missing (defaults apply)"; fi
 
 na=$(grep -l '^\*\*Status:\*\* ACTIVE' "$PROJ/.thekedar/tasks"/*.md 2>/dev/null | wc -l | tr -d ' ')
 if [ "$na" -gt 1 ]; then bad "$na tasks are ACTIVE — the invariant is exactly one"; fi

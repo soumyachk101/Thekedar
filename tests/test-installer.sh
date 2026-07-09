@@ -30,18 +30,18 @@ printf '{\n  "model": "opus",\n  "hooks": {}\n}\n' > "$SB/.claude/settings.json"
 # 1. fresh core install
 ( cd "$SB" && bash "$ROOT/install.sh" >/dev/null 2>&1 ); code=$?
 check "fresh install exits 0" 0 "$code"
-n=$(ls "$SB/.claude/agents/core/"*.md 2>/dev/null | wc -l | tr -d ' ')
+n=$(find "$SB/.claude/agents/core" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 check "6 core agents installed" 6 "$n"
 absent "no extended agents without --full" "$SB/.claude/agents/extended"
-n=$(ls "$SB/.claude/skills/"*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')
+n=$(find "$SB/.claude/skills" -mindepth 2 -maxdepth 2 -name 'SKILL.md' 2>/dev/null | wc -l | tr -d ' ')
 check "4 skills installed" 4 "$n"
-n=$(ls "$SB/.claude/hooks/"*.sh 2>/dev/null | wc -l | tr -d ' ')
+n=$(find "$SB/.claude/hooks" -maxdepth 1 -name '*.sh' 2>/dev/null | wc -l | tr -d ' ')
 check "5 hooks installed" 5 "$n"
 n=$(find "$SB/.claude/hooks" -name '*.sh' -perm +111 2>/dev/null | wc -l | tr -d ' ')
 check "all hooks executable" 5 "$n"
-n=$(ls "$SB/.thekedar/templates/"*.md 2>/dev/null | wc -l | tr -d ' ')
+n=$(find "$SB/.thekedar/templates" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 check "7 templates installed" 7 "$n"
-n=$(ls "$SB/.thekedar/scripts/"*.sh 2>/dev/null | wc -l | tr -d ' ')
+n=$(find "$SB/.thekedar/scripts" -maxdepth 1 -name '*.sh' 2>/dev/null | wc -l | tr -d ' ')
 check "5 scripts installed" 5 "$n"
 exists "PROJECT_STATE initialized" "$SB/.thekedar/PROJECT_STATE.md"
 exists "config.md initialized" "$SB/.thekedar/config.md"
@@ -73,7 +73,7 @@ exists "modified file backed up to .bak" "$SB/.claude/hooks/munshi.sh.bak"
 # 5. --full adds the extended crew
 ( cd "$SB" && bash "$ROOT/install.sh" --full >/dev/null 2>&1 ); code=$?
 check "--full install exits 0" 0 "$code"
-n=$(ls "$SB/.claude/agents/extended/"*.md 2>/dev/null | wc -l | tr -d ' ')
+n=$(find "$SB/.claude/agents/extended" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 check "9 extended agents with --full" 9 "$n"
 
 # 6. running inside the source repo refuses
