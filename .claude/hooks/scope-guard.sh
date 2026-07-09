@@ -104,8 +104,9 @@ ALLOW_EOF
 [ "$MATCHED" -eq 1 ] && exit 0
 
 # ---- Miss: advisory mode logs, guard mode blocks ----
+# (strip trailing "# comment" before comparing — config.md lines carry comments)
 MODE="$(sed -n 's/^scope_guard:[[:space:]]*//p' "$PROJ/.thekedar/config.md" 2>/dev/null \
-        | head -n1 | tr -d '[:space:]' || true)"
+        | head -n1 | sed 's/#.*//' | tr -d '[:space:]' || true)"
 if [ "$MODE" = "off" ] || [ "$MODE" = "advisory" ]; then
   mkdir -p "$PROJ/.thekedar/changes" 2>/dev/null || exit 0
   printf '| %s | scope-advisory | %s (outside task %s) |\n' \

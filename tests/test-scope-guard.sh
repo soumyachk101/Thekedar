@@ -121,4 +121,12 @@ else
 fi
 rm -rf "$SB4"
 
+# 11. advisory value with trailing comment (real config.md style) → still advisory
+SB5="$(mktemp -d)"
+mktask "$SB5" "ACTIVE"
+printf 'scope_guard: off                      # off = advisory only (miss logged, never blocked)\n' > "$SB5/.thekedar/config.md"
+CLAUDE_PROJECT_DIR="$SB5" bash "$HOOK" < "$FIX/out-of-scope-edit.json"; code=$?
+check "advisory mode with trailing comment allows" 0 "$code"
+rm -rf "$SB5"
+
 exit "$fails"

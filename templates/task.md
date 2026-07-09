@@ -2,6 +2,8 @@
 
 **Status:** TODO <!-- TODO | ACTIVE | REVIEW | DONE | BLOCKED -->
 **Depends on:** none <!-- e.g. 001, 002 -->
+**Risk:** low <!-- low | medium | high — chance of breaking adjacent behavior; high ⇒ shrink scope, review harder -->
+**Estimated size:** S <!-- S ≈ <50 changed lines · M ≈ <150 · L = too big, split it -->
 
 ## Objective
 

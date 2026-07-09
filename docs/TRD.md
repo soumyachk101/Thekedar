@@ -140,11 +140,21 @@ Hard rules the skill enforces (see SKILL.md for exact text):
 
 ### 3.6 File format contracts
 
-**Task file** (`tasks/NNN-slug.md`) — see `templates/task.md`. Required sections: Objective, In scope, **NOT in scope**, Acceptance criteria (checkboxes), Expected files, Depends on, Status (`TODO|ACTIVE|REVIEW|DONE|BLOCKED`).
+> v2.0.0 format revision. Any further change to these contracts = major version bump (see §7).
 
-**PROJECT_STATE.md** — Required sections: Project overview (3 lines max), Current phase, Active task, Done, Up next, Decisions log (append-only), Known issues. Contract: any fresh session must be able to resume from this file alone.
+**Task file** (`tasks/NNN-slug.md`) — see `templates/task.md`. Required sections: Objective, In scope, **NOT in scope**, Acceptance criteria (checkboxes), Expected files, Depends on, Status (`TODO|ACTIVE|REVIEW|DONE|BLOCKED`), Risk (`low|medium|high`), Estimated size (`S|M|L`). Optional: `## Scope addition` entries appended by the doer (file + one-line reason) — read by scope-guard.sh and drift-check.sh.
 
-**Changelog entry** (`changes/task-NNN.md`) — Required sections: What changed, What was deliberately NOT changed, Why, Files touched, Verification (reviewer verdicts + test summary), Follow-ups.
+**PROJECT_STATE.md** — Required sections: Project overview (3 lines max), Current phase, Phases (optional, big projects: one line per phase), Active task, Done, Up next, Decisions log (append-only), Known issues. Contract: any fresh session must be able to resume from this file alone (session-brief.sh injects it at SessionStart).
+
+**Changelog entry** (`changes/task-NNN.md`) — Required sections: What changed, What was deliberately NOT changed, Why, Files touched, Verification (reviewer verdicts + test summary + verbatim drift-check line), Follow-ups.
+
+**Phase file** (`templates/phase.md`, big projects) — Status (`planned|building|done`), Goal, Task list, Exit criteria.
+
+**Decision record** (`templates/decision-record.md`) — ADR format: Context, Decision, Consequences, Alternatives considered.
+
+**Agent template** (`templates/agent-template.md`) — scaffold for `scripts/new-agent.sh`; placeholders `{{NAME}}`, `{{TRIGGER}}`, `{{TOOLS}}`, `{{MODEL}}`, `{{ROLE}}`. Frontmatter law: doers get `Read, Write, Edit, Bash, Grep, Glob`; gates get `Read, Grep, Glob, Bash` (no Write/Edit).
+
+**Config** (`.thekedar/config.md`, from `templates/config.md`) — plain `key: value` lines, `#` starts a comment, missing key = default. Keys: `fix_loop_cap` (3), `auto_continue` (true), `default_doer_model` (sonnet), `enable_performance_auditor` (false), `enable_accessibility_auditor` (false), `scope_guard` (on|off — off = advisory), `commit_prefix` ("thekedar"). Consumers: the orchestrator skill (loop cap, models, auditor opt-ins, commit prefix) and scope-guard.sh (`scope_guard` key only).
 
 ### 3.7 Installer (`install.sh`)
 

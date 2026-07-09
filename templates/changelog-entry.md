@@ -25,6 +25,7 @@ This section is what makes the record trustworthy — "nothing" is almost never 
 - error-checker: **PASS/FAIL** — <tests: n passed / n failed; warnings carried below>
 - security-auditor: **PASS/FAIL** — <summary>
 - frontend-reviewer: **PASS / n-a** — <summary>
+- drift-check: <verbatim DRIFT: line from `hooks/drift-check.sh <task-file>`>
 
 ## Follow-ups
 

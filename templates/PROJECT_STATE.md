@@ -12,6 +12,12 @@
 
 <e.g. "Phase 1 — core API" · planning | building | review | done>
 
+## Phases
+
+<!-- Big projects only (>~10 tasks): group tasks into phases, plan one phase
+     in detail at a time. Format: Phase N — name · tasks NNN–NNN · planned | building | done -->
+-
+
 ## Active task
 
 <NNN — title, or "none">
