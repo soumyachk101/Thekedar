@@ -14,3 +14,6 @@ Thumbs.db
 # Scratch / local experiments
 tmp/
 scratch/
+
+# Derived data (regenerate via scripts/report.sh)
+REPORT.md
