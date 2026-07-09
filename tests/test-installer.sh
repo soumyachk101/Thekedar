@@ -37,7 +37,7 @@ n=$(find "$SB/.claude/skills" -mindepth 2 -maxdepth 2 -name 'SKILL.md' 2>/dev/nu
 check "4 skills installed" 4 "$n"
 n=$(find "$SB/.claude/hooks" -maxdepth 1 -name '*.sh' 2>/dev/null | wc -l | tr -d ' ')
 check "5 hooks installed" 5 "$n"
-n=$(find "$SB/.claude/hooks" -name '*.sh' -perm +111 2>/dev/null | wc -l | tr -d ' ')
+n=$(find "$SB/.claude/hooks" -name '*.sh' -perm -111 2>/dev/null | wc -l | tr -d ' ')
 check "all hooks executable" 5 "$n"
 n=$(find "$SB/.thekedar/templates" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 check "7 templates installed" 7 "$n"
