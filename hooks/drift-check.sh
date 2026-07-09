@@ -21,7 +21,10 @@
 TASK="${1:-}"
 PROJ="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
-[ -n "$TASK" ] && [ -f "$TASK" ] || { echo "DRIFT: n/a — task file not found: ${TASK:-<none given>}"; exit 0; }
+if [ -z "$TASK" ] || [ ! -f "$TASK" ]; then
+  echo "DRIFT: n/a — task file not found: ${TASK:-<none given>}"
+  exit 0
+fi
 command -v git >/dev/null 2>&1        || { echo "DRIFT: n/a — git unavailable"; exit 0; }
 git -C "$PROJ" rev-parse --is-inside-work-tree >/dev/null 2>&1 \
                                       || { echo "DRIFT: n/a — not a git repository"; exit 0; }
