@@ -72,7 +72,7 @@ Every edit is logged. Every task is documented. Every change is reviewed by an a
 
 ```bash
 # from your project root
-git clone https://github.com/YOUR_USERNAME/thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh
+git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh
 ```
 
 Or manually — it's just markdown files and one bash script. See [INSTALL.md](INSTALL.md).

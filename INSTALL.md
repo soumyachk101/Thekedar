@@ -12,7 +12,7 @@
 From **your project root**:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/thekedar /tmp/thekedar
+git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar
 bash /tmp/thekedar/install.sh
 ```
 

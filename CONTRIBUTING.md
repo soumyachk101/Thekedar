@@ -12,7 +12,7 @@ Shukriya for considering it! 🏗️
 ## Dev setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/thekedar && cd thekedar
+git clone https://github.com/soumyachk101/Thekedar && cd Thekedar
 
 # hook fixture tests (must all print exit=0):
 echo '{"tool_name":"Edit","tool_input":{"file_path":"a.ts"}}' | CLAUDE_PROJECT_DIR=/tmp/t bash hooks/munshi.sh; echo exit=$?
