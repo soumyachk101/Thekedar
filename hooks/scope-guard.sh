@@ -18,11 +18,61 @@
 #    · anything under .thekedar/  (state must stay writable)
 #    · scope_guard: off|advisory in .thekedar/config.md →
 #      advisory mode: miss is logged to the daily ledger, never blocked
+#
+#  PATH CANONICALIZATION: file_path is resolved lexically (., ..)
+#  before any allowlist comparison — a raw string/glob match on an
+#  unresolved path lets "src/../outside/x" pass a "src/*" allow-
+#  entry, since glob `*` matches literal ".." text too. This must
+#  run even for not-yet-existing Write targets, so it's pure
+#  string manipulation, never realpath/readlink -f (inconsistent
+#  across macOS/Linux/WSL and unusable on a nonexistent path).
 # ============================================================
 
 INPUT="$(head -c 100000 2>/dev/null || true)"
 PROJ="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 TASKS_DIR="$PROJ/.thekedar/tasks"
+
+# canon_abspath <path> <base> — lexically resolve . and .. against <base>
+# (if <path> is relative) or in place (if absolute). No filesystem access.
+canon_abspath() {
+  _p="$1"
+  case "$_p" in
+    /*) ;;
+    *)  _p="$2/$_p" ;;
+  esac
+  _stack=""
+  _oldifs="$IFS"
+  IFS=/
+  # shellcheck disable=SC2086
+  set -- $_p
+  IFS="$_oldifs"
+  for _seg in "$@"; do
+    case "$_seg" in
+      ""|".") continue ;;
+      "..")
+        case "$_stack" in
+          */*) _stack="${_stack%/*}" ;;
+          *)   _stack="" ;;
+        esac
+        ;;
+      *) _stack="$_stack/$_seg" ;;
+    esac
+  done
+  printf '%s' "${_stack:-/}"
+}
+
+# canon_relpath <path> <project_root> — prints the canonical path relative
+# to project_root. Prints a sentinel that can never match a real Expected-
+# files entry if <path> resolves outside project_root entirely.
+canon_relpath() {
+  _abs="$(canon_abspath "$1" "$2")"
+  _rootabs="$(canon_abspath "$2" "$2")"
+  case "$_abs" in
+    "$_rootabs")   printf '.' ;;
+    "$_rootabs"/*) printf '%s' "${_abs#"$_rootabs"/}" ;;
+    *)             printf '\001ESCAPED-PROJECT-ROOT\001' ;;
+  esac
+}
 
 # Nothing to guard without a task system.
 [ -d "$TASKS_DIR" ] || exit 0
@@ -47,12 +97,9 @@ if [ -z "$FILE" ]; then
 fi
 [ -z "$FILE" ] && exit 0
 
-# Normalize to a project-relative path.
-REL="$FILE"
-case "$REL" in
-  "$PROJ"/*) REL="${REL#"$PROJ"/}" ;;
-esac
-REL="${REL#./}"
+# Normalize to a canonical project-relative path (resolves . and .. —
+# see canon_relpath above; this is what closes the traversal bypass).
+REL="$(canon_relpath "$FILE" "$PROJ")"
 
 # The workflow's own state must always stay writable.
 case "$REL" in
@@ -115,5 +162,10 @@ if [ "$MODE" = "off" ] || [ "$MODE" = "advisory" ]; then
   exit 0
 fi
 
-echo "SCOPE-GUARD: $REL is outside task $TASK_NUM's declared files. Either add a \"## Scope addition\" entry (file + one-line reason) to the task file first, or leave this file alone." >&2
+case "$REL" in
+  *ESCAPED-PROJECT-ROOT*)
+    echo "SCOPE-GUARD: that path resolves outside the project directory entirely — not just outside task $TASK_NUM's scope. Refusing." >&2 ;;
+  *)
+    echo "SCOPE-GUARD: $REL is outside task $TASK_NUM's declared files. Either add a \"## Scope addition\" entry (file + one-line reason) to the task file first, or leave this file alone." >&2 ;;
+esac
 exit 2

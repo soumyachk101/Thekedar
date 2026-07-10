@@ -73,6 +73,23 @@ check "fixtures/ path excluded" 0 "$code"
 wr ".env.example" "AWS_ACCESS_KEY_ID=$AWS_FAKE" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK"; code=$?
 check "*.example path excluded" 0 "$code"
 
+# 10. path traversal disguised as fixtures/** → BLOCKED, not exclusion-matched
+#     (regression for the v2.0.0 release-audit finding: "fixtures/../src/x"
+#     string-matched the "fixtures/*" exclusion glob without the path ever
+#     really being under fixtures/, letting a real secret through unscanned.)
+wr "fixtures/../src/config/prod.env" "aws = $AWS_FAKE" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" 2>/dev/null; code=$?
+check "traversal disguised as fixtures/** is blocked" 2 "$code"
+
+# 11. path traversal disguised as .thekedar/** (the universal-bypass variant —
+#     .thekedar/** is the FIRST exclusion checked in both guards)
+wr ".thekedar/../src/config/prod-secrets.env" "aws = $AWS_FAKE" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" 2>/dev/null; code=$?
+check "traversal disguised as .thekedar/** is blocked" 2 "$code"
+
+# 12. a harmless ../ that still lands in a real excluded dir → allowed
+#     (canonicalization must not over-block legitimate exclusion paths)
+wr "fixtures/sub/../fake.json" "aws = $AWS_FAKE" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK"; code=$?
+check "a ../ that resolves back into fixtures/ is still excluded" 0 "$code"
+
 # 10. malformed input → fail open
 CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" < "$FIX/malformed.json"; code=$?
 check "malformed input fails open (exit 0)" 0 "$code"

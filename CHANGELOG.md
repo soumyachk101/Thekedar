@@ -42,8 +42,10 @@ This file is maintained by Thekedar's own workflow discipline — every entry be
 
 ### Fixed
 
+- **Path-traversal bypass in `scope-guard.sh` and `secret-guard.sh`** (found and fixed in the pre-release security audit, before this tag — never shipped). The guards matched the raw, unresolved `file_path` against their allow/exclude lists, so `src/../outside/x` slipped a `src/*` scope entry and `fixtures/../src/prod.env` slipped the secret-scanner's `fixtures/*` exclusion — because shell glob `*` matches a literal `..`. Both guards (and drift-check.sh's shared helper) now canonicalize the path lexically before any comparison. Regression tests added for the exact bypass class. See [ADR-0006](docs/adr/0006-scope-guard-as-pretooluse.md).
 - `munshi.sh`: redirect-order bug where a failed ledger write's own error message could leak to stderr instead of being fully silenced.
 - `scope-guard.sh`'s config parser: `scope_guard: off  # comment` was being read as the literal string `off#comment` and silently ignored — now strips trailing comments before comparing.
+- `drift-check.sh`: replaced an `A && B || C` idiom (SC2015 — `C` could run even when `A` held) with an explicit `if`, caught by the shellcheck CI job.
 
 ## [1.0.0] — 2026-07-09
 

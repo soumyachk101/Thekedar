@@ -129,4 +129,24 @@ CLAUDE_PROJECT_DIR="$SB5" bash "$HOOK" < "$FIX/out-of-scope-edit.json"; code=$?
 check "advisory mode with trailing comment allows" 0 "$code"
 rm -rf "$SB5"
 
+# 12. path traversal: allowed dir + ../ escape to a real sibling → BLOCKED
+#     (regression for the v2.0.0 release-audit finding: a raw glob/prefix
+#     match on an unresolved path let "src/../outside/x" pass a "src/*"
+#     allow-entry, since case-glob `*` matches ".." as literal text.)
+evt "$SB/src/../outside/pwned.txt" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" 2>/dev/null; code=$?
+check "traversal via allowed-dir/../escape is blocked" 2 "$code"
+
+# 13. path traversal escaping the project root entirely → BLOCKED
+evt "$SB/src/../../etc/passwd" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" 2>/dev/null; code=$?
+check "traversal escaping the project root entirely is blocked" 2 "$code"
+
+# 14. path traversal disguised as .thekedar/** (the universal-bypass variant)
+evt "$SB/.thekedar/../src/unrelated/rogue.ts" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" 2>/dev/null; code=$?
+check "traversal disguised as .thekedar/** is still checked, not auto-allowed" 2 "$code"
+
+# 15. a harmless ../ that still lands back in scope → allowed (canonicalization
+#     must not over-block legitimate paths that merely contain a "..")
+evt "$SB/src/auth/../auth/login.ts" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK"; code=$?
+check "a ../ that resolves back into scope is still allowed" 0 "$code"
+
 exit "$fails"

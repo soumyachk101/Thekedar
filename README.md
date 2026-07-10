@@ -1,4 +1,6 @@
-# 🏗️ Thekedar (ठेकेदार)
+<p align="center">
+  <img src="assets/banner.svg" alt="THEKEDAR — ठेकेदार — your AI coding crew's site supervisor. Kaam pakka, hisaab saaf." width="100%">
+</p>
 
 [![CI](https://github.com/soumyachk101/Thekedar/actions/workflows/ci.yml/badge.svg)](https://github.com/soumyachk101/Thekedar/actions/workflows/ci.yml)
 [![shellcheck](https://github.com/soumyachk101/Thekedar/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/soumyachk101/Thekedar/actions/workflows/shellcheck.yml)

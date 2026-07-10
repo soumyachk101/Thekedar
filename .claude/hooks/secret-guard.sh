@@ -20,10 +20,60 @@
 #  Patterns: AWS AKIA key · PEM private key block · JWT ·
 #  GitHub ghp_/github_pat_ · Slack xox· · Stripe sk_live_ ·
 #  Anthropic sk-ant- · Google AIza
+#
+#  PATH CANONICALIZATION: file_path is resolved lexically (., ..)
+#  before checking the exclusion list — otherwise
+#  "fixtures/../src/config/prod.env" string-matches the
+#  "fixtures/*" exclusion glob without ever really being under
+#  fixtures/, letting a real secret through unscanned. Same
+#  pure-string approach as scope-guard.sh (no realpath/readlink -f
+#  — must work on not-yet-existing Write targets, portably).
 # ============================================================
 
 INPUT="$(head -c 200000 2>/dev/null || true)"
 PROJ="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+
+# canon_abspath <path> <base> — lexically resolve . and .. against <base>
+# (if <path> is relative) or in place (if absolute). No filesystem access.
+canon_abspath() {
+  _p="$1"
+  case "$_p" in
+    /*) ;;
+    *)  _p="$2/$_p" ;;
+  esac
+  _stack=""
+  _oldifs="$IFS"
+  IFS=/
+  # shellcheck disable=SC2086
+  set -- $_p
+  IFS="$_oldifs"
+  for _seg in "$@"; do
+    case "$_seg" in
+      ""|".") continue ;;
+      "..")
+        case "$_stack" in
+          */*) _stack="${_stack%/*}" ;;
+          *)   _stack="" ;;
+        esac
+        ;;
+      *) _stack="$_stack/$_seg" ;;
+    esac
+  done
+  printf '%s' "${_stack:-/}"
+}
+
+# canon_relpath <path> <project_root> — prints the canonical path relative
+# to project_root, or a sentinel (matches no real exclusion pattern) if
+# <path> resolves outside project_root — default to SCANNING in that case.
+canon_relpath() {
+  _abs="$(canon_abspath "$1" "$2")"
+  _rootabs="$(canon_abspath "$2" "$2")"
+  case "$_abs" in
+    "$_rootabs")   printf '.' ;;
+    "$_rootabs"/*) printf '%s' "${_abs#"$_rootabs"/}" ;;
+    *)             printf '\001ESCAPED-PROJECT-ROOT\001' ;;
+  esac
+}
 
 # ---- file_path (for path exclusions + the block message) ----
 FILE=""
@@ -45,10 +95,9 @@ if [ -z "$FILE" ]; then
 fi
 
 REL="$FILE"
-case "$REL" in
-  "$PROJ"/*) REL="${REL#"$PROJ"/}" ;;
-esac
-REL="${REL#./}"
+if [ -n "$FILE" ]; then
+  REL="$(canon_relpath "$FILE" "$PROJ")"
+fi
 [ -z "$REL" ] && REL="(unknown file)"
 
 # Places where fake/sample secrets are legitimate by convention.
@@ -98,5 +147,9 @@ fi
 
 [ -z "$HIT" ] && exit 0
 
-echo "SECRET-GUARD: blocked — the content being written to $REL matches a $HIT pattern. Never hardcode secrets: read from an environment variable (process.env.X / os.environ) and add a placeholder to .env.example instead. If this is a deliberately fake sample, put it under a fixtures/ directory or a *.example file." >&2
+case "$REL" in
+  *ESCAPED-PROJECT-ROOT*) DISPLAY_PATH="(a path resolving outside the project directory)" ;;
+  *)                      DISPLAY_PATH="$REL" ;;
+esac
+echo "SECRET-GUARD: blocked — the content being written to $DISPLAY_PATH matches a $HIT pattern. Never hardcode secrets: read from an environment variable (process.env.X / os.environ) and add a placeholder to .env.example instead. If this is a deliberately fake sample, put it under a fixtures/ directory or a *.example file." >&2
 exit 2

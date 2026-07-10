@@ -113,16 +113,19 @@ Estimated overhead vs raw single session: 2–4× tokens on orchestrated work (c
 **Protocol:**
 
 1. No `.thekedar/tasks/` directory → exit 0 (no task system, nothing to guard).
-2. Parse `tool_input.file_path`, normalize to project-relative.
-3. Path under `.thekedar/**` → exit 0 always (workflow state must stay writable).
-4. Find the task file with `**Status:** ACTIVE` (grep across `tasks/*.md`). None found → exit 0 (trivial mode / between tasks — the guard only guards during orchestrated work).
-5. Build the allowlist from that task's `## Expected files` + `## Scope addition` sections (glob entries supported, e.g. `src/auth/*.test.ts`).
-6. Path matches (exact, glob, or under a listed directory) → exit 0.
-7. No match:
+2. Parse `tool_input.file_path`, **canonicalize it lexically** against `$CLAUDE_PROJECT_DIR` (resolve `.` and `..` components via pure string manipulation — no `realpath`/`readlink -f`, since the target may not exist yet for a `Write` and neither tool is consistently available across macOS/Linux/WSL/Git Bash), then derive the project-relative path from the canonical result.
+3. Canonical path resolves outside the project root entirely → treated as a guaranteed miss (see step 7 — never auto-allowed).
+4. Path under `.thekedar/**` (canonical) → exit 0 always (workflow state must stay writable).
+5. Find the task file with `**Status:** ACTIVE` (grep across `tasks/*.md`). None found → exit 0 (trivial mode / between tasks — the guard only guards during orchestrated work).
+6. Build the allowlist from that task's `## Expected files` + `## Scope addition` sections (glob entries supported, e.g. `src/auth/*.test.ts`).
+7. Canonical path matches (exact, glob, or under a listed directory) → exit 0.
+8. No match:
    - `.thekedar/config.md` has `scope_guard: off` (comment-stripped, whitespace-trimmed) → **advisory mode**: log a `scope-advisory` line to today's ledger, exit 0 (never blocks).
    - Otherwise → **exit 2**, stderr: `SCOPE-GUARD: <path> is outside task NNN's declared files. Either add a "## Scope addition" entry (file + one-line reason) to the task file first, or leave this file alone.`
 
 **Fail-open guarantee:** any parse failure, missing dependency, or internal doubt at any step → exit 0. A guard that bricks sessions is worse than no guard. See [ADR-0006](adr/0006-scope-guard-as-pretooluse.md).
+
+**Path canonicalization is load-bearing, not cosmetic.** A pre-release security audit found that matching the raw, unresolved `file_path` string against allowlist globs let `src/../outside/x` pass a `src/*` allow-entry (shell `case`/glob `*` matches literal `..` text — it has no filesystem awareness). Every comparison in this hook runs against the lexically-resolved path; regression tests for this exact class of bypass live in `tests/test-scope-guard.sh`.
 
 **Performance budget:** < 50 ms. Measured: ~12 ms.
 
@@ -134,11 +137,11 @@ Estimated overhead vs raw single session: 2–4× tokens on orchestrated work (c
 
 **Isolation requires jq or python3.** Neither present → exit 0 (fail open; scanning unstructured JSON risks matching the wrong field).
 
-**Path exclusions** (fake secrets are legitimate by convention): `.thekedar/**`, `*/fixtures/**`, `*/__mocks__/**`, `*.sample`, `*.example`, `*.template`.
+**Path exclusions** (fake secrets are legitimate by convention): `.thekedar/**`, `*/fixtures/**`, `*/__mocks__/**`, `*.sample`, `*.example`, `*.template` — matched against the **lexically canonicalized** path (same `.`/`..` resolution as scope-guard.sh, same reason: `fixtures/../src/prod.env` must not string-match the `fixtures/*` exclusion and sail through unscanned).
 
 **Patterns (high-confidence only):** AWS `AKIA[0-9A-Z]{16}`, PEM private key header, JWT (three base64 segments), GitHub `ghp_`/`github_pat_`, Slack `xox[baprs]-`, Stripe `sk_live_`, Anthropic `sk-ant-`, Google `AIza`.
 
-**Hit → exit 2**, stderr names the pattern class and the fix (env var + `.env.example` placeholder, or move to an excluded path if deliberately fake). **No hit, no jq/python3, or any internal failure → exit 0.**
+**Hit → exit 2**, stderr names the pattern class and the fix (env var + `.env.example` placeholder, or move to an excluded path if deliberately fake). **No hit, no jq/python3, or any internal failure → exit 0.** A path that canonicalizes outside the project root entirely is never treated as excluded (defaults to scanning) — see the scope-guard.sh note above on why canonicalization matters here too.
 
 ### 3.7 session-brief.sh (SessionStart injection)
 
