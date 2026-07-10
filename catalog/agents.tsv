@@ -15,17 +15,17 @@
 #
 name | category | type | tools | model | knowledge-refs | trigger
 planner | core | brain | Read, Grep, Glob, Write | inherit | - | start of any multi-step build/feature/refactor request
-api-designer | extended | brain | Read, Grep, Glob, Write | inherit | pitfalls/api-http.md | a task creates or changes an API surface
-backend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, pitfalls/python.md, pitfalls/typescript-javascript.md, pitfalls/nodejs.md, pitfalls/sql.md, pitfalls/go.md, pitfalls/api-http.md | server, API, database, or script implementation
+api-designer | extended | brain | Read, Grep, Glob, Write | inherit | pitfalls/api-http.md, patterns/api-design.md, patterns/pagination.md, patterns/idempotency.md, patterns/rate-limiting.md | a task creates or changes an API surface
+backend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, pitfalls/python.md, pitfalls/typescript-javascript.md, pitfalls/nodejs.md, pitfalls/sql.md, pitfalls/go.md, pitfalls/api-http.md, patterns/api-design.md, patterns/error-handling.md, patterns/migrations.md, patterns/pagination.md, patterns/idempotency.md, patterns/rate-limiting.md, patterns/caching-strategies.md, patterns/observability.md | server, API, database, or script implementation
 frontend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, pitfalls/typescript-javascript.md, pitfalls/react.md | UI, component, style, or client-state implementation
 test-writer | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | test-gap tasks and behavior-lock before a refactor
-db-specialist | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/sql.md | schema, migration, or query-layer tasks
-devops-engineer | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | Dockerfile, CI/CD, or environment-handling tasks
+db-specialist | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/sql.md, patterns/migrations.md | schema, migration, or query-layer tasks
+devops-engineer | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | patterns/observability.md | Dockerfile, CI/CD, or environment-handling tasks
 refactor-specialist | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | refactor tasks (requires passing behavior-lock tests first)
 docs-writer | extended | doer | Read, Write, Grep, Glob | haiku | - | documentation tasks sourced from changelogs and code
-error-checker | core | gate | Read, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md | every task, always — runs tests, lint, build
+error-checker | core | gate | Read, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, patterns/error-handling.md | every task, always — runs tests, lint, build
 security-auditor | core | gate | Read, Grep, Glob, Bash | sonnet | security/owasp/a01-broken-access-control.md, security/owasp/a02-cryptographic-failures.md, security/owasp/a03-injection.md, security/owasp/a04-insecure-design.md, security/owasp/a05-security-misconfiguration.md, security/owasp/a06-vulnerable-components.md, security/owasp/a07-auth-failures.md, security/owasp/a08-integrity-failures.md, security/owasp/a09-logging-monitoring-failures.md, security/owasp/a10-ssrf.md, security/secrets-patterns.md, security/authz-checklist.md, security/supply-chain.md, security/crypto-rules.md | every task, always — secrets, injection, authz
 frontend-reviewer | core | gate | Read, Grep, Glob, Bash | sonnet | - | whenever UI/frontend files were touched
-performance-auditor | extended | gate | Read, Grep, Glob, Bash | sonnet | - | config-enabled or task tagged perf
+performance-auditor | extended | gate | Read, Grep, Glob, Bash | sonnet | patterns/caching-strategies.md | config-enabled or task tagged perf
 accessibility-auditor | extended | gate | Read, Grep, Glob, Bash | sonnet | - | config-enabled or task tagged a11y
 dependency-auditor | extended | gate | Read, Grep, Glob, Bash | haiku | security/owasp/a06-vulnerable-components.md, security/supply-chain.md | whenever a dependency manifest or lockfile changed

@@ -55,8 +55,25 @@ still emitted, version confusions. Doers read them to avoid the traps;
 | `go.md` | ignored errors, loop capture, goroutine leaks, append aliasing | backend-dev |
 | `api-http.md` | wrong status codes, shape drift, idempotency, breaking changes | api-designer, backend-dev |
 
+## patterns/
+
+**Reusable design patterns** — Problem → Approach → When → Pitfalls → Verify.
+Cited by the doers and `api-designer`/`performance-auditor`/`devops-engineer`:
+
+| Pack | Topic | Cited by |
+|---|---|---|
+| `api-design.md` | resources, one error envelope, versioning, bulk/fields | api-designer, backend-dev |
+| `error-handling.md` | loud-internal/generic-external, wrapping, retries, breakers | backend-dev, error-checker |
+| `migrations.md` | reversible, expand/contract, batched backfill, zero-downtime | db-specialist, backend-dev |
+| `pagination.md` | offset vs cursor, max page size, stable order, count cost | backend-dev, api-designer |
+| `idempotency.md` | idempotency keys, natural idempotency, dedup, retry safety | backend-dev, api-designer |
+| `rate-limiting.md` | token bucket, shared store, 429+Retry-After, backoff | backend-dev, api-designer |
+| `caching-strategies.md` | cache-aside, invalidation, TTL, per-principal keys | backend-dev, performance-auditor |
+| `observability.md` | structured logs, metrics (RED), traces, correlation id, SLOs | backend-dev, devops-engineer |
+
 ## Coming next (MEGA_EXPANSION_1.md §3)
 
-The CWE Top 25; `best-practices/` (per-framework conventions); `review-checklists/`;
-and `patterns/` (api-design, error-handling, migrations, pagination, ...). Each
-lands as its own validated batch.
+The CWE Top 25; `best-practices/` (per-framework conventions); `review-checklists/`
+(per-dimension: perf, a11y, error-handling, logging, testing); and the remaining
+`patterns/` (feature-flags, background-jobs, webhooks, file-uploads). Each lands
+as its own validated batch.

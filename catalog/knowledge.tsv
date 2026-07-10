@@ -32,3 +32,11 @@ pitfalls/nodejs.md | pitfalls | event-loop blocking, callback/promise mixing, ve
 pitfalls/sql.md | pitfalls | injection by concat, migration hazards, N+1, dialect drift | db-specialist, backend-dev
 pitfalls/go.md | pitfalls | ignored errors, loop capture, goroutine leaks, append aliasing | backend-dev
 pitfalls/api-http.md | pitfalls | wrong status codes, shape drift, idempotency, breaking changes | api-designer, backend-dev
+patterns/api-design.md | patterns | resources, one error envelope, versioning, bulk/field selection | api-designer, backend-dev
+patterns/error-handling.md | patterns | loud-internal/generic-external, wrapping, retries, circuit breakers | backend-dev, error-checker
+patterns/migrations.md | patterns | reversible, expand/contract, batched backfill, zero-downtime order | db-specialist, backend-dev
+patterns/pagination.md | patterns | offset vs cursor, max page size, stable order, count cost | backend-dev, api-designer
+patterns/idempotency.md | patterns | idempotency keys, natural idempotency, dedup, retry safety | backend-dev, api-designer
+patterns/rate-limiting.md | patterns | token bucket, shared store, 429+Retry-After, backoff | backend-dev, api-designer
+patterns/caching-strategies.md | patterns | cache-aside, invalidation, TTL, per-principal keys, measure | backend-dev, performance-auditor
+patterns/observability.md | patterns | structured logs, metrics (RED/golden), traces, correlation id, SLOs | backend-dev, devops-engineer
