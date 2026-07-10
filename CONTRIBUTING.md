@@ -20,7 +20,10 @@ git clone https://github.com/soumyachk101/Thekedar && cd Thekedar
 bash tests/run-all.sh
 
 # shellcheck (must be clean):
-shellcheck ./*.sh hooks/*.sh scripts/*.sh tests/*.sh
+shellcheck ./*.sh hooks/*.sh scripts/*.sh scripts/factory/*.sh tests/*.sh
+
+# factory coherence gate (catalog ↔ agent files, 0 orphans):
+bash scripts/factory/validate-all.sh
 
 # installer test in a scratch repo:
 mkdir /tmp/scratch && cd /tmp/scratch && git init -q

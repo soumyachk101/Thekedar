@@ -42,11 +42,12 @@ Thekedar installs a **workflow discipline** on top of Claude Code (and other age
 ```mermaid
 flowchart TB
     subgraph L4["Layer 4 — Memory  (markdown on disk, git-tracked)"]
-        L4a["PROJECT_STATE.md · config.md · tasks/*.md · changes/*.md<br/>survives crashes, /clear, and new sessions"]
+        L4a["PROJECT_STATE.md · config.md · tasks/*.md · changes/*.md"]
+        L4b["survives crashes, /clear, and new sessions"]
     end
     subgraph L3["Layer 3 — Intelligence  (fresh LLM context per subagent)"]
         L3a["orchestrator — the thekedar skill"]
-        L3b["planner · api-designer · 6 doers"]
+        L3b["planner · api-designer · 6 doers · docs-writer"]
         L3c["6 read-only reviewer gates"]
     end
     subgraph L2["Layer 2 — Guard-rails  (bash, PreToolUse — the only layer allowed to say no)"]
@@ -110,10 +111,10 @@ Every agent runs in its own fresh context — it never sees the conversation tha
 ```mermaid
 flowchart LR
     Q["What do you need?"]
-    Q -->|"build something"| S1["/thekedar<br/>plans → builds → reviews → commits"]
-    Q -->|"just the plan"| S2["/thekedar-plan<br/>writes tasks, then stops"]
-    Q -->|"where are we?"| S3["/thekedar-status<br/>6-line snapshot, read-only"]
-    Q -->|"full written report"| S4["/thekedar-report<br/>generates REPORT.md"]
+    Q -->|"build something"| S1["/thekedar — plans, builds, reviews, commits"]
+    Q -->|"just the plan"| S2["/thekedar-plan — writes tasks, then stops"]
+    Q -->|"where are we?"| S3["/thekedar-status — 6-line snapshot, read-only"]
+    Q -->|"full written report"| S4["/thekedar-report — generates REPORT.md"]
 ```
 
 ## Install
@@ -208,7 +209,7 @@ The schema task doesn't get to "helpfully" wire itself into the running app. Tha
 
 **2. The fix loop is shown, not hidden.** Task 003's changelog records a real `error-checker` catch:
 
-> `error-checker`: **FAIL → PASS after 1 fix loop** — first pass: `[CRITICAL] routes/todos.js:14 — POST accepts a whitespace-only title ("   ") as valid because .length check runs before trimming`. backend-dev added `.trim()` ahead of the length check; re-review: all 5 acceptance criteria verified, PASS.
+> `error-checker`: **FAIL → PASS after 1 fix loop** — first pass: `[CRITICAL] routes/todos.js:14 — POST accepts a whitespace-only title ("   ") as valid because .length check runs before trimming — creates blank-looking todos`. backend-dev added `.trim()` ahead of the length check; re-review: all 5 acceptance criteria verified, PASS.
 
 **3. Known issues carry forward instead of vanishing.** `PROJECT_STATE.md`'s Known Issues section still lists: *"No rate limiting on `POST /api/todos` — flagged INFO by security-auditor in task-003, acceptable for a local single-user demo, would need addressing before any real deployment."* It didn't block the task, so it wasn't fixed — but it also wasn't silently dropped.
 
@@ -225,7 +226,7 @@ While a task is `ACTIVE`, every single `Write`/`Edit`/`MultiEdit` call — from 
 
    The doer's real option, and the intended path for legitimate scope growth, is to add that `## Scope addition` entry and retry — not to fight the guard.
 
-2. **`secret-guard.sh`** scans only the *new* content about to be written (never the whole file, never `old_string`) for nine high-confidence secret patterns. A hit blocks with the pattern named directly, e.g. *"matches an AWS access key ID pattern"* — and tells the doer to use an environment variable instead.
+2. **`secret-guard.sh`** scans only the *new* content about to be written (never the whole file, never `old_string`) for nine high-confidence secret patterns — AWS keys, PEM private key blocks, JWTs, GitHub/Slack/Stripe/Anthropic/Google tokens. A hit blocks and names the matched pattern type directly, then tells the doer to use an environment variable instead.
 
 Both guards share one non-negotiable property: **fail open.** A parse error, a missing `jq`/`python3`, no `ACTIVE` task, an unreadable task file — any of these lets the write through. The *only* path to a block is a positive, confirmed match. A bug in these hooks costs you one uncaught edit, never a bricked session — see [ADR-0002](docs/adr/0002-hooks-never-block-except-guards.md) and [ADR-0006](docs/adr/0006-scope-guard-as-pretooluse.md).
 
@@ -263,16 +264,24 @@ your-project/
 
 ## How Thekedar Compares
 
-| | Raw Claude Code | OpenSpec / spec-kit | claude-flow | Thekedar |
-|---|---|---|---|---|
-| Plans before building | Only if you ask | ✅ | Varies | ✅ |
-| Scope mechanically enforced | ❌ | ❌ | Varies | ✅ (`scope-guard.sh`) |
-| Independent review | ❌ (self-review) | ❌ | Varies | ✅ (fresh, read-only) |
-| Written audit trail | Git diff only | Spec artifact | Varies | ✅ (ledger + changelog) |
-| Zero-prompt resume | ❌ | Varies | Varies | ✅ (`session-brief.sh`) |
-| Runtime dependencies | — | Varies | Node/daemon | None — bash + markdown |
+**vs. raw Claude Code** — the most direct comparison, and where the case is clearest:
 
-Thekedar's own honest caveat on that last row: *"boring and durable beats clever and fragile for something you're trusting with unattended multi-hour edits."* And against raw Claude Code specifically: *"Thekedar is strictly more expensive for anything genuinely small."* Full writeup, including where each alternative actually wins: [docs/COMPARISON.md](docs/COMPARISON.md).
+| | Raw Claude Code | + Thekedar |
+|---|---|---|
+| Planning | Ad hoc, in-conversation | Written task files, scoped, before code exists |
+| Scope control | Whatever the prompt says | Mechanically enforced — `scope-guard.sh` blocks at write-time |
+| Review | You, or asking the same context to "check its work" | Independent subagent, fresh context, never saw the implementation reasoning |
+| Audit trail | `git log` messages, whatever you happened to write | Automatic ledger (every edit) + per-task changelog (what/why/what-NOT) |
+| Resume | Re-explain state each session | `session-brief.sh` auto-injects `PROJECT_STATE.md` at session start |
+| Token cost | Baseline | 2–4× |
+
+*"Thekedar is strictly more expensive for anything genuinely small — that's why the orchestrator's own first rule is triaging trivial requests straight through, no ceremony."*
+
+**vs. OpenSpec / spec-kit** — real philosophical overlap (write down what you're building before you build it); Thekedar adds mechanical enforcement of scope and automatic written records on top of the same planning idea. If you only want the spec artifact and plan to implement by hand, the full crew-plus-gates is more machinery than you need.
+
+**vs. claude-flow and similar orchestration frameworks** — the honest bet, stated plainly: *"boring and durable beats clever and fragile for something you're trusting with unattended multi-hour edits."* Zero runtime dependencies (bash + git) instead of an npm/pip tree and often a database or daemon — at the cost of whatever features a heavier framework offers (dashboards, complex agent topologies).
+
+Full writeup with all three comparisons in detail, plus a fourth against manual code review of AI output: [docs/COMPARISON.md](docs/COMPARISON.md).
 
 ## FAQ
 
@@ -283,7 +292,7 @@ Thekedar's own honest caveat on that last row: *"boring and durable beats clever
 Throwaway scripts, one-off queries, single-file tweaks, exploratory work where you're still figuring out what you even want, tiny personal projects you'll never revisit.
 
 **Does scope-guard mean the AI literally cannot go rogue?**
-It means the AI cannot *silently* touch a file outside the current task's declared scope. It doesn't stop a determined agent from adding a bogus `## Scope addition` entry and editing anyway — it closes the "forgot the fence was just text" failure mode, not the "the model actively decided to lie about its reason" one.
+It means the AI cannot *silently* touch a file outside the current task's declared scope. It doesn't stop a determined agent from adding a bogus `## Scope addition` entry and editing anyway — it closes the "oops, forgot the fence was just text" failure mode, not the "the model actively decided to lie about its reason" one.
 
 **Why markdown and bash instead of a real database or daemon?**
 Durability and inspectability. A markdown file survives every tool migration and every Claude Code version bump, and opens in literally anything. A daemon is one more thing to keep running, one more thing to debug when it silently dies.
@@ -296,7 +305,7 @@ More, including the `jq`/`python3` fallback behavior and using a language Theked
 [Commands](docs/COMMANDS.md) · [Customization](docs/CUSTOMIZATION.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [FAQ](docs/FAQ.md)
 
 **Understanding it**
-[Architecture](docs/ARCHITECTURE.md) · [Workflow walkthrough](docs/WORKFLOW.md) · [Agents guide](docs/AGENTS-GUIDE.md) · [Hooks guide](docs/HOOKS-GUIDE.md) · [Comparison](docs/COMPARISON.md)
+[Architecture](docs/ARCHITECTURE.md) · [Workflow walkthrough](docs/WORKFLOW.md) · [Agents guide](docs/AGENTS-GUIDE.md) · [Hooks guide](docs/HOOKS-GUIDE.md) · [Factory (catalog-driven crew)](docs/FACTORY.md) · [Comparison](docs/COMPARISON.md)
 
 **Why it's built this way**
 [PRD](docs/PRD.md) · [TRD](docs/TRD.md) · [Benchmarks](docs/BENCHMARKS.md) · [Design decisions (7 ADRs)](docs/adr/)

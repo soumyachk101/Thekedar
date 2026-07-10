@@ -1,0 +1,31 @@
+# Thekedar agent catalog — the single source of truth for the crew.
+# Delimiter: | (pipe). Lines starting with # are comments. Blank lines ignored.
+# Columns: name | category | type | tools | model | knowledge-refs | trigger
+#   name        globally-unique kebab-case id (must equal the .md filename)
+#   category    core | extended | languages | frameworks | domains | ops | reviewers
+#   type        brain | doer | gate   (gate = read-only, NO Write/Edit)
+#   tools       comma-separated Claude Code tool allowlist
+#   model       inherit | sonnet | haiku | opus
+#   knowledge-refs  comma-separated knowledge/ pack paths, or - for none
+#   trigger     one-line "when to use" phrase (drives the generated docs/index)
+#
+# The factory validators enforce every rule above; gen-index.sh regenerates
+# catalog/INDEX.md and the README crew table from this file. Add a row, run
+# the factory, never hand-edit generated output.
+#
+name | category | type | tools | model | knowledge-refs | trigger
+planner | core | brain | Read, Grep, Glob, Write | inherit | - | start of any multi-step build/feature/refactor request
+api-designer | extended | brain | Read, Grep, Glob, Write | inherit | - | a task creates or changes an API surface
+backend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | server, API, database, or script implementation
+frontend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | UI, component, style, or client-state implementation
+test-writer | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | test-gap tasks and behavior-lock before a refactor
+db-specialist | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | schema, migration, or query-layer tasks
+devops-engineer | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | Dockerfile, CI/CD, or environment-handling tasks
+refactor-specialist | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | refactor tasks (requires passing behavior-lock tests first)
+docs-writer | extended | doer | Read, Write, Grep, Glob | haiku | - | documentation tasks sourced from changelogs and code
+error-checker | core | gate | Read, Bash, Grep, Glob | sonnet | - | every task, always — runs tests, lint, build
+security-auditor | core | gate | Read, Grep, Glob, Bash | sonnet | - | every task, always — secrets, injection, authz
+frontend-reviewer | core | gate | Read, Grep, Glob, Bash | sonnet | - | whenever UI/frontend files were touched
+performance-auditor | extended | gate | Read, Grep, Glob, Bash | sonnet | - | config-enabled or task tagged perf
+accessibility-auditor | extended | gate | Read, Grep, Glob, Bash | sonnet | - | config-enabled or task tagged a11y
+dependency-auditor | extended | gate | Read, Grep, Glob, Bash | haiku | - | whenever a dependency manifest or lockfile changed

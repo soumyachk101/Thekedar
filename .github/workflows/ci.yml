@@ -30,6 +30,9 @@ jobs:
       - name: Run test suite
         run: bash tests/run-all.sh
 
+      - name: Factory coherence gate (catalog ↔ files, 0 orphans)
+        run: bash scripts/factory/validate-all.sh
+
       - name: Doctor self-check (fresh scratch install)
         run: |
           SB="$(mktemp -d)"

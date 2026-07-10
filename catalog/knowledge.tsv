@@ -1,0 +1,12 @@
+# Thekedar knowledge catalog — the crew's shared brain (built in Phases 12-13).
+# Delimiter: | (pipe). Columns: name | category | summary | applies-to
+#   name        path under knowledge/ (e.g. security/authz-checklist.md)
+#   category    security | best-practices | pitfalls | review-checklists | patterns
+#   summary     one line
+#   applies-to  comma-separated agent names that cite it, or - for shared
+#
+# Seeded empty for v2.0.0 — knowledge packs land in the Mega expansion
+# (MEGA_EXPANSION_1.md §3). validate-knowledge.sh passes on an empty library
+# and flips to enforcing ≥40-line, zero-orphan packs once rows/files exist.
+#
+name | category | summary | applies-to

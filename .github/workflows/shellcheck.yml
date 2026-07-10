@@ -21,6 +21,6 @@ jobs:
           # early returns inside case/if chains — allowlisted repo-wide, everything else
           # must be clean per CONTRIBUTING.md's shellcheck rule.
           shopt -s globstar nullglob
-          files=(./*.sh hooks/*.sh scripts/*.sh tests/*.sh)
+          files=(./*.sh hooks/*.sh scripts/*.sh scripts/factory/*.sh tests/*.sh)
           echo "Checking: ${files[*]}"
           shellcheck -e SC2317 "${files[@]}"

@@ -1,0 +1,11 @@
+# Thekedar integrations catalog — other AI coding tools (built in Phase 17).
+# Delimiter: | (pipe). Columns: tool | mechanism | config-path
+#   tool         cursor | codex-cli | copilot | windsurf | cline | ...
+#   mechanism    rules-file | plugin | skill  (how the workflow is delivered)
+#   config-path  the file the generator writes for that tool
+#
+# Seeded empty for v2.0.0 — v1 ships the generic AGENTS.md export
+# (scripts/export-agents-md.sh). Per-tool integration folders land in the
+# Mega expansion (MEGA_EXPANSION_1.md §4), all from one generator, not 15 forks.
+#
+tool | mechanism | config-path
