@@ -75,9 +75,21 @@ Cited by the doers and `api-designer`/`performance-auditor`/`devops-engineer`:
 | `webhooks.md` | signature verify, idempotency, async ack, SSRF on send | backend-dev, api-designer |
 | `file-uploads.md` | size/type validation, server-gen keys, store outside root, scan | backend-dev, frontend-dev |
 
+## review-checklists/
+
+**Per-dimension review lenses** — what a gate checks, as a checklist. Cited by
+the read-only review gates:
+
+| Pack | Dimension | Cited by |
+|---|---|---|
+| `performance.md` | N+1, indexes, hot paths, memory, contention (cost scenarios) | performance-auditor |
+| `accessibility.md` | WCAG AA: keyboard, ARIA, names, focus, announcements | accessibility-auditor, frontend-reviewer |
+| `error-handling.md` | caught/propagated, right status, safe surfacing, resources | error-checker |
+| `logging.md` | no secrets/PII in logs; enough logged; structured; volume | error-checker, security-auditor |
+| `testing.md` | behavior + edges, meaningful assertions, isolation, right level | test-writer, error-checker |
+| `frontend.md` | state/effects/keys, loading/error/empty, design-system, responsive | frontend-reviewer |
+
 ## Coming next (MEGA_EXPANSION_1.md §3)
 
-The CWE Top 25; `best-practices/` (per-framework conventions); and
-`review-checklists/` (per-dimension: perf, a11y, error-handling, logging,
-testing). Each lands as its own validated batch. The `patterns/` pack is
-complete (12).
+The CWE Top 25 and `best-practices/` (per-framework conventions). The
+`patterns/` (12) and `review-checklists/` (6) packs are complete.

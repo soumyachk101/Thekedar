@@ -44,3 +44,9 @@ patterns/feature-flags.md | patterns | deploy vs release, targeting, kill switch
 patterns/background-jobs.md | patterns | enqueue-don't-block, idempotent handlers, retries+DLQ, at-least-once | backend-dev, devops-engineer
 patterns/webhooks.md | patterns | signature verify, idempotency, async ack, SSRF on send | backend-dev, api-designer
 patterns/file-uploads.md | patterns | size/type validation, server-gen keys, store outside root, scan | backend-dev, frontend-dev
+review-checklists/performance.md | review-checklists | N+1, indexes, hot paths, memory, contention — with cost scenarios | performance-auditor
+review-checklists/accessibility.md | review-checklists | WCAG AA: keyboard, ARIA, names, focus, announcements | accessibility-auditor, frontend-reviewer
+review-checklists/error-handling.md | review-checklists | caught/propagated, right status, safe surfacing, resource safety | error-checker
+review-checklists/logging.md | review-checklists | no secrets/PII in logs; enough logged; structured; volume/retention | error-checker, security-auditor
+review-checklists/testing.md | review-checklists | behavior + edges tested, meaningful assertions, isolation, right level | test-writer, error-checker
+review-checklists/frontend.md | review-checklists | state/effects/keys, loading/error/empty, design-system, responsive | frontend-reviewer
