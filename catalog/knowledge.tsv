@@ -40,3 +40,7 @@ patterns/idempotency.md | patterns | idempotency keys, natural idempotency, dedu
 patterns/rate-limiting.md | patterns | token bucket, shared store, 429+Retry-After, backoff | backend-dev, api-designer
 patterns/caching-strategies.md | patterns | cache-aside, invalidation, TTL, per-principal keys, measure | backend-dev, performance-auditor
 patterns/observability.md | patterns | structured logs, metrics (RED/golden), traces, correlation id, SLOs | backend-dev, devops-engineer
+patterns/feature-flags.md | patterns | deploy vs release, targeting, kill switch, flag-debt cleanup | backend-dev, frontend-dev
+patterns/background-jobs.md | patterns | enqueue-don't-block, idempotent handlers, retries+DLQ, at-least-once | backend-dev, devops-engineer
+patterns/webhooks.md | patterns | signature verify, idempotency, async ack, SSRF on send | backend-dev, api-designer
+patterns/file-uploads.md | patterns | size/type validation, server-gen keys, store outside root, scan | backend-dev, frontend-dev

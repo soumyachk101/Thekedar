@@ -15,12 +15,12 @@
 #
 name | category | type | tools | model | knowledge-refs | trigger
 planner | core | brain | Read, Grep, Glob, Write | inherit | - | start of any multi-step build/feature/refactor request
-api-designer | extended | brain | Read, Grep, Glob, Write | inherit | pitfalls/api-http.md, patterns/api-design.md, patterns/pagination.md, patterns/idempotency.md, patterns/rate-limiting.md | a task creates or changes an API surface
-backend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, pitfalls/python.md, pitfalls/typescript-javascript.md, pitfalls/nodejs.md, pitfalls/sql.md, pitfalls/go.md, pitfalls/api-http.md, patterns/api-design.md, patterns/error-handling.md, patterns/migrations.md, patterns/pagination.md, patterns/idempotency.md, patterns/rate-limiting.md, patterns/caching-strategies.md, patterns/observability.md | server, API, database, or script implementation
-frontend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, pitfalls/typescript-javascript.md, pitfalls/react.md | UI, component, style, or client-state implementation
+api-designer | extended | brain | Read, Grep, Glob, Write | inherit | pitfalls/api-http.md, patterns/api-design.md, patterns/pagination.md, patterns/idempotency.md, patterns/rate-limiting.md, patterns/webhooks.md | a task creates or changes an API surface
+backend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, pitfalls/python.md, pitfalls/typescript-javascript.md, pitfalls/nodejs.md, pitfalls/sql.md, pitfalls/go.md, pitfalls/api-http.md, patterns/api-design.md, patterns/error-handling.md, patterns/migrations.md, patterns/pagination.md, patterns/idempotency.md, patterns/rate-limiting.md, patterns/caching-strategies.md, patterns/observability.md, patterns/feature-flags.md, patterns/background-jobs.md, patterns/webhooks.md, patterns/file-uploads.md | server, API, database, or script implementation
+frontend-dev | core | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, pitfalls/typescript-javascript.md, pitfalls/react.md, patterns/feature-flags.md, patterns/file-uploads.md | UI, component, style, or client-state implementation
 test-writer | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | test-gap tasks and behavior-lock before a refactor
 db-specialist | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/sql.md, patterns/migrations.md | schema, migration, or query-layer tasks
-devops-engineer | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | patterns/observability.md | Dockerfile, CI/CD, or environment-handling tasks
+devops-engineer | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | patterns/observability.md, patterns/background-jobs.md | Dockerfile, CI/CD, or environment-handling tasks
 refactor-specialist | extended | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | refactor tasks (requires passing behavior-lock tests first)
 docs-writer | extended | doer | Read, Write, Grep, Glob | haiku | - | documentation tasks sourced from changelogs and code
 error-checker | core | gate | Read, Bash, Grep, Glob | sonnet | pitfalls/general-ai-coding.md, patterns/error-handling.md | every task, always — runs tests, lint, build

@@ -70,10 +70,14 @@ Cited by the doers and `api-designer`/`performance-auditor`/`devops-engineer`:
 | `rate-limiting.md` | token bucket, shared store, 429+Retry-After, backoff | backend-dev, api-designer |
 | `caching-strategies.md` | cache-aside, invalidation, TTL, per-principal keys | backend-dev, performance-auditor |
 | `observability.md` | structured logs, metrics (RED), traces, correlation id, SLOs | backend-dev, devops-engineer |
+| `feature-flags.md` | deploy vs release, targeting, kill switch, flag-debt cleanup | backend-dev, frontend-dev |
+| `background-jobs.md` | enqueue-don't-block, idempotent handlers, retries+DLQ, scheduling | backend-dev, devops-engineer |
+| `webhooks.md` | signature verify, idempotency, async ack, SSRF on send | backend-dev, api-designer |
+| `file-uploads.md` | size/type validation, server-gen keys, store outside root, scan | backend-dev, frontend-dev |
 
 ## Coming next (MEGA_EXPANSION_1.md §3)
 
-The CWE Top 25; `best-practices/` (per-framework conventions); `review-checklists/`
-(per-dimension: perf, a11y, error-handling, logging, testing); and the remaining
-`patterns/` (feature-flags, background-jobs, webhooks, file-uploads). Each lands
-as its own validated batch.
+The CWE Top 25; `best-practices/` (per-framework conventions); and
+`review-checklists/` (per-dimension: perf, a11y, error-handling, logging,
+testing). Each lands as its own validated batch. The `patterns/` pack is
+complete (12).
