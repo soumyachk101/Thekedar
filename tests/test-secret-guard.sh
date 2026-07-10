@@ -98,4 +98,13 @@ check "malformed input fails open (exit 0)" 0 "$code"
 printf '' | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK"; code=$?
 check "empty stdin fails open (exit 0)" 0 "$code"
 
+# 12b. glob-metacharacter segment must NOT expand against the cwd → still SCANNED
+#      (regression for the second release-audit finding: `set -- $_p` was
+#      unquoted, so `f*` glob-EXPANDED to a real `fixtures/` in cwd, hitting
+#      the exclusion and letting a real secret through unscanned. The literal
+#      write target is a directory named `f*`, which is NOT the fixtures dir.)
+mkdir -p "$SB/fixtures"
+( cd "$SB" && wr "$SB/f*/prod.env" "aws = $AWS_FAKE" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" 2>/dev/null ); code=$?
+check "glob-char '*' segment not expanded to fixtures/ exclusion (scanned+blocked)" 2 "$code"
+
 exit "$fails"

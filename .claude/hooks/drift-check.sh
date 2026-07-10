@@ -37,10 +37,16 @@ canon_abspath() {
   esac
   _stack=""
   _oldifs="$IFS"
+  # Disable pathname expansion around the split: with globbing ON, an
+  # unquoted `set -- $_p` would glob-EXPAND a segment like `s*` or `a[b]`
+  # against the cwd. We still want IFS=/ word-splitting — only globbing off.
+  case "$-" in *f*) _hadf=1 ;; *) _hadf=0 ;; esac
+  set -f
   IFS=/
   # shellcheck disable=SC2086
   set -- $_p
   IFS="$_oldifs"
+  [ "$_hadf" -eq 0 ] && set +f
   for _seg in "$@"; do
     case "$_seg" in
       ""|".") continue ;;
@@ -69,7 +75,8 @@ canon_relpath() {
 }
 
 if [ -z "$TASK" ] || [ ! -f "$TASK" ]; then
-  echo "DRIFT: n/a — task file not found: ${TASK:-<none given>}"; exit 0
+  echo "DRIFT: n/a — task file not found: ${TASK:-<none given>}"
+  exit 0
 fi
 command -v git >/dev/null 2>&1        || { echo "DRIFT: n/a — git unavailable"; exit 0; }
 git -C "$PROJ" rev-parse --is-inside-work-tree >/dev/null 2>&1 \

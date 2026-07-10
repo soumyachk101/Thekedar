@@ -149,4 +149,17 @@ check "traversal disguised as .thekedar/** is still checked, not auto-allowed" 2
 evt "$SB/src/auth/../auth/login.ts" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK"; code=$?
 check "a ../ that resolves back into scope is still allowed" 0 "$code"
 
+# 16. glob-metacharacter segment must NOT expand against the cwd → BLOCKED
+#     (regression for the second release-audit finding: `set -- $_p` was
+#     unquoted, so a literal path segment `s*` glob-EXPANDED to a real `src/`
+#     in the cwd, sneaking an out-of-scope write past the fence. The literal
+#     write target here is a directory named `s*`, which is not in scope.)
+mkdir -p "$SB/src/auth"
+( cd "$SB" && evt "$SB/s*/auth/login.ts" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" 2>/dev/null ); code=$?
+check "glob-char '*' segment is not expanded against cwd (blocked)" 2 "$code"
+
+# 17. bracket-glob segment likewise literal → BLOCKED
+( cd "$SB" && evt "$SB/a[bc]/auth/login.ts" | CLAUDE_PROJECT_DIR="$SB" bash "$HOOK" 2>/dev/null ); code=$?
+check "glob-char '[...]' segment is not expanded against cwd (blocked)" 2 "$code"
+
 exit "$fails"
