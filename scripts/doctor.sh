@@ -9,7 +9,14 @@
 # ============================================================
 set -u
 
-PROJ="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -n "${CLAUDE_PROJECT_DIR:-}" ]; then
+  PROJ="$CLAUDE_PROJECT_DIR"
+elif [ "$(basename "$SCRIPT_DIR")" = "scripts" ] && [ "$(basename "$(dirname "$SCRIPT_DIR")")" = ".thekedar" ]; then
+  PROJ="$(cd "$SCRIPT_DIR/../.." && pwd)"
+else
+  PROJ="$(pwd)"
+fi
 OK=0; WARN=0; FAIL=0
 
 ok()   { printf '  ✅ %s\n' "$*"; OK=$((OK + 1)); }
