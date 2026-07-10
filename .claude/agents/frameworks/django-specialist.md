@@ -39,6 +39,7 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Files created/modified (paths only) · acceptance status per box · test/check/migration result · any Scope addition (with reason) · ≤ 10 lines, no code dumps.
 
 ## Rules
+- Build to the framework best-practices pack (`knowledge/best-practices/django.md`) — composition, data flow, security defaults, testing.
 
 - Never commit; the orchestrator owns git.
 - Use the ORM (no raw SQL from input); avoid N+1; scope querysets by the user (authz — `knowledge/security/authz-checklist.md`).

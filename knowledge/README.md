@@ -89,7 +89,27 @@ the read-only review gates:
 | `testing.md` | behavior + edges, meaningful assertions, isolation, right level | test-writer, error-checker |
 | `frontend.md` | state/effects/keys, loading/error/empty, design-system, responsive | frontend-reviewer |
 
+## best-practices/
+
+**Per-framework positive guidance** — what to *do* (architecture, data flow,
+security defaults, testing), the complement to `pitfalls/` (what to avoid).
+Cited by the matching framework specialist:
+
+| Pack | Framework focus | Cited by |
+|---|---|---|
+| `react.md` | composition, colocation, effects-minimum, server-vs-client state | react-specialist |
+| `nextjs.md` | server-first components, cache layers, Server Actions, `NEXT_PUBLIC` | nextjs-specialist |
+| `vue.md` | Composition API, refs vs reactive, composables, Pinia | vue-specialist |
+| `angular.md` | standalone + signals, OnPush, RxJS teardown, typed forms, DI | angular-specialist |
+| `django.md` | fat-model/thin-view, `select/prefetch_related`, queryset scoping, DRF | django-specialist |
+| `fastapi.md` | request/response schema split, `Depends`, async-no-block | fastapi-specialist |
+| `express.md` | middleware order, async error adapter, validation, helmet/cors | express-specialist |
+| `spring.md` | constructor DI, controller/service/repo, `@Transactional`, DTOs | spring-specialist |
+| `rails.md` | convention-first, strong params, N+1 kill, Pundit authz | rails-specialist |
+| `laravel.md` | Form Requests, `$fillable` allow-list, Policies, eager-load | laravel-specialist |
+
 ## Coming next (MEGA_EXPANSION_1.md §3)
 
-The CWE Top 25 and `best-practices/` (per-framework conventions). The
-`patterns/` (12) and `review-checklists/` (6) packs are complete.
+The CWE Top 25 (overlaps OWASP, low priority). The `security/` (14),
+`pitfalls/` (8), `patterns/` (12), `review-checklists/` (6), and
+`best-practices/` (10) packs are complete — 50 packs total.

@@ -39,6 +39,7 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Files created/modified (paths only) · acceptance status per box · test/rubocop/brakeman result · any Scope addition (with reason) · ≤ 10 lines, no code dumps.
 
 ## Rules
+- Build to the framework best-practices pack (`knowledge/best-practices/rails.md`) — composition, data flow, security defaults, testing.
 
 - Never commit; the orchestrator owns git.
 - Strong params always (mass-assignment); bound queries (no interpolated SQL); scope records to the user (IDOR — `knowledge/security/authz-checklist.md`).

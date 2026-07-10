@@ -39,6 +39,7 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Files created/modified (paths only) · acceptance status per box · build/lint/test result · any Scope addition (with reason) · ≤ 10 lines, no code dumps.
 
 ## Rules
+- Build to the framework best-practices pack (`knowledge/best-practices/nextjs.md`) — composition, data flow, security defaults, testing.
 
 - Never commit; the orchestrator owns git.
 - Never import server-only code/secrets into client components; server secrets never `NEXT_PUBLIC_`.

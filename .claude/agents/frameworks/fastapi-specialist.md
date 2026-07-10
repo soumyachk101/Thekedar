@@ -39,6 +39,7 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Files created/modified (paths only) · acceptance status per box · pytest/mypy result · any Scope addition (with reason) · ≤ 10 lines, no code dumps.
 
 ## Rules
+- Build to the framework best-practices pack (`knowledge/best-practices/fastapi.md`) — composition, data flow, security defaults, testing.
 
 - Never commit; the orchestrator owns git.
 - Pydantic models for all input/output; no blocking I/O in `async def`; authz via dependencies (`knowledge/security/authz-checklist.md`).

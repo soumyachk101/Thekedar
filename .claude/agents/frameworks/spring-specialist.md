@@ -40,6 +40,7 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Files created/modified (paths only) · acceptance status per box · build/test result · any Scope addition (with reason) · ≤ 10 lines, no code dumps.
 
 ## Rules
+- Build to the framework best-practices pack (`knowledge/best-practices/spring.md`) — composition, data flow, security defaults, testing.
 
 - Never commit; the orchestrator owns git.
 - Constructor injection; DTOs at the boundary; `@Transactional` at the service layer, not across slow I/O.

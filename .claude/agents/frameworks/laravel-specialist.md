@@ -40,6 +40,7 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Files created/modified (paths only) · acceptance status per box · test/pint/phpstan result · any Scope addition (with reason) · ≤ 10 lines, no code dumps.
 
 ## Rules
+- Build to the framework best-practices pack (`knowledge/best-practices/laravel.md`) — composition, data flow, security defaults, testing.
 
 - Never commit; the orchestrator owns git.
 - Guard mass assignment; Form Requests for validation/authz; bound Eloquent queries; scope to the user (IDOR — `knowledge/security/authz-checklist.md`).

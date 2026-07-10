@@ -38,6 +38,7 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Files created/modified (paths only) · acceptance status per box · build/type-check/test result · any Scope addition (with reason) · ≤ 10 lines, no code dumps.
 
 ## Rules
+- Build to the framework best-practices pack (`knowledge/best-practices/vue.md`) — composition, data flow, security defaults, testing.
 
 - Never commit; the orchestrator owns git.
 - Match the API style (Options vs Composition) and Vue version; don't destructure reactive state; don't mutate props.
