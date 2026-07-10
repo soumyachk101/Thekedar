@@ -28,9 +28,17 @@ scenario, fix patterns, and how to confirm the fix.
 | `owasp/a09-logging-monitoring-failures.md` | missing security logs; secrets/PII in logs |
 | `owasp/a10-ssrf.md` | server-side request forgery, cloud metadata theft |
 
+Standalone security packs:
+
+| Pack | Topic | Cited by |
+|---|---|---|
+| `secrets-patterns.md` | hardcoded-secret detection + the one handling rule | security-auditor |
+| `authz-checklist.md` | authorization review (IDOR, roles, escalation) | security-auditor |
+| `supply-chain.md` | dependency + build/CI supply-chain audit | dependency-auditor, security-auditor |
+| `crypto-rules.md` | crypto do/don't: KDFs, AEAD, CSPRNG, constant-time | security-auditor |
+
 ## Coming next (MEGA_EXPANSION_1.md §3)
 
-`security/` standalone files (secrets-patterns, authz-checklist, supply-chain,
-crypto-rules) and the CWE Top 25; then `best-practices/`, `pitfalls/` (the
-AI-hallucination-traps pack — the real differentiator), `review-checklists/`,
-and `patterns/`. Each lands as its own validated batch.
+The CWE Top 25; then `best-practices/`, `pitfalls/` (the AI-hallucination-traps
+pack — the real differentiator), `review-checklists/`, and `patterns/`. Each
+lands as its own validated batch.

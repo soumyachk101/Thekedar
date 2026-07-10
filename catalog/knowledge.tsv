@@ -20,3 +20,7 @@ security/owasp/a07-auth-failures.md | security | brute-force, weak sessions, JWT
 security/owasp/a08-integrity-failures.md | security | insecure deserialization, unsigned updates, unpinned CI | security-auditor
 security/owasp/a09-logging-monitoring-failures.md | security | missing security logs + secrets/PII leaking into logs | security-auditor
 security/owasp/a10-ssrf.md | security | server-side request forgery, cloud metadata theft | security-auditor
+security/secrets-patterns.md | security | hardcoded-secret detection patterns + the one handling rule | security-auditor
+security/authz-checklist.md | security | authorization review checklist (IDOR, roles, escalation) | security-auditor
+security/supply-chain.md | security | dependency + build/CI supply-chain audit | dependency-auditor, security-auditor
+security/crypto-rules.md | security | crypto do/don't: KDFs, AEAD, CSPRNG, constant-time | security-auditor
