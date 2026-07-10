@@ -26,6 +26,21 @@
 #  run even for not-yet-existing Write targets, so it's pure
 #  string manipulation, never realpath/readlink -f (inconsistent
 #  across macOS/Linux/WSL and unusable on a nonexistent path).
+#
+#  SCOPE & LIMITATIONS (read before trusting this as a sandbox):
+#  This guard constrains the FILE-EDIT tools (Write/Edit/MultiEdit)
+#  against accidental drift and the model editing outside the task.
+#  It is NOT a security sandbox against a hostile agent:
+#    · Bash is not gated (doers need it for tests/builds), so an
+#      agent with Bash can already write anywhere — `echo x > /out`.
+#    · Because resolution is lexical, it does NOT follow symlinks:
+#      if an in-scope path component is a symlink out of the repo,
+#      a Write through it lands outside. Reaching that state still
+#      requires creating the symlink first (a Bash call), i.e. the
+#      same already-unguarded capability — so this closes no door
+#      that Bash didn't already leave open. Deliberately not fixed
+#      with realpath here (see docs/adr/0006). Defense-in-depth,
+#      not a jail: security-auditor + human review remain necessary.
 # ============================================================
 
 INPUT="$(head -c 100000 2>/dev/null || true)"

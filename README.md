@@ -7,11 +7,21 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Zero dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen)
 
-> **Your AI coding crew's site supervisor.** Breaks big projects into small tasks, assigns specialist agents, gates every task behind review, mechanically enforces scope, and keeps a written record of every change — so your AI never hallucinates its way through your codebase again.
+> **Your AI coding crew's site supervisor.** Breaks big projects into small tasks, assigns specialist agents, gates every task behind independent review, mechanically enforces scope, and keeps a written record of every change — so your AI never hallucinates its way through your codebase again.
 
 *Thekedar (Hindi: ठेकेदार) — the contractor on an Indian construction site. He doesn't lay bricks himself. He splits the work, assigns the right worker to the right job, inspects everything before sign-off, and the munshi (clerk) writes it all down.*
 
 **That's exactly what this does to your AI coding agent.**
+
+---
+
+## See it work
+
+<p align="center">
+  <img src="assets/pipeline.gif" alt="Thekedar task pipeline: a task is assigned to a doer, scope-guard and secret-guard check every write, three read-only reviewers pass it in parallel, munshi logs it, and it gets stamped PASS and committed." width="100%">
+</p>
+
+One task, start to finish: a doer implements it, two guard-rail hooks check every single file write as it happens, independent reviewers approve it in fresh contexts, munshi logs it, and it gets committed. Then the next task starts. No step is skipped, and nothing above is simulated — it's the real pipeline, described below turn by turn.
 
 ---
 
@@ -27,82 +37,101 @@ AI coding agents are brilliant for 20 minutes, then:
 
 ## The Fix
 
-Thekedar installs a **workflow discipline** on top of Claude Code (and other agents via a generated AGENTS.md):
+Thekedar installs a **workflow discipline** on top of Claude Code (and other agents via a generated `AGENTS.md`), built as four layers. The rule that shapes all four: **push work down the stack** — if bash can enforce something, don't spend tokens asking an LLM nicely; if one small, scoped context can do a job, don't hand it to the big polluted one.
 
-```
-                        ┌─────────────────┐
-   Big vague request →  │    THEKEDAR     │  (orchestrator skill)
-                        │  (main session) │
-                        └────────┬────────┘
-                                 │ 1. delegate planning
-                        ┌────────▼────────┐
-                        │     PLANNER     │ → writes tasks/001.md, 002.md ...
-                        │ (+ api-designer)│   each with scope + NOT-scope
-                        └────────┬────────┘
-                                 │ 2. one task at a time, routed by task type
-                 ┌───────────────┼───────────────────────┐
-        ┌────────▼───────┐ ┌─────────────┐      ┌────────▼────────┐
-        │  BACKEND-DEV   │ │ FRONTEND-DEV│  ...  │  7 more doers   │
-        │  builds task N │ │             │       │  (--full)       │
-        └────────┬───────┘ └──────┬──────┘       └─────────────────┘
-                 │  every Write/Edit passes through:
-                 │  ┌─────────────────────────────────────────┐
-                 │  │ PreToolUse: scope-guard + secret-guard   │  ← can BLOCK (exit 2)
-                 │  └─────────────────────────────────────────┘
-                 │  ┌─────────────────────────────────────────┐
-                 │  │ PostToolUse: munshi → ledger line logged │  ← never blocks
-                 │  └─────────────────────────────────────────┘
-                 │ 3. review gate (parallel, read-only, fresh context each)
-     ┌───────────┼──────────────┬─────────────────┬───────────────┐
-┌────▼─────┐ ┌───▼───────────┐ ┌▼────────────────┐ ┌──────────────▼──┐
-│ ERROR-   │ │ SECURITY-     │ │ FRONTEND-       │ │ 3 more gates     │
-│ CHECKER  │ │ AUDITOR       │ │ REVIEWER        │ │ (perf/a11y/deps) │
-│ (tests)  │ │ (chowkidar 🔒)│ │ (UI/UX check)   │ │ conditional      │
-└────┬─────┘ └───┬───────────┘ └┬────────────────┘ └──────────────────┘
-     └───────────┼──────────────┘
-                 │ 4. all pass?
-        ┌────────▼────────┐
-        │ drift-check.sh  │ → declared vs actual scope, one honest line
-        │ changelog written│ → what changed, what deliberately did NOT
-        │ git checkpoint  │ → commit, next task
-        └─────────────────┘
+```mermaid
+flowchart TB
+    subgraph L4["Layer 4 — Memory  (markdown on disk, git-tracked)"]
+        L4a["PROJECT_STATE.md · config.md · tasks/*.md · changes/*.md<br/>survives crashes, /clear, and new sessions"]
+    end
+    subgraph L3["Layer 3 — Intelligence  (fresh LLM context per subagent)"]
+        L3a["orchestrator — the thekedar skill"]
+        L3b["planner · api-designer · 6 doers"]
+        L3c["6 read-only reviewer gates"]
+    end
+    subgraph L2["Layer 2 — Guard-rails  (bash, PreToolUse — the only layer allowed to say no)"]
+        L2a["scope-guard.sh — blocks writes outside the ACTIVE task's declared files"]
+        L2b["secret-guard.sh — blocks writes containing high-confidence secret patterns"]
+    end
+    subgraph L1["Layer 1 — Determinism  (bash, never blocks)"]
+        L1a["munshi.sh ledger · session-brief.sh resume · drift-check.sh audit · git commits"]
+    end
+    L4 --> L3 --> L2 --> L1
 ```
 
-Every edit is logged. Every scope violation is **blocked before it happens**, not caught after. Every task is documented. Every change is reviewed by an agent that **didn't write it**. Every new session starts already briefed — [session-brief.sh](docs/HOOKS-GUIDE.md#session-briefsh) injects your project state automatically.
+Layer 2 is the headline addition in v2: v1 could only log what happened (Layer 1) and hope the prompt held (Layer 3). Layer 2 can say **no**, mechanically, *before* a write lands — closing problem P5 above. Every edit is logged. Every scope violation is blocked before it happens, not caught after. Every task is documented. Every change is reviewed by an agent that **didn't write it**.
 
-## The Crew — 15 agents + 5 hooks + 4 skills
+## The Crew — 15 agents, 5 hooks, 4 skills
 
-| Agent | Site role | Fires when | Tools | Model |
+Every agent runs in its own fresh context — it never sees the conversation that led to it being invoked, only its own system prompt and the task file. Reviewers additionally have no `Write`/`Edit` tool at all — "read-only" is enforced by Claude Code's runtime, not a promise in a prompt.
+
+### Core crew — always installed
+
+| Agent | Nickname | Fires when | Tools | Model |
 |---|---|---|---|---|
-| `planner` | नक्शा — Architect | start of any multi-step request | Read, Grep, Glob, Write | inherit |
-| `api-designer` | Contract writer | task creates/changes an API surface | Read, Grep, Glob, Write | inherit |
-| `backend-dev` | मिस्त्री — Mason | server/API/db/script tasks | Read, Write, Edit, Bash, Grep, Glob | sonnet |
-| `frontend-dev` | रंग-मिस्त्री — Finisher | UI/component/style tasks | Read, Write, Edit, Bash, Grep, Glob | sonnet |
-| `error-checker` | Inspector | every task, always. Read-only | Read, Bash, Grep, Glob | sonnet |
-| `security-auditor` | चौकीदार — Guard | every task, always. Read-only | Read, Grep, Glob, Bash | sonnet |
-| `frontend-reviewer` | Finisher's eye | UI files touched. Read-only | Read, Grep, Glob, Bash | sonnet |
-| + 9 more (`--full`) | test-writer, db-specialist, docs-writer, devops-engineer, refactor-specialist, performance-auditor, accessibility-auditor, dependency-auditor | see [AGENTS-GUIDE.md](docs/AGENTS-GUIDE.md) | doer or gate set | sonnet/haiku |
-| `munshi` (hook) | मुंशी — Clerk | every Write/Edit | bash, PostToolUse | free — never blocks |
-| `scope-guard` (hook) | The fence | every Write/Edit | bash, PreToolUse | free — **blocks** confirmed misses |
-| `secret-guard` (hook) | The gate check | every Write/Edit | bash, PreToolUse | free — **blocks** confirmed secrets |
-| `session-brief` (hook) | Morning briefing | every session start | bash, SessionStart | free — injects state |
-| `drift-check` (script) | Honest audit | end of every task | bash, orchestrator-called | free — reports, never blocks |
+| `planner` | नक्शा-वाला — naksha-wala, the blueprint-maker | Start of any multi-step build / feature / refactor request | Read, Grep, Glob, Write | inherit |
+| `backend-dev` | मिस्त्री — mistri, the mason | Backend, API, database, or script task | Read, Write, Edit, Bash, Grep, Glob | sonnet |
+| `frontend-dev` | रंग-मिस्त्री — rang-mistri, the finishing mason | UI, component, or style task | Read, Write, Edit, Bash, Grep, Glob | sonnet |
+| `error-checker` | The inspector | Every task, always — read-only | Read, Bash, Grep, Glob | sonnet |
+| `security-auditor` | चौकीदार — chowkidar, the guard | Every task, always — read-only | Read, Grep, Glob, Bash | sonnet |
+| `frontend-reviewer` | The finisher | Whenever UI files were touched — read-only | Read, Grep, Glob, Bash | sonnet |
 
-**Key design rules:** reviewers are **read-only** (no Write/Edit — enforced by the runtime, not a promise) and run in **separate context windows**. The agent that wrote the code never approves it. And new in v2: scope enforcement moved from *prompt* to *mechanism* — see [ADR-0006](docs/adr/0006-scope-guard-as-pretooluse.md).
+### Extended crew — `install.sh --full`
+
+| Agent | Nickname | Fires when | Tools | Model |
+|---|---|---|---|---|
+| `api-designer` | The doorframe-drawer | Task creates/changes an API surface — writes the contract *before* backend-dev builds it | Read, Grep, Glob, Write | inherit |
+| `db-specialist` | The foundations engineer | Schema, migration, or query-layer task | Read, Write, Edit, Bash, Grep, Glob | sonnet |
+| `devops-engineer` | The site-services engineer | Docker, CI/CD, env config, or deploy task | Read, Write, Edit, Bash, Grep, Glob | sonnet |
+| `test-writer` | The proof-writer | Test-gap task, or behavior-lock tests before any refactor | Read, Write, Edit, Bash, Grep, Glob | sonnet |
+| `refactor-specialist` | The renovation specialist | Refactor task — refuses to start without test-writer's lock tests | Read, Write, Edit, Bash, Grep, Glob | sonnet |
+| `docs-writer` | The munshi's cousin | Documentation task — sources are changelogs and code, never memory | Read, Write, Grep, Glob | haiku |
+| `dependency-auditor` | The gate-register clerk | Diff touches a dependency manifest or lockfile — read-only | Read, Grep, Glob, Bash | haiku |
+| `performance-auditor` | The load-inspector | `enable_performance_auditor: true`, or task tagged `perf` — read-only | Read, Grep, Glob, Bash | sonnet |
+| `accessibility-auditor` | The accessibility inspector | `enable_accessibility_auditor: true`, or task tagged `a11y` — read-only | Read, Grep, Glob, Bash | sonnet |
+
+### Plus 5 hooks and 4 skills
+
+| Hook | Fires on | Can it block? | What it does |
+|---|---|---|---|
+| `session-brief.sh` | `SessionStart` | No — always exits 0 | Auto-injects `PROJECT_STATE.md` + the active task + the latest changelog into the fresh session, before you type anything |
+| `scope-guard.sh` | `PreToolUse` (Write\|Edit\|MultiEdit) | **Yes** — exit 2 on a confirmed miss | Blocks writes outside the ACTIVE task's declared `## Expected files` / `## Scope addition` |
+| `secret-guard.sh` | `PreToolUse` (Write\|Edit\|MultiEdit) | **Yes** — exit 2 on a confirmed match | Blocks writes whose new content matches a high-confidence secret pattern (AWS, PEM, JWT, GitHub, Slack, Stripe, Anthropic, Google) |
+| `munshi.sh` | `PostToolUse` (Write\|Edit\|MultiEdit) | No — always exits 0 | Appends one `\| time \| tool \| file \|` row to today's ledger. Zero tokens, zero opinions |
+| `drift-check.sh` | called by the orchestrator at task end | No — reports, never gates | Diffs `git status` against the task's declared scope; its one-line verdict is copied into the changelog |
+
+| Skill | Use it when |
+|---|---|
+| `thekedar` | You want it planned **and** built — the full plan → build → review → log loop |
+| `thekedar-plan` | You want the task breakdown only — it writes tasks and hard-stops before building anything |
+| `thekedar-status` | You want a 6-line "where are we" snapshot — read-only, spawns nothing |
+| `thekedar-report` | You want a full written report of everything done so far |
+
+```mermaid
+flowchart LR
+    Q["What do you need?"]
+    Q -->|"build something"| S1["/thekedar<br/>plans → builds → reviews → commits"]
+    Q -->|"just the plan"| S2["/thekedar-plan<br/>writes tasks, then stops"]
+    Q -->|"where are we?"| S3["/thekedar-status<br/>6-line snapshot, read-only"]
+    Q -->|"full written report"| S4["/thekedar-report<br/>generates REPORT.md"]
+```
 
 ## Install
 
 ```bash
-# from your project root
+# core crew — 6 agents (planner, backend-dev, frontend-dev, error-checker, security-auditor, frontend-reviewer)
 git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh
 
-# want the 9 extended specialists too (test-writer, db-specialist, devops-engineer, ...)?
+# full crew — the 9 extended specialists too (test-writer, db-specialist, devops-engineer, ...)
 bash /tmp/thekedar/install.sh --full
+
+# health check, anytime
+bash .thekedar/scripts/doctor.sh
 ```
 
-Or manually — it's just markdown files and bash scripts. See [INSTALL.md](INSTALL.md). Health check anytime: `bash .thekedar/scripts/doctor.sh`.
+Or manually — it's just markdown files and bash scripts. See [INSTALL.md](INSTALL.md). The installer is idempotent (safe to re-run, including after `update.sh`), backs up any file it would overwrite to `<file>.bak`, and never touches `PROJECT_STATE.md` or `config.md` once they exist.
 
-**Requirements:** Claude Code ≥ 2.x, `bash`, `git`. `jq` or `python3` recommended (hooks degrade gracefully without either). Zero npm/pip dependencies — see [ADR-0001](docs/adr/0001-markdown-as-the-interface.md).
+**Requirements:** Claude Code ≥ 2.x, `bash`, `git`. `jq` or `python3` recommended — hooks degrade gracefully without either, and `secret-guard.sh` specifically fails open (allows the write, scans nothing) if neither is present, rather than risk a false block. Zero npm/pip dependencies, ever — see [ADR-0001](docs/adr/0001-markdown-as-the-interface.md).
 
 ## Quick Start
 
@@ -113,71 +142,167 @@ thekedar skill activates →
   planner writes:
     .thekedar/tasks/001-project-setup.md
     .thekedar/tasks/002-db-schema.md
-    .thekedar/tasks/003-todo-crud-api.md   ← api-designer writes the contract first
+    .thekedar/tasks/003-todo-crud-api.md   ← api-designer writes the API contract first
     ...
   backend-dev picks up 001 → implements →
-    scope-guard + secret-guard check every write, munshi logs every edit
-  error-checker: ✅ PASS → security-auditor: ✅ PASS →
+    every Write/Edit passes scope-guard + secret-guard, munshi logs it
+  error-checker: ✅ PASS  security-auditor: ✅ PASS →
   drift-check: none → changelog written → git commit "thekedar(task-001): ..." →
   next task.
 ```
 
-Resume anytime — even in a fresh session, with **zero re-prompting**:
+Resume anytime, even in a fresh session — `session-brief.sh` briefs it before you type a word:
 
 ```
 you: continue the project
-      [session-brief.sh already injected PROJECT_STATE before you typed this]
-claude: Tasks 001–003 done. Resuming 004-todo-list-ui...
+claude: [session-brief auto-injected PROJECT_STATE.md]
+        Tasks 001–003 done. Resuming 004-todo-list-ui...
 ```
 
-**See it for real:** [examples/demo-todo-app](examples/demo-todo-app) is the actual, unedited `.thekedar/` output from Thekedar building a small todo app — 6 real task files, 6 real changelogs (including a real fix loop), a real final PROJECT_STATE.md. Not a mockup.
+Here's what actually happens inside one task, turn by turn:
+
+```mermaid
+sequenceDiagram
+    participant U as You
+    participant O as Orchestrator
+    participant P as planner
+    participant D as doer
+    participant G as guards
+    participant Rv as reviewers
+    participant Git as git
+
+    U->>O: "add JWT auth"
+    O->>P: plan (fresh context)
+    P-->>O: tasks/004-jwt-middleware.md (scope + NOT-scope + acceptance criteria)
+    O->>D: implement task 004 (fresh context)
+    loop every Write/Edit
+        D->>G: PreToolUse — scope-guard, secret-guard
+        G-->>D: allowed
+        Note over D: munshi logs the edit (PostToolUse, 0 tokens)
+    end
+    O->>Rv: review task 004 (parallel, fresh, read-only)
+    Rv-->>O: error-checker FAIL — 1 test failing
+    O->>D: fix loop 1/3, findings attached
+    D-->>O: fixed
+    O->>Rv: re-review
+    Rv-->>O: PASS + PASS
+    O->>Git: commit "thekedar(task-004): JWT middleware"
+    O-->>U: task 004 done → task 005 next
+```
+
+That FAIL-then-fix-loop isn't hypothetical — it's exactly what happened in the real worked example below.
+
+## See a Real Run
+
+[`examples/demo-todo-app/`](examples/demo-todo-app/) isn't a template — it's the actual `.thekedar/` output from Thekedar building a small Express + SQLite todo app, start to finish, over 6 real tasks. Three things in it are worth looking at directly, because they're the parts marketing copy usually hides:
+
+**1. The scope fence actually held.** Task 002 (db schema) declares in its own file:
+
+```
+## NOT in scope (the fence — do not cross)
+- HTTP routes (task 003 — this task has no /api surface at all)
+- server.js — do NOT wire this into the running app yet, that's 003's job
+```
+
+The schema task doesn't get to "helpfully" wire itself into the running app. That's `scope-guard.sh` enforcing exactly what it says on the tin.
+
+**2. The fix loop is shown, not hidden.** Task 003's changelog records a real `error-checker` catch:
+
+> `error-checker`: **FAIL → PASS after 1 fix loop** — first pass: `[CRITICAL] routes/todos.js:14 — POST accepts a whitespace-only title ("   ") as valid because .length check runs before trimming`. backend-dev added `.trim()` ahead of the length check; re-review: all 5 acceptance criteria verified, PASS.
+
+**3. Known issues carry forward instead of vanishing.** `PROJECT_STATE.md`'s Known Issues section still lists: *"No rate limiting on `POST /api/todos` — flagged INFO by security-auditor in task-003, acceptable for a local single-user demo, would need addressing before any real deployment."* It didn't block the task, so it wasn't fixed — but it also wasn't silently dropped.
+
+Want the mechanics spelled out even further — every hook call, every guard check — for a bigger feature? [docs/WORKFLOW.md](docs/WORKFLOW.md) walks a comparable password-reset feature end to end.
+
+## The Guard-Rail Layer
+
+This is the part that's actually new in v2, so it's worth explaining plainly instead of just diagramming it.
+
+While a task is `ACTIVE`, every single `Write`/`Edit`/`MultiEdit` call — from any doer, on any file — is intercepted *before* it executes:
+
+1. **`scope-guard.sh`** checks the target path (canonicalized, so `src/../outside/x` can't sneak past a `src/*` allowlist entry) against the ACTIVE task's declared `## Expected files` and any `## Scope addition` entries. A miss gets rejected with:
+   > `SCOPE-GUARD: <path> is outside task NNN's declared files. Either add a "## Scope addition" entry (file + one-line reason) to the task file first, or leave this file alone.`
+
+   The doer's real option, and the intended path for legitimate scope growth, is to add that `## Scope addition` entry and retry — not to fight the guard.
+
+2. **`secret-guard.sh`** scans only the *new* content about to be written (never the whole file, never `old_string`) for nine high-confidence secret patterns. A hit blocks with the pattern named directly, e.g. *"matches an AWS access key ID pattern"* — and tells the doer to use an environment variable instead.
+
+Both guards share one non-negotiable property: **fail open.** A parse error, a missing `jq`/`python3`, no `ACTIVE` task, an unreadable task file — any of these lets the write through. The *only* path to a block is a positive, confirmed match. A bug in these hooks costs you one uncaught edit, never a bricked session — see [ADR-0002](docs/adr/0002-hooks-never-block-except-guards.md) and [ADR-0006](docs/adr/0006-scope-guard-as-pretooluse.md).
 
 ## What Gets Written to Disk
 
 ```
 your-project/
 ├── .thekedar/
-│   ├── PROJECT_STATE.md      ← resume-anywhere memory (auto-injected at session start)
-│   ├── config.md             ← fix_loop_cap, auto_continue, scope_guard, ...
-│   ├── tasks/                ← 001-setup.md, 002-schema.md ... scope, NOT-scope, acceptance
-│   ├── phases/                ← phase-N.md, big projects only (>~12 tasks)
+│   ├── PROJECT_STATE.md       ← resume-anywhere memory
+│   ├── config.md              ← fix_loop_cap, auto_continue, scope_guard, ...
+│   ├── tasks/
+│   │   ├── 001-setup.md       ← scope, NOT-scope, acceptance criteria
+│   │   └── 002-auth.md
 │   ├── changes/
-│   │   ├── ledger-2026-07-09.md   ← munshi's per-edit log (automatic, free)
-│   │   └── task-001.md            ← rich per-task changelog (what/NOT/why/verdicts/drift)
-│   └── scripts/               ← doctor, export-agents-md, new-agent, report, stats
+│   │   ├── ledger-2026-07-09.md   ← munshi's per-edit log (automatic)
+│   │   └── task-001.md            ← rich per-task changelog
+│   ├── templates/              ← 7 templates, copied in at install
+│   └── scripts/                ← doctor.sh, report.sh, stats.sh, export-agents-md.sh, new-agent.sh
 └── .claude/
     ├── agents/
-    │   ├── core/              ← 6 agents, always installed
-    │   ├── extended/          ← 9 more, --full
-    │   └── custom/            ← yours, via new-agent.sh
-    ├── skills/                ← thekedar, thekedar-status, thekedar-report, thekedar-plan
-    ├── hooks/                 ← munshi, scope-guard, secret-guard, session-brief, drift-check
-    └── settings.json          ← hook wiring (merged, never silently overwritten)
+    │   ├── core/                ← 6 always-installed agents
+    │   └── extended/            ← 9 more with --full
+    ├── skills/                  ← thekedar, thekedar-plan, thekedar-report, thekedar-status
+    ├── hooks/                   ← the 5 hook scripts above
+    └── settings.json            ← hook wiring, merged in — never blindly overwritten
 ```
-
-## Why Small, Guarded Tasks Kill Hallucination
-
-An agent hallucinates when its context is stuffed with irrelevant code and its goal is vague. Thekedar attacks both:
-
-- **Scoped tasks** — each task file states what to build AND what NOT to touch. The doer agent loads one task, not the universe.
-- **Mechanically enforced scope** — `scope-guard.sh` blocks a write outside the declared files *before it lands*, not after a human notices in review.
-- **Fresh contexts** — subagents spawn clean. No 200-message history poisoning the work.
-- **External memory** — state lives in markdown on disk, not in a fragile context window, and gets re-injected automatically at every new session.
-- **Independent review** — a hallucinated function fails `error-checker` because the reviewer actually runs the tests.
 
 ## Honest Notes (padh lo, zaroori hai)
 
-- **Token cost is real.** Multi-agent means 2–4× tokens vs a raw single session (methodology for measuring this precisely: [BENCHMARKS.md](docs/BENCHMARKS.md) — no numbers published yet, only honest ones will be). That's why doers/reviewers default to Sonnet (Haiku where the task is lighter) and only planning gets the big model. For a throwaway script, don't use Thekedar. For anything you'll maintain — worth it.
-- **Munshi is deterministic, not smart. The two guards are deterministic and strict.** The ledger hook logs *facts* for free. scope-guard and secret-guard *block* — but only on a confirmed hit; every doubt fails open (see [ADR-0002](docs/adr/0002-hooks-never-block-except-guards.md)). The *reasoning* changelog is still written per-task by the orchestrator.
-- **Reviewers can be wrong.** They massively cut slip-through rate; they don't replace your eyes on a final PR.
-- **Two sessions, one repo, at once — don't.** v2 doesn't solve concurrent-session races yet. See [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+- **Token cost is real.** Estimate 2–4× a raw single-session request for orchestrated work — a planner pass up front, then per task roughly one doer + 2 always-on gates (error-checker, security-auditor) + conditional gates when relevant. No hard numbers are published yet; [BENCHMARKS.md](docs/BENCHMARKS.md) has the methodology, honestly labeled "no runs completed yet." For a throwaway script, don't use Thekedar — the orchestrator's own first rule is triaging trivial requests straight through, no ceremony.
+- **Munshi and the guards are deterministic, not smart.** They log and block on pattern matches, for free. The *reasoning* — the changelog, the scope judgment calls — is written by the orchestrator, once, at task boundaries.
+- **Reviewers can be wrong.** They cut the slip-through rate a lot; they don't replace your eyes on a final PR.
+- **Two sessions on one project isn't safe yet.** State and task files can race if you run Thekedar concurrently against the same repo — see [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+- **No subagent isolation in your tool?** `export-agents-md.sh` flattens the whole crew into a single `AGENTS.md` for Cursor/Codex CLI/Copilot/Windsurf. It's honestly weaker there — the "reviewer" shares the doer's context and blind spots — but it still beats no review at all.
+
+## How Thekedar Compares
+
+| | Raw Claude Code | OpenSpec / spec-kit | claude-flow | Thekedar |
+|---|---|---|---|---|
+| Plans before building | Only if you ask | ✅ | Varies | ✅ |
+| Scope mechanically enforced | ❌ | ❌ | Varies | ✅ (`scope-guard.sh`) |
+| Independent review | ❌ (self-review) | ❌ | Varies | ✅ (fresh, read-only) |
+| Written audit trail | Git diff only | Spec artifact | Varies | ✅ (ledger + changelog) |
+| Zero-prompt resume | ❌ | Varies | Varies | ✅ (`session-brief.sh`) |
+| Runtime dependencies | — | Varies | Node/daemon | None — bash + markdown |
+
+Thekedar's own honest caveat on that last row: *"boring and durable beats clever and fragile for something you're trusting with unattended multi-hour edits."* And against raw Claude Code specifically: *"Thekedar is strictly more expensive for anything genuinely small."* Full writeup, including where each alternative actually wins: [docs/COMPARISON.md](docs/COMPARISON.md).
+
+## FAQ
+
+**What does this actually cost in tokens?**
+2–4× a raw single-session request for orchestrated work. Reviewers fire once per task, not per edit — that's the single biggest cost control.
+
+**When should I *not* use this?**
+Throwaway scripts, one-off queries, single-file tweaks, exploratory work where you're still figuring out what you even want, tiny personal projects you'll never revisit.
+
+**Does scope-guard mean the AI literally cannot go rogue?**
+It means the AI cannot *silently* touch a file outside the current task's declared scope. It doesn't stop a determined agent from adding a bogus `## Scope addition` entry and editing anyway — it closes the "forgot the fence was just text" failure mode, not the "the model actively decided to lie about its reason" one.
+
+**Why markdown and bash instead of a real database or daemon?**
+Durability and inspectability. A markdown file survives every tool migration and every Claude Code version bump, and opens in literally anything. A daemon is one more thing to keep running, one more thing to debug when it silently dies.
+
+More, including the `jq`/`python3` fallback behavior and using a language Thekedar has no dedicated specialist for: [docs/FAQ.md](docs/FAQ.md).
 
 ## Docs
 
-- [PRD — what & why](docs/PRD.md) · [TRD — how, exactly](docs/TRD.md) · [Architecture deep-dive](docs/ARCHITECTURE.md)
-- [Full workflow walkthrough](docs/WORKFLOW.md) · [Agents guide](docs/AGENTS-GUIDE.md) · [Hooks guide](docs/HOOKS-GUIDE.md) · [Commands](docs/COMMANDS.md)
-- [Customization](docs/CUSTOMIZATION.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [FAQ](docs/FAQ.md) · [Comparison](docs/COMPARISON.md) · [Benchmarks](docs/BENCHMARKS.md)
-- [Architecture Decision Records](docs/adr/) · [Install guide (all tools)](INSTALL.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
+**Using it**
+[Commands](docs/COMMANDS.md) · [Customization](docs/CUSTOMIZATION.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [FAQ](docs/FAQ.md)
+
+**Understanding it**
+[Architecture](docs/ARCHITECTURE.md) · [Workflow walkthrough](docs/WORKFLOW.md) · [Agents guide](docs/AGENTS-GUIDE.md) · [Hooks guide](docs/HOOKS-GUIDE.md) · [Comparison](docs/COMPARISON.md)
+
+**Why it's built this way**
+[PRD](docs/PRD.md) · [TRD](docs/TRD.md) · [Benchmarks](docs/BENCHMARKS.md) · [Design decisions (7 ADRs)](docs/adr/)
+
+**Project**
+[Install guide](INSTALL.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Security policy](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## Inspired By
 

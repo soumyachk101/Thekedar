@@ -28,6 +28,14 @@
 #  fixtures/, letting a real secret through unscanned. Same
 #  pure-string approach as scope-guard.sh (no realpath/readlink -f
 #  — must work on not-yet-existing Write targets, portably).
+#
+#  LIMITATION: lexical resolution does not follow symlinks. A
+#  secret written through a symlinked excluded path (e.g. a
+#  fixtures/ entry that is a symlink out of the repo) is skipped.
+#  Creating that symlink needs Bash — itself an unguarded write-
+#  anywhere path — so this is defense-in-depth against the model
+#  writing a secret to a normal source file, not a hard sandbox.
+#  See docs/adr/0006 and SECURITY.md.
 # ============================================================
 
 INPUT="$(head -c 200000 2>/dev/null || true)"
