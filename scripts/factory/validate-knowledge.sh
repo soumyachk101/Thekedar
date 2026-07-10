@@ -19,7 +19,7 @@ set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 KDIR="$ROOT/knowledge"
 CATALOG="$ROOT/catalog/agents.tsv"
-MIN_LINES=40
+MIN_LINES=60
 FAIL=0
 
 err()  { printf '  ❌ %s\n' "$*"; FAIL=1; }
@@ -42,6 +42,9 @@ REFS="$(awk -F'|' '
 count=0
 while IFS= read -r f; do
   [ -f "$f" ] || continue
+  # README.md files are indexes, not packs — skip them
+  case "$(basename "$f")" in README.md) continue ;; esac
+
   count=$((count + 1))
   rel="${f#"$ROOT"/}"
   krel="${f#"$KDIR"/}"

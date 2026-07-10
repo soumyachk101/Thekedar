@@ -42,6 +42,6 @@ Each batch is a fresh, scoped session with state on disk between batches — whi
 
 Same bet as the rest of the project (see [ADR-0001](adr/0001-markdown-as-the-interface.md)): a pipe-delimited data file and a few bash scripts have zero dependencies, diff readably, and will still run in five years. The validators are the load-bearing part, not the generators — a generator that produces a bad file is caught by the gate; a gate that lets a bad file through is the only real failure, so that's where the rigor goes.
 
-## Current state (v2.0.0)
+## Current state
 
-15 agents (6 core + 9 extended), 15 catalog rows, 0 orphans, `validate-all` green in CI. The `languages/`, `frameworks/`, `domains/`, `ops/`, and `reviewers/` categories are wired in the schema and index but not yet populated — that's the Mega expansion's job, built batch by batch on top of this foundation.
+15 agents (6 core + 9 extended), 15 catalog rows, 0 orphans, `validate-all` green in CI. The knowledge library has started: **10 security packs** (the OWASP Top 10, `knowledge/security/owasp/`) are written, ≥60 lines each, cited by `security-auditor` — `validate-knowledge` enforces the ≥60-line and zero-orphan rules. The `languages/`, `frameworks/`, `domains/`, `ops/`, and `reviewers/` agent categories, and the rest of `knowledge/`, are wired in the schema but not yet populated — that's the Mega expansion's job, built batch by batch on this foundation.

@@ -5,8 +5,18 @@
 #   summary     one line
 #   applies-to  comma-separated agent names that cite it, or - for shared
 #
-# Seeded empty for v2.0.0 — knowledge packs land in the Mega expansion
-# (MEGA_EXPANSION_1.md §3). validate-knowledge.sh passes on an empty library
-# and flips to enforcing ≥40-line, zero-orphan packs once rows/files exist.
+# Packs land batch by batch (MEGA_EXPANSION_1.md §3). validate-knowledge.sh
+# enforces ≥60-line, zero-orphan packs (every pack referenced by ≥1 agent).
+# Phase 12 batch 1: the OWASP Top 10 (below), cited by security-auditor.
 #
 name | category | summary | applies-to
+security/owasp/a01-broken-access-control.md | security | IDOR, missing authz, privilege escalation — detect + fix | security-auditor
+security/owasp/a02-cryptographic-failures.md | security | weak hashing, missing encryption, bad key/TLS handling | security-auditor
+security/owasp/a03-injection.md | security | SQL/NoSQL/command/XSS — parameterize, escape, allowlist | security-auditor
+security/owasp/a04-insecure-design.md | security | missing controls by design: limits, rate limits, abuse cases | security-auditor
+security/owasp/a05-security-misconfiguration.md | security | defaults, debug, open CORS/buckets, missing headers | security-auditor
+security/owasp/a06-vulnerable-components.md | security | known-CVE / outdated / unmaintained dependencies | security-auditor, dependency-auditor
+security/owasp/a07-auth-failures.md | security | brute-force, weak sessions, JWT alg:none, weak reset | security-auditor
+security/owasp/a08-integrity-failures.md | security | insecure deserialization, unsigned updates, unpinned CI | security-auditor
+security/owasp/a09-logging-monitoring-failures.md | security | missing security logs + secrets/PII leaking into logs | security-auditor
+security/owasp/a10-ssrf.md | security | server-side request forgery, cloud metadata theft | security-auditor
