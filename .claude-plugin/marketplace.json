@@ -1,0 +1,19 @@
+{
+  "name": "thekedar",
+  "description": "The Thekedar workflow crew, as a Claude Code plugin.",
+  "owner": {
+    "name": "Soumya Chakraborty"
+  },
+  "plugins": [
+    {
+      "name": "thekedar",
+      "source": "./",
+      "description": "Site-supervisor workflow: plan → route to a specialist → independent review gates → scope/secret guards → written change record. Zero runtime dependencies.",
+      "version": "2.0.0",
+      "homepage": "https://github.com/soumyachk101/Thekedar",
+      "repository": "https://github.com/soumyachk101/Thekedar",
+      "license": "MIT",
+      "keywords": ["claude-code", "agents", "multi-agent", "workflow", "code-review"]
+    }
+  ]
+}

@@ -33,7 +33,7 @@ Feature IDs reference the [PRD](docs/PRD.md).
 
 ## v2.x — fast follows
 
-- [ ] **F14 · Plugin packaging** — `claude plugin install thekedar@thekedar`
+- [x] **F14 · Plugin packaging** — `claude plugin marketplace add soumyachk101/Thekedar` → `claude plugin install thekedar@thekedar`; SessionStart bootstrap creates `.thekedar/` on first run so plugin mode matches the script install
 - [ ] **F15 · Agent Teams mode** — parallel independent tasks across sessions (waits for the feature to leave experimental)
 - [ ] Windows-native (PowerShell) hook variants — currently Git Bash/WSL only
 - [ ] Real benchmark runs against the [BENCHMARKS.md](docs/BENCHMARKS.md) methodology — no numbers published yet
@@ -44,7 +44,14 @@ Feature IDs reference the [PRD](docs/PRD.md).
 
 ## v3 — the big site (see [MEGA_EXPANSION_1.md](MEGA_EXPANSION_1.md))
 
-A separate, later scale-up track: a catalog-driven factory generating ~120 language/framework/domain/ops specialists, a shared knowledge-pack library (security, best-practices, AI-hallucination-pitfalls, patterns), 15 tool integrations, and a validated 800–1200-file collection — built the same way this project builds anything, in small verified batches, never hand-written wholesale. Deliberately deferred until v2's core workflow has real users and real feedback; growing a catalog on top of an unproven core would be building on sand.
+A separate, later scale-up track: a catalog-driven factory generating ~120 language/framework/domain/ops specialists, a shared knowledge-pack library (security, best-practices, AI-hallucination-pitfalls, patterns), 15 tool integrations, and a validated 800–1200-file collection — built the same way this project builds anything, in small verified batches, never hand-written wholesale.
+
+- [x] **Phase 11 · The factory** — `catalog/agents.tsv` + `scripts/factory/` (generators + validators) + `validate-all.sh` coherence gate in CI. Foundation laid: 15 agents catalogued, 0 orphans, `gen-agent.sh` proven. See [docs/FACTORY.md](docs/FACTORY.md).
+- [ ] **Phase 12-13 · Knowledge packs** — security (OWASP/CWE), best-practices, the AI-hallucination-pitfalls pack (the real differentiator), review-checklists, patterns
+- [ ] **Phase 14-16 · Agent library** — languages, frameworks, domains, ops, reviewers — golden file per category, then batches of 10, validated per batch
+- [ ] **Phase 17-20 · Integrations, skills, examples, docs auto-gen, v3.0.0**
+
+The catalog scale-up rides on top of the shipped v2 core rather than replacing it — growing a collection on an unproven engine would be building on sand.
 
 ## Explicit non-goals
 

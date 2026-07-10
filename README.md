@@ -119,6 +119,15 @@ flowchart LR
 
 ## Install
 
+**As a Claude Code plugin** (nothing lands in your repo; auto-updates; `.thekedar/` scaffolding is created on first session):
+
+```bash
+claude plugin marketplace add soumyachk101/Thekedar
+claude plugin install thekedar@thekedar
+```
+
+**Or via the script** (commits `.claude/` + `.thekedar/` into your repo — best for teams):
+
 ```bash
 # core crew — 6 agents (planner, backend-dev, frontend-dev, error-checker, security-auditor, frontend-reviewer)
 git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh
@@ -130,7 +139,7 @@ bash /tmp/thekedar/install.sh --full
 bash .thekedar/scripts/doctor.sh
 ```
 
-Or manually — it's just markdown files and bash scripts. See [INSTALL.md](INSTALL.md). The installer is idempotent (safe to re-run, including after `update.sh`), backs up any file it would overwrite to `<file>.bak`, and never touches `PROJECT_STATE.md` or `config.md` once they exist.
+Pick one path (running both against one project can double-wire hooks). Full comparison + manual install: [INSTALL.md](INSTALL.md). The installer is idempotent (safe to re-run, including after `update.sh`), backs up any file it would overwrite to `<file>.bak`, and never touches `PROJECT_STATE.md` or `config.md` once they exist.
 
 **Requirements:** Claude Code ≥ 2.x, `bash`, `git`. `jq` or `python3` recommended — hooks degrade gracefully without either, and `secret-guard.sh` specifically fails open (allows the write, scans nothing) if neither is present, rather than risk a false block. Zero npm/pip dependencies, ever — see [ADR-0001](docs/adr/0001-markdown-as-the-interface.md).
 

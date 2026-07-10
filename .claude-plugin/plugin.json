@@ -1,0 +1,29 @@
+{
+  "name": "thekedar",
+  "description": "Your AI coding crew's site supervisor: plans big work into small scoped tasks, routes each to a specialist subagent, gates every task behind independent read-only review, mechanically enforces scope, and writes a full change record — zero runtime dependencies.",
+  "version": "2.0.0",
+  "author": {
+    "name": "Soumya Chakraborty"
+  },
+  "homepage": "https://github.com/soumyachk101/Thekedar",
+  "repository": "https://github.com/soumyachk101/Thekedar",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "agents",
+    "multi-agent",
+    "workflow",
+    "code-review",
+    "changelog",
+    "hooks",
+    "zero-dependency"
+  ],
+  "agents": [
+    "./.claude/agents/core/",
+    "./.claude/agents/extended/"
+  ],
+  "skills": [
+    "./skills/"
+  ],
+  "hooks": "./.claude-plugin/hooks.json"
+}

@@ -79,7 +79,7 @@ When the doer reports done:
 
 ## 4. LOG + CHECKPOINT
 
-1. Run the drift check: `bash .claude/hooks/drift-check.sh .thekedar/tasks/NNN-slug.md` — copy its `DRIFT:` line **verbatim** into the changelog's Verification section. Drift found → either it's covered by Scope additions (fine) or it goes to Known issues + a follow-up line; never silently ignore it.
+1. Run the drift check — use whichever path exists: `bash .claude/hooks/drift-check.sh .thekedar/tasks/NNN-slug.md` (install.sh installs), or `bash .thekedar/scripts/drift-check.sh .thekedar/tasks/NNN-slug.md` (plugin install). Copy its `DRIFT:` line **verbatim** into the changelog's Verification section. Drift found → either it's covered by Scope additions (fine) or it goes to Known issues + a follow-up line; never silently ignore it.
 2. Write `.thekedar/changes/task-NNN.md` from `templates/changelog-entry.md`. The "What was deliberately NOT changed" section is mandatory and must be honest.
 3. Update `PROJECT_STATE.md`: move task to Done, set next Up-next, append any Decisions made, tick the Phases line if a phase closed.
 4. `git add -A && git commit -m "<commit_prefix>(task-NNN): <task title>"` (default prefix: `thekedar`). If git is unavailable, note it in the changelog and continue.

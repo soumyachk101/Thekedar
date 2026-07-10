@@ -7,13 +7,35 @@
 - `jq` **or** `python3` (recommended — the munshi hook uses them to parse events; it degrades gracefully without them)
 - OS: macOS, Linux, WSL, Git Bash on Windows
 
-## Quick install (Claude Code)
+## Two ways to install
+
+| | Plugin (marketplace) | Script (`install.sh`) |
+|---|---|---|
+| Command | `claude plugin marketplace add …` | `git clone … && bash install.sh` |
+| What lands in your repo | nothing (crew/hooks live in the plugin cache) | `.claude/` + `.thekedar/` committed to your repo |
+| `.thekedar/` scaffolding | auto-created on first session (bootstrap) | created at install time |
+| Best for | trying it, personal use, auto-updates | teams (commit the workflow), full control |
+| Extended crew | included | opt-in via `--full` |
+
+Both give you the same 15-agent crew, 5 hooks, and 4 skills. Pick one — running both against the same project can double-wire hooks.
+
+## Option A — Plugin (Claude Code marketplace)
+
+```bash
+claude plugin marketplace add soumyachk101/Thekedar
+claude plugin install thekedar@thekedar
+```
+
+On your next session in any project, the plugin's SessionStart hook creates the `.thekedar/` scaffolding (tasks/, changes/, templates/, scripts/, PROJECT_STATE.md, config.md) automatically, then the crew is ready. Say *"build me &lt;something&gt;"* or `/thekedar-plan`.
+
+## Option B — Script install
 
 From **your project root**:
 
 ```bash
 git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar
-bash /tmp/thekedar/install.sh
+bash /tmp/thekedar/install.sh          # core crew (6 agents)
+bash /tmp/thekedar/install.sh --full   # + 9 extended specialists
 ```
 
 Then **restart your Claude Code session** — subagents and skills load at session start.
