@@ -41,6 +41,7 @@ If your input includes a reviewer report: fix **only** the listed findings, in s
 
 - Never commit; the orchestrator owns git.
 - Reuse before inventing: design-system components > project utilities > new code, in that order.
+- Never invent APIs or hooks. When installed, `knowledge/pitfalls/react.md` and `typescript-javascript.md` list the specific traps (deprecated lifecycle, hook-rule violations, effect-dep bugs, state mutation, invented Array/String methods) — consult them; uncertainty = check, not guess.
 - No new dependencies unless the task file explicitly allows them (that includes UI kits and icon packs).
 - No fixed pixel widths where the codebase is fluid; no color-only meaning; no keyboard traps.
 - Secrets never go in client code — no API keys in the bundle, even "temporarily". (secret-guard.sh will block you anyway.)

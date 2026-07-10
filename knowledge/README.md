@@ -37,8 +37,26 @@ Standalone security packs:
 | `supply-chain.md` | dependency + build/CI supply-chain audit | dependency-auditor, security-auditor |
 | `crypto-rules.md` | crypto do/don't: KDFs, AEAD, CSPRNG, constant-time | security-auditor |
 
+## pitfalls/
+
+**AI-hallucination traps** — the differentiator. What models write that is
+*plausible and wrong*: invented APIs, hallucinated imports, deprecated patterns
+still emitted, version confusions. Doers read them to avoid the traps;
+`error-checker` reads `general-ai-coding.md` to catch them.
+
+| Pack | Traps | Cited by |
+|---|---|---|
+| `general-ai-coding.md` | invented APIs, hallucinated packages, version drift, deprecated patterns, confident-wrong config | backend-dev, frontend-dev, error-checker |
+| `python.md` | Python-2-isms, mutable defaults, async, `is` vs `==` | backend-dev |
+| `typescript-javascript.md` | invented Array/String methods, `as any`, async, ESM/CJS | backend-dev, frontend-dev |
+| `react.md` | deprecated lifecycle, hook rules, effect deps, state mutation | frontend-dev |
+| `nodejs.md` | event-loop blocking, callback/promise mixing, version drift | backend-dev |
+| `sql.md` | injection by concat, migration hazards, N+1, dialect drift | db-specialist, backend-dev |
+| `go.md` | ignored errors, loop capture, goroutine leaks, append aliasing | backend-dev |
+| `api-http.md` | wrong status codes, shape drift, idempotency, breaking changes | api-designer, backend-dev |
+
 ## Coming next (MEGA_EXPANSION_1.md §3)
 
-The CWE Top 25; then `best-practices/`, `pitfalls/` (the AI-hallucination-traps
-pack — the real differentiator), `review-checklists/`, and `patterns/`. Each
+The CWE Top 25; `best-practices/` (per-framework conventions); `review-checklists/`;
+and `patterns/` (api-design, error-handling, migrations, pagination, ...). Each
 lands as its own validated batch.

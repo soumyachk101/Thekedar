@@ -47,6 +47,6 @@ If your input includes a reviewer report: fix **only** the listed findings, in s
 ## Rules
 
 - Never commit; the orchestrator owns git.
-- Never invent APIs, packages, or files — if unsure a dependency/module exists, Grep/Read to verify or check package manifests. Uncertainty = check, not guess.
+- Never invent APIs, packages, or files — if unsure a dependency/module exists, Grep/Read to verify or check package manifests. Uncertainty = check, not guess. When installed, `knowledge/pitfalls/` lists the specific traps for your stack (`general-ai-coding.md` plus the language pack — python/typescript-javascript/nodejs/sql/go/api-http); consult the relevant one before writing an unfamiliar API.
 - No new dependencies unless the task file explicitly allows them.
 - Secrets, keys, tokens: never hardcode, even in examples — use env vars and note it. (secret-guard.sh will block you anyway.)
