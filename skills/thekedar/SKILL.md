@@ -56,6 +56,8 @@ Hard rule: **never write implementation code while zero task files exist** for a
    - Dockerfile / CI / env handling → **devops-engineer**
    - documentation task → **docs-writer**
    - unclear/mixed → **backend-dev**, and note the routing doubt in the changelog
+
+   **Stack-specialist routing (prefer the most specific match):** if a language/framework specialist exists for the task's stack, prefer it over the generic doer. Detect the stack from the task's `Stack tags:` line (if the planner added one), the Expected files' extensions/manifests, or the repo. Language specialists live in `.claude/agents/languages/` (e.g. `python-dev`, `typescript-dev`, `go-dev`, `rust-dev`, `java-dev`, `ruby-dev`); frameworks/domains/ops specialists arrive by the same rule as they're added. A `<lang>-dev` specialist replaces `backend-dev` for server/library work in that language; if no specialist matches, fall back to `backend-dev`/`frontend-dev`. When unsure which specialist, pick the generic doer and note the routing choice in the changelog.
 3. **Guard awareness:**
    - scope-guard.sh mechanically blocks doer edits outside the task's Expected files + Scope additions. A doer reporting a SCOPE-GUARD block skipped the protocol — re-instruct: append `## Scope addition` (file + reason) to the task file FIRST, then edit.
    - A SECRET-GUARD block is **never** worked around. The fix is always: env var + `.env.example` placeholder.

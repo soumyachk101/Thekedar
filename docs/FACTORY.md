@@ -44,4 +44,8 @@ Same bet as the rest of the project (see [ADR-0001](adr/0001-markdown-as-the-int
 
 ## Current state
 
-15 agents (6 core + 9 extended), 15 catalog rows, 0 orphans, `validate-all` green in CI. The knowledge library has started: **10 security packs** (the OWASP Top 10, `knowledge/security/owasp/`) are written, ≥60 lines each, cited by `security-auditor` — `validate-knowledge` enforces the ≥60-line and zero-orphan rules. The `languages/`, `frameworks/`, `domains/`, `ops/`, and `reviewers/` agent categories, and the rest of `knowledge/`, are wired in the schema but not yet populated — that's the Mega expansion's job, built batch by batch on this foundation.
+**21 agents** (6 core + 9 extended + **6 `languages/` specialists**: python-dev, typescript-dev, go-dev, rust-dev, java-dev, ruby-dev), 21 catalog rows, 0 orphans, `validate-all` green in CI. `python-dev` is the hand-written **golden** language specialist the others follow.
+
+**Knowledge library: 40 packs**, ≥60 lines each, 0 orphans — `security/` (14), `pitfalls/` (8, the AI-hallucination-trap differentiator), `patterns/` (12), `review-checklists/` (6), all cited by the right agents/gates.
+
+The orchestrator routes to a `<lang>-dev` specialist when the task's stack matches (SKILL.md §2 stack-specialist routing; tasks may carry an optional `Stack tags:` line). The remaining `languages/` (12 more), `frameworks/`, `domains/`, `ops/`, `reviewers/` agent categories and `best-practices/`/CWE knowledge are populated batch by batch on this foundation — the mechanism is proven (`gen-agent.sh` → fill body per the category golden → `validate-all` gate → commit).

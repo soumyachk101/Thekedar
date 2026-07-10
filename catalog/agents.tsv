@@ -29,3 +29,9 @@ frontend-reviewer | core | gate | Read, Grep, Glob, Bash | sonnet | review-check
 performance-auditor | extended | gate | Read, Grep, Glob, Bash | sonnet | patterns/caching-strategies.md, review-checklists/performance.md | config-enabled or task tagged perf
 accessibility-auditor | extended | gate | Read, Grep, Glob, Bash | sonnet | review-checklists/accessibility.md | config-enabled or task tagged a11y
 dependency-auditor | extended | gate | Read, Grep, Glob, Bash | haiku | security/owasp/a06-vulnerable-components.md, security/supply-chain.md | whenever a dependency manifest or lockfile changed
+python-dev | languages | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/python.md | implementing a task in Python (FastAPI/Django/Flask/scripts/data)
+typescript-dev | languages | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/typescript-javascript.md | implementing a task in TypeScript (Node services, libraries)
+go-dev | languages | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | pitfalls/go.md | implementing a task in Go (services, CLIs, concurrent systems)
+rust-dev | languages | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | implementing a task in Rust (services, CLIs, systems code)
+java-dev | languages | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | implementing a task in Java (Spring/Jakarta, libraries, batch)
+ruby-dev | languages | doer | Read, Write, Edit, Bash, Grep, Glob | sonnet | - | implementing a task in Ruby (Rails apps, gems, scripts)
