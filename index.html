@@ -328,6 +328,100 @@
             margin: 0 auto 4rem;
         }
 
+        /* Documentation Portal Layout */
+        .doc-portal {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
+            min-height: 620px;
+        }
+        .doc-sidebar {
+            background: rgba(0, 0, 0, 0.4);
+            border-right: 1px solid var(--border-subtle);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .doc-group-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            padding: 0 0.5rem 0.4rem;
+        }
+        .doc-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .doc-menu-btn {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.55rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .doc-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+        .doc-menu-btn.active {
+            background: #ffffff;
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .doc-content {
+            padding: 2.5rem;
+            overflow-y: auto;
+            max-height: 650px;
+            font-size: 0.92rem;
+            line-height: 1.7;
+            color: #d4d4d8;
+        }
+        .doc-article h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+        .doc-article h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 1.5rem 0 0.75rem;
+            color: #ffffff;
+        }
+        .doc-article p {
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+        }
+        .doc-article ul {
+            margin-bottom: 1.25rem;
+            padding-left: 1.25rem;
+            color: var(--text-muted);
+        }
+        .doc-article li {
+            margin-bottom: 0.4rem;
+        }
+
         /* Interactive Terminal Playground */
         .terminal-playground {
             background: var(--bg-surface);
@@ -431,100 +525,6 @@
             color: var(--text-muted);
             font-size: 0.92rem;
             line-height: 1.6;
-        }
-
-        /* Documentation Portal Layout */
-        .doc-portal {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 2rem;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
-            min-height: 620px;
-        }
-        .doc-sidebar {
-            background: rgba(0, 0, 0, 0.4);
-            border-right: 1px solid var(--border-subtle);
-            padding: 1.5rem 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-        .doc-group-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dim);
-            padding: 0 0.5rem 0.4rem;
-        }
-        .doc-menu {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-        }
-        .doc-menu-btn {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 0.55rem 0.75rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-align: left;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-        .doc-menu-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-main);
-        }
-        .doc-menu-btn.active {
-            background: #ffffff;
-            color: #000000;
-            font-weight: 700;
-        }
-
-        .doc-content {
-            padding: 2.5rem;
-            overflow-y: auto;
-            max-height: 650px;
-            font-size: 0.92rem;
-            line-height: 1.7;
-            color: #d4d4d8;
-        }
-        .doc-article h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 0.75rem;
-            color: #ffffff;
-            letter-spacing: -0.02em;
-        }
-        .doc-article h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 1.5rem 0 0.75rem;
-            color: #ffffff;
-        }
-        .doc-article p {
-            margin-bottom: 1.25rem;
-            color: var(--text-muted);
-        }
-        .doc-article ul {
-            margin-bottom: 1.25rem;
-            padding-left: 1.25rem;
-            color: var(--text-muted);
-        }
-        .doc-article li {
-            margin-bottom: 0.4rem;
         }
 
         /* Code Box */
@@ -681,11 +681,11 @@
 
             <nav>
                 <ul class="nav-links">
+                    <li><a href="#docs">Documentation Hub</a></li>
                     <li><a href="#playground">Interactive Demo</a></li>
                     <li><a href="#features">Features</a></li>
                     <li><a href="#agents">15 Agents</a></li>
                     <li><a href="#comparison">Compare</a></li>
-                    <li><a href="#docs">Documentation</a></li>
                     <li><a href="#install">Install</a></li>
                 </ul>
             </nav>
@@ -727,13 +727,13 @@
             </p>
 
             <div class="hero-actions">
-                <a href="#install" class="btn-white" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
+                <a href="#docs" class="btn-white" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Explore Documentation</span>
+                </a>
+                <a href="#install" class="btn-outline" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
                     <i class="fa-solid fa-terminal"></i>
                     <span>Install in 30 Seconds</span>
-                </a>
-                <a href="#playground" class="btn-outline" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
-                    <i class="fa-solid fa-play"></i>
-                    <span>Try Interactive CLI Demo</span>
                 </a>
             </div>
 
@@ -754,6 +754,90 @@
                 <div class="stat-item">
                     <h3>0 Tokens</h3>
                     <p>Change Ledger Overhead</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Documentation Portal (TOP PRIORITY SECTION) -->
+    <section id="docs" class="section">
+        <div class="container">
+            <div class="header-center">
+                <span class="section-tag">Knowledge Base & Documentation</span>
+                <h2 class="section-title">Interactive Documentation Hub</h2>
+                <p class="section-desc">Select any topic from the sidebar navigation below to read detailed specifications, execution flowcharts, and hook APIs.</p>
+            </div>
+
+            <div class="doc-portal">
+                <!-- Sidebar Menu -->
+                <div class="doc-sidebar">
+                    <div>
+                        <div class="doc-group-title">Getting Started</div>
+                        <ul class="doc-menu">
+                            <li><button class="doc-menu-btn active" onclick="loadDoc('overview', this)"><i class="fa-solid fa-star"></i> Overview & Core Concept</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('install', this)"><i class="fa-solid fa-download"></i> Installation Guide</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('doctor', this)"><i class="fa-solid fa-stethoscope"></i> Doctor Health Check</button></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="doc-group-title">Architecture</div>
+                        <ul class="doc-menu">
+                            <li><button class="doc-menu-btn" onclick="loadDoc('architecture', this)"><i class="fa-solid fa-layer-group"></i> 4-Layer Discipline</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('workflow', this)"><i class="fa-solid fa-diagram-project"></i> Task Workflow Loop</button></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="doc-group-title">Specialist Crew</div>
+                        <ul class="doc-menu">
+                            <li><button class="doc-menu-btn" onclick="loadDoc('core-agents', this)"><i class="fa-solid fa-user-gear"></i> 6 Core Subagents</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('ext-agents', this)"><i class="fa-solid fa-user-astronaut"></i> 9 Extended Subagents</button></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="doc-group-title">Hooks Reference</div>
+                        <ul class="doc-menu">
+                            <li><button class="doc-menu-btn" onclick="loadDoc('scope-guard', this)"><i class="fa-solid fa-shield-halved"></i> scope-guard.sh (PreToolUse)</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('secret-guard', this)"><i class="fa-solid fa-key"></i> secret-guard.sh (PreToolUse)</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('munshi', this)"><i class="fa-solid fa-scroll"></i> munshi.sh (PostToolUse)</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('session-brief', this)"><i class="fa-solid fa-file-import"></i> session-brief.sh (SessionStart)</button></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="doc-group-title">Commands & Customization</div>
+                        <ul class="doc-menu">
+                            <li><button class="doc-menu-btn" onclick="loadDoc('commands', this)"><i class="fa-solid fa-terminal"></i> 4 Slash Commands</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('customization', this)"><i class="fa-solid fa-sliders"></i> Config & Custom Agents</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('faq', this)"><i class="fa-solid fa-circle-question"></i> FAQ & Troubleshooting</button></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Content View -->
+                <div class="doc-content" id="docContentView">
+                    <!-- Default Overview Article -->
+                    <article class="doc-article">
+                        <h2>Thekedar (ठेकेदार) Overview</h2>
+                        <p><strong>Your AI coding crew's site supervisor.</strong> Breaks big projects into modular task specs, assigns specialist subagents, gates every task behind independent read-only review, mechanically enforces file scopes, and maintains a zero-token ledger of every change.</p>
+                        
+                        <h3>The Core Problem Solved</h3>
+                        <p>AI coding agents are brilliant for 20 minutes, then context bloat triggers hallucination, session crashes erase state, and prompting fails to stop illegal edits. Thekedar replaces prompt requests with mechanical bash enforcement.</p>
+
+                        <div class="code-box">
+                            <code>Rule #1: Push work down the stack. If bash can block an edit, never rely on an LLM prompt.</code>
+                        </div>
+
+                        <h3>The 4 Layers</h3>
+                        <ul>
+                            <li><strong>Layer 4 · Memory:</strong> Markdown state on disk (<code>PROJECT_STATE.md</code>, <code>tasks/*.md</code>). Survives session crashes and /clear.</li>
+                            <li><strong>Layer 3 · Intelligence:</strong> 15 specialist agents in fresh context windows. Reviewers are strictly read-only.</li>
+                            <li><strong>Layer 2 · Guard-Rails:</strong> <code>scope-guard.sh</code> and <code>secret-guard.sh</code> intercept tool calls and abort illegal writes with Exit Code 2.</li>
+                            <li><strong>Layer 1 · Determinism:</strong> Zero-token <code>munshi.sh</code> ledgers and <code>session-brief.sh</code> auto-briefing.</li>
+                        </ul>
+                    </article>
                 </div>
             </div>
         </div>
@@ -974,90 +1058,6 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Interactive Documentation Portal -->
-    <section id="docs" class="section">
-        <div class="container">
-            <div class="header-center">
-                <span class="section-tag">Knowledge Base</span>
-                <h2 class="section-title">Interactive Documentation Hub</h2>
-                <p class="section-desc">Select any topic from the sidebar navigation below to read detailed specifications, execution flowcharts, and hook APIs.</p>
-            </div>
-
-            <div class="doc-portal">
-                <!-- Sidebar Menu -->
-                <div class="doc-sidebar">
-                    <div>
-                        <div class="doc-group-title">Getting Started</div>
-                        <ul class="doc-menu">
-                            <li><button class="doc-menu-btn active" onclick="loadDoc('overview', this)"><i class="fa-solid fa-star"></i> Overview & Fix</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('install', this)"><i class="fa-solid fa-download"></i> Installation Guide</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('doctor', this)"><i class="fa-solid fa-stethoscope"></i> Doctor Health Check</button></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <div class="doc-group-title">Architecture</div>
-                        <ul class="doc-menu">
-                            <li><button class="doc-menu-btn" onclick="loadDoc('architecture', this)"><i class="fa-solid fa-layer-group"></i> 4-Layer Discipline</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('workflow', this)"><i class="fa-solid fa-diagram-project"></i> Task Workflow Loop</button></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <div class="doc-group-title">Specialist Crew</div>
-                        <ul class="doc-menu">
-                            <li><button class="doc-menu-btn" onclick="loadDoc('core-agents', this)"><i class="fa-solid fa-user-gear"></i> 6 Core Subagents</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('ext-agents', this)"><i class="fa-solid fa-user-astronaut"></i> 9 Extended Subagents</button></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <div class="doc-group-title">Hooks Reference</div>
-                        <ul class="doc-menu">
-                            <li><button class="doc-menu-btn" onclick="loadDoc('scope-guard', this)"><i class="fa-solid fa-shield-halved"></i> scope-guard.sh (PreToolUse)</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('secret-guard', this)"><i class="fa-solid fa-key"></i> secret-guard.sh (PreToolUse)</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('munshi', this)"><i class="fa-solid fa-scroll"></i> munshi.sh (PostToolUse)</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('session-brief', this)"><i class="fa-solid fa-file-import"></i> session-brief.sh (SessionStart)</button></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <div class="doc-group-title">Commands & Customization</div>
-                        <ul class="doc-menu">
-                            <li><button class="doc-menu-btn" onclick="loadDoc('commands', this)"><i class="fa-solid fa-terminal"></i> 4 Slash Commands</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('customization', this)"><i class="fa-solid fa-sliders"></i> Config & Custom Agents</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('faq', this)"><i class="fa-solid fa-circle-question"></i> FAQ & Troubleshooting</button></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Main Content View -->
-                <div class="doc-content" id="docContentView">
-                    <!-- Default Overview Article -->
-                    <article class="doc-article">
-                        <h2>Thekedar (ठेकेदार) Overview</h2>
-                        <p><strong>Your AI coding crew's site supervisor.</strong> Breaks big projects into modular task specs, assigns specialist subagents, gates every task behind independent read-only review, mechanically enforces file scopes, and maintains a zero-token ledger of every change.</p>
-                        
-                        <h3>The Core Problem Solved</h3>
-                        <p>AI coding agents are brilliant for 20 minutes, then context bloat triggers hallucination, session crashes erase state, and prompting fails to stop illegal edits. Thekedar replaces prompt requests with mechanical bash enforcement.</p>
-
-                        <div class="code-box">
-                            <code>Rule #1: Push work down the stack. If bash can block an edit, never rely on an LLM prompt.</code>
-                        </div>
-
-                        <h3>The 4 Layers</h3>
-                        <ul>
-                            <li><strong>Layer 4 · Memory:</strong> Markdown state on disk (<code>PROJECT_STATE.md</code>, <code>tasks/*.md</code>). Survives session crashes and /clear.</li>
-                            <li><strong>Layer 3 · Intelligence:</strong> 15 specialist agents in fresh context windows. Reviewers are strictly read-only.</li>
-                            <li><strong>Layer 2 · Guard-Rails:</strong> <code>scope-guard.sh</code> and <code>secret-guard.sh</code> intercept tool calls and abort illegal writes with Exit Code 2.</li>
-                            <li><strong>Layer 1 · Determinism:</strong> Zero-token <code>munshi.sh</code> ledgers and <code>session-brief.sh</code> auto-briefing.</li>
-                        </ul>
-                    </article>
-                </div>
             </div>
         </div>
     </section>
