@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thekedar (ठेकेदार) — AI Coding Crew Site Supervisor</title>
-    <meta name="description" content="Thekedar is a zero-dependency AI workflow supervisor for Claude Code & AI agents. Enforces modular task specs, 15 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
+    <meta name="description" content="Thekedar is an enterprise-grade AI workflow supervisor for Claude Code & AI agents. Enforces modular task specs, 15 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
     
     <!-- OpenGraph & Twitter Meta -->
     <meta property="og:title" content="Thekedar — AI Coding Crew Site Supervisor">
-    <meta property="og:description" content="Breaks big goals into scoped tasks, assigns 15 specialist subagents, mechanically blocks out-of-scope & secret writes via PreToolUse hooks.">
+    <meta property="og:description" content="Enforces modular task specs, 15 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://soumyachk101.github.io/Thekedar/">
 
@@ -27,11 +27,11 @@
             --bg-surface-hover: #121212;
             --bg-code: #050505;
             
-            --border-subtle: #222222;
-            --border-hover: #444444;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.25);
             
             --text-main: #ffffff;
-            --text-muted: #888888;
+            --text-muted: #999999;
             --text-dim: #555555;
             
             --accent-green: #10b981;
@@ -40,11 +40,12 @@
             --accent-red: #ef4444;
             --accent-amber: #f59e0b;
 
-            --radius-sm: 6px;
-            --radius-md: 10px;
-            --radius-lg: 16px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-pill: 9999px;
             
-            --transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -65,7 +66,7 @@
             line-height: 1.6;
             min-height: 100vh;
             background: 
-                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06) 0%, transparent 65%),
+                radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
                 var(--bg-void);
         }
 
@@ -76,21 +77,33 @@
             padding: 0 1.5rem;
         }
 
-        /* Header Navigation */
-        header.navbar {
+        /* Floating Glass Pill Navbar */
+        header.navbar-floating-wrapper {
             position: sticky;
-            top: 0;
+            top: 1.25rem;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-subtle);
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
         }
-        .nav-wrapper {
+        .navbar-pill {
+            max-width: 1140px;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            padding: 0.55rem 1.25rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 64px;
+            box-shadow: 
+                0 20px 40px -15px rgba(0, 0, 0, 0.9),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: var(--transition);
+        }
+        .navbar-pill:hover {
+            border-color: var(--border-hover);
         }
 
         .brand-logo {
@@ -101,121 +114,181 @@
             color: var(--text-main);
         }
         .brand-icon {
-            width: 32px;
-            height: 32px;
-            background: #ffffff;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #ffffff, #a1a1aa);
             color: #000000;
-            border-radius: var(--radius-sm);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1rem;
             font-weight: 800;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+        .brand-logo:hover .brand-icon {
+            transform: scale(1.08) rotate(-5deg);
         }
         .brand-name {
             font-size: 1.15rem;
-            font-weight: 800;
+            font-weight: 900;
             letter-spacing: -0.03em;
         }
-        .brand-badge {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            padding: 0.15rem 0.5rem;
-            border-radius: 20px;
-            font-weight: 500;
+        .brand-hindi {
+            font-size: 0.78rem;
+            color: var(--accent-amber);
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            padding: 0.1rem 0.45rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--accent-green);
         }
 
-        .nav-links {
+        /* Nav Links with Dropdowns */
+        .nav-menu {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 0.35rem;
             list-style: none;
         }
-        .nav-links a {
+        .nav-item {
+            position: relative;
+        }
+        .nav-link {
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 500;
+            padding: 0.45rem 0.85rem;
+            border-radius: 20px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .nav-link:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Mega Dropdown Card */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(12, 12, 12, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            width: 320px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+        .nav-item:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(6px);
+            pointer-events: auto;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.6rem;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--text-main);
             transition: var(--transition);
         }
-        .nav-links a:hover {
-            color: var(--text-main);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .dropdown-icon {
+            font-size: 1.1rem;
+            color: var(--accent-blue);
+            margin-top: 0.1rem;
+        }
+        .dropdown-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .dropdown-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
 
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.65rem;
         }
-        .btn-search {
-            background: var(--bg-surface);
+        .btn-search-pill {
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-subtle);
             color: var(--text-muted);
             padding: 0.4rem 0.85rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.82rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
             transition: var(--transition);
         }
-        .btn-search:hover {
+        .btn-search-pill:hover {
             border-color: var(--border-hover);
             color: var(--text-main);
-        }
-        .kbd {
             background: rgba(255, 255, 255, 0.1);
-            font-size: 0.68rem;
+        }
+        .kbd-key {
+            background: rgba(255, 255, 255, 0.12);
+            font-size: 0.65rem;
             padding: 0.1rem 0.35rem;
             border-radius: 4px;
-            color: var(--text-muted);
+            color: var(--text-main);
+            font-weight: 600;
         }
 
-        .btn-white {
+        .btn-glow-cta {
             background: #ffffff;
             color: #000000;
-            padding: 0.55rem 1.25rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.88rem;
-            font-weight: 600;
+            padding: 0.45rem 1.15rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             transition: var(--transition);
             border: none;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
             cursor: pointer;
         }
-        .btn-white:hover {
+        .btn-glow-cta:hover {
             background: #e5e5e5;
             transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-main);
-            padding: 0.55rem 1.25rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.88rem;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: 1px solid var(--border-subtle);
-            transition: var(--transition);
-        }
-        .btn-outline:hover {
-            background: var(--bg-surface);
-            border-color: var(--border-hover);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
         }
 
         /* Hero Section */
         .hero {
-            padding: 6rem 0 4rem;
+            padding: 5rem 0 3.5rem;
             text-align: center;
         }
         .announcement-badge {
@@ -251,7 +324,7 @@
             -webkit-text-fill-color: transparent;
         }
         .hero-subtitle {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             color: var(--text-muted);
             max-width: 820px;
             margin: 0 auto 2.5rem;
@@ -658,7 +731,7 @@
             .footer-grid { grid-template-columns: 1fr repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
-            .nav-links { display: none; }
+            .nav-menu { display: none; }
             .hero-title { font-size: 2.4rem; }
             .stats-bar { grid-template-columns: 1fr; }
             .bento-grid { grid-template-columns: 1fr; }
@@ -668,39 +741,69 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header class="navbar">
-        <div class="container nav-wrapper">
+    <!-- Floating Glass Pill Navbar -->
+    <header class="navbar-floating-wrapper">
+        <div class="navbar-pill">
             <a href="#" class="brand-logo">
                 <div class="brand-icon">
                     <i class="fa-solid fa-hard-hat"></i>
                 </div>
                 <span class="brand-name">THEKEDAR</span>
-                <span class="brand-badge">v2.0.0</span>
+                <span class="brand-hindi">ठेकेदार</span>
+                <span style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--text-muted); margin-left: 0.2rem;">
+                    <span class="status-dot"></span> v2.0.0
+                </span>
             </a>
 
             <nav>
-                <ul class="nav-links">
-                    <li><a href="#docs">Documentation Hub</a></li>
-                    <li><a href="#playground">Interactive Demo</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#agents">15 Agents</a></li>
-                    <li><a href="#comparison">Compare</a></li>
-                    <li><a href="#install">Install</a></li>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#docs" class="nav-link">
+                            <span>Documentation</span>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; opacity: 0.7;"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="#docs" onclick="loadDoc('overview')" class="dropdown-item">
+                                <i class="fa-solid fa-star dropdown-icon"></i>
+                                <div>
+                                    <div class="dropdown-title">Overview</div>
+                                    <div class="dropdown-desc">Core architectural concepts & engineering rationale</div>
+                                </div>
+                            </a>
+                            <a href="#docs" onclick="loadDoc('architecture')" class="dropdown-item">
+                                <i class="fa-solid fa-layer-group dropdown-icon" style="color: var(--accent-purple);"></i>
+                                <div>
+                                    <div class="dropdown-title">4-Layer Architecture</div>
+                                    <div class="dropdown-desc">Memory, Intelligence, Guard-Rails, Determinism</div>
+                                </div>
+                            </a>
+                            <a href="#docs" onclick="loadDoc('scope-guard')" class="dropdown-item">
+                                <i class="fa-solid fa-shield-halved dropdown-icon" style="color: var(--accent-red);"></i>
+                                <div>
+                                    <div class="dropdown-title">PreToolUse Guards</div>
+                                    <div class="dropdown-desc">Exit Code 2 mechanical write interceptors</div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a href="#playground" class="nav-link">Live Demo</a></li>
+                    <li class="nav-item"><a href="#features" class="nav-link">Features</a></li>
+                    <li class="nav-item"><a href="#agents" class="nav-link">15 Crew</a></li>
+                    <li class="nav-item"><a href="#comparison" class="nav-link">Compare</a></li>
+                    <li class="nav-item"><a href="#install" class="nav-link">Install</a></li>
                 </ul>
             </nav>
 
             <div class="nav-actions">
-                <button class="btn-search" onclick="focusDocSearch()">
+                <button class="btn-search-pill" onclick="focusDocSearch()">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <span>Search</span>
-                    <span class="kbd">⌘K</span>
+                    <span class="kbd-key">⌘K</span>
                 </button>
-                <a href="https://github.com/soumyachk101/Thekedar" target="_blank" class="btn-outline">
+                <a href="https://github.com/soumyachk101/Thekedar" target="_blank" class="btn-search-pill" style="padding: 0.4rem 0.65rem;">
                     <i class="fa-brands fa-github"></i>
-                    <span>GitHub</span>
                 </a>
-                <a href="#install" class="btn-white">
+                <a href="#install" class="btn-glow-cta">
                     <span>Get Started</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -713,25 +816,25 @@
         <div class="container">
             <a href="#install" class="announcement-badge">
                 <i class="fa-solid fa-bolt"></i>
-                <span>v2.0.0 is Live — 15 Subagents & PreToolUse Mechanical Guard-Rails</span>
+                <span>v2.0.0 Released — 15 Specialist Subagents & PreToolUse Mechanical Guard-Rails</span>
                 <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
             </a>
 
             <h1 class="hero-title">
-                Your AI Coding Crew's <br>
-                <span>Site Supervisor.</span>
+                The Site Supervisor for <br>
+                <span>Autonomous AI Coding Crews.</span>
             </h1>
 
             <p class="hero-subtitle">
-                <strong>Kaam pakka, hisaab saaf.</strong> Breaks big tasks into modular specs, assigns 15 specialist subagents in unpolluted context windows, mechanically blocks out-of-scope & secret writes via PreToolUse bash hooks, and gates every change behind read-only review.
+                <strong>Kaam Pakka, Hisaab Saaf.</strong> Enforces modular task specs, 15 specialist subagents in unpolluted context windows, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers for Claude Code & AI agents.
             </p>
 
             <div class="hero-actions">
-                <a href="#docs" class="btn-white" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
+                <a href="#docs" class="btn-glow-cta" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
                     <i class="fa-solid fa-book-open"></i>
                     <span>Explore Documentation</span>
                 </a>
-                <a href="#install" class="btn-outline" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
+                <a href="#install" class="btn-search-pill" style="padding: 0.75rem 1.6rem; font-size: 0.95rem; border-radius: 20px;">
                     <i class="fa-solid fa-terminal"></i>
                     <span>Install in 30 Seconds</span>
                 </a>
@@ -741,15 +844,15 @@
             <div class="stats-bar">
                 <div class="stat-item">
                     <h3>60%</h3>
-                    <p>Token Cost Savings</p>
+                    <p>Token Overhead Reduction</p>
                 </div>
                 <div class="stat-item">
-                    <h3>0 Exit 2</h3>
-                    <p>Uncontrolled File Writes</p>
+                    <h3>100%</h3>
+                    <p>Deterministic Scope Protection</p>
                 </div>
                 <div class="stat-item">
-                    <h3>15 Crew</h3>
-                    <p>Specialist Subagents</p>
+                    <h3>15 Subagents</h3>
+                    <p>Purpose-Built Specialists</p>
                 </div>
                 <div class="stat-item">
                     <h3>0 Tokens</h3>
@@ -763,9 +866,9 @@
     <section id="docs" class="section">
         <div class="container">
             <div class="header-center">
-                <span class="section-tag">Knowledge Base & Documentation</span>
+                <span class="section-tag">Enterprise Knowledge Base</span>
                 <h2 class="section-title">Interactive Documentation Hub</h2>
-                <p class="section-desc">Select any topic from the sidebar navigation below to read detailed specifications, execution flowcharts, and hook APIs.</p>
+                <p class="section-desc">Select any topic from the sidebar navigation to review technical specifications, systemic architecture flowcharts, and PreToolUse hook APIs.</p>
             </div>
 
             <div class="doc-portal">
@@ -821,21 +924,21 @@
                     <!-- Default Overview Article -->
                     <article class="doc-article">
                         <h2>Thekedar (ठेकेदार) Overview</h2>
-                        <p><strong>Your AI coding crew's site supervisor.</strong> Breaks big projects into modular task specs, assigns specialist subagents, gates every task behind independent read-only review, mechanically enforces file scopes, and maintains a zero-token ledger of every change.</p>
+                        <p><strong>The site supervisor for autonomous AI coding crews.</strong> Decomposes complex project goals into modular task specifications, assigns specialist subagents, gates code changes behind independent read-only review, mechanically enforces file scopes via PreToolUse hooks, and maintains a zero-token ledger of every modification.</p>
                         
-                        <h3>The Core Problem Solved</h3>
-                        <p>AI coding agents are brilliant for 20 minutes, then context bloat triggers hallucination, session crashes erase state, and prompting fails to stop illegal edits. Thekedar replaces prompt requests with mechanical bash enforcement.</p>
+                        <h3>The Core Engineering Problem Solved</h3>
+                        <p>Single long LLM chat sessions inevitably suffer from context window degradation, leading to hallucinated code paths, session state loss upon crashes, and unreliable prompt adherence. Thekedar replaces prompt instructions with deterministic bash-level enforcement.</p>
 
                         <div class="code-box">
                             <code>Rule #1: Push work down the stack. If bash can block an edit, never rely on an LLM prompt.</code>
                         </div>
 
-                        <h3>The 4 Layers</h3>
+                        <h3>The 4-Layer Systemic Discipline</h3>
                         <ul>
-                            <li><strong>Layer 4 · Memory:</strong> Markdown state on disk (<code>PROJECT_STATE.md</code>, <code>tasks/*.md</code>). Survives session crashes and /clear.</li>
-                            <li><strong>Layer 3 · Intelligence:</strong> 15 specialist agents in fresh context windows. Reviewers are strictly read-only.</li>
-                            <li><strong>Layer 2 · Guard-Rails:</strong> <code>scope-guard.sh</code> and <code>secret-guard.sh</code> intercept tool calls and abort illegal writes with Exit Code 2.</li>
-                            <li><strong>Layer 1 · Determinism:</strong> Zero-token <code>munshi.sh</code> ledgers and <code>session-brief.sh</code> auto-briefing.</li>
+                            <li><strong>Layer 4 · Memory:</strong> Markdown state on disk (<code>PROJECT_STATE.md</code>, <code>tasks/*.md</code>). Survives session crashes and context clear commands.</li>
+                            <li><strong>Layer 3 · Intelligence:</strong> 15 specialist subagents executing in fresh LLM context windows. Reviewers operate strictly in read-only mode.</li>
+                            <li><strong>Layer 2 · Guard-Rails:</strong> Executable bash hooks (<code>scope-guard.sh</code> and <code>secret-guard.sh</code>) intercept tool calls and abort illegal writes with Exit Code 2.</li>
+                            <li><strong>Layer 1 · Determinism:</strong> Zero-token bash scripts (<code>munshi.sh</code> ledgers and <code>session-brief.sh</code> state injection).</li>
                         </ul>
                     </article>
                 </div>
@@ -847,9 +950,9 @@
     <section id="playground" class="section">
         <div class="container">
             <div class="header-center">
-                <span class="section-tag">Interactive Simulation</span>
-                <h2 class="section-title">See Thekedar Execute in Real-Time</h2>
-                <p class="section-desc">Click any command button below to simulate how Thekedar coordinates 15 subagents, intercepts illegal tool writes with Exit Code 2, and logs zero-token ledgers.</p>
+                <span class="section-tag">Live CLI Simulation</span>
+                <h2 class="section-title">Deterministic Workflow Execution in Action</h2>
+                <p class="section-desc">Simulate how Thekedar orchestrates subagent planning, intercepts out-of-scope write operations with Exit Code 2, and logs change ledgers without wasting model context tokens.</p>
             </div>
 
             <div class="terminal-playground">
@@ -888,9 +991,9 @@
     <section id="features" class="section">
         <div class="container">
             <div class="header-center">
-                <span class="section-tag">Systemic Features</span>
-                <h2 class="section-title">Built for Mission-Critical Codebases</h2>
-                <p class="section-desc">Why enterprise teams use Thekedar over single-agent prompts.</p>
+                <span class="section-tag">Architectural Discipline</span>
+                <h2 class="section-title">Engineering Principles for Critical Systems</h2>
+                <p class="section-desc">Prompt instructions fail under context pressure. Thekedar shifts enforcement down to deterministic bash hooks.</p>
             </div>
 
             <div class="bento-grid">
@@ -898,15 +1001,15 @@
                     <div>
                         <div class="bento-icon"><i class="fa-solid fa-shield-halved"></i></div>
                         <h3 class="bento-title">Mechanical Scope Protection</h3>
-                        <p class="bento-desc"><code>scope-guard.sh</code> intercepts all <code>Write</code> and <code>Edit</code> tool calls. If an agent tries to modify a file outside the task spec, bash returns Exit Code 2 and halts the write before disk mutation.</p>
+                        <p class="bento-desc"><code>scope-guard.sh</code> intercepts all <code>Write</code> and <code>Edit</code> tool calls. If an agent attempts to modify a file outside declared scope, bash returns Exit Code 2 and halts the write before disk mutation.</p>
                     </div>
                 </div>
 
                 <div class="bento-card">
                     <div>
                         <div class="bento-icon"><i class="fa-solid fa-key"></i></div>
-                        <h3 class="bento-title">PreToolUse Secret Scanner</h3>
-                        <p class="bento-desc"><code>secret-guard.sh</code> regex-scans every edit payload for AWS keys, private PEM blocks, JWT tokens, and API secrets. Zero secrets leak into git history.</p>
+                        <h3 class="bento-title">PreToolUse Secret Interceptor</h3>
+                        <p class="bento-desc"><code>secret-guard.sh</code> regex-scans every edit payload for AWS access keys, private PEM blocks, JWTs, and API tokens. Zero hardcoded secrets touch git history.</p>
                     </div>
                 </div>
 
@@ -914,15 +1017,15 @@
                     <div>
                         <div class="bento-icon"><i class="fa-solid fa-scroll"></i></div>
                         <h3 class="bento-title">Zero-Token Change Ledger</h3>
-                        <p class="bento-desc"><code>munshi.sh</code> logs <code>| time | tool | file |</code> instantly via bash PostToolUse hooks. Maintains a complete paper trail without spending a single model context token.</p>
+                        <p class="bento-desc"><code>munshi.sh</code> records <code>| time | tool | file |</code> ledgers instantly via PostToolUse hooks, maintaining an audit trail without wasting model context tokens.</p>
                     </div>
                 </div>
 
                 <div class="bento-card">
                     <div>
                         <div class="bento-icon"><i class="fa-solid fa-brain"></i></div>
-                        <h3 class="bento-title">Fresh Context Subagent Isolation</h3>
-                        <p class="bento-desc">Instead of a monolithic multi-hour chat that degrades into hallucinations, every task spawns a dedicated subagent in an unpolluted context window.</p>
+                        <h3 class="bento-title">Fresh Context Subagent Routing</h3>
+                        <p class="bento-desc">Rather than relying on a long multi-hour chat that degrades over time, every task dispatches a purpose-built subagent in an unpolluted context window.</p>
                     </div>
                 </div>
 
@@ -930,7 +1033,7 @@
                     <div>
                         <div class="bento-icon"><i class="fa-solid fa-lock"></i></div>
                         <h3 class="bento-title">Enforced Read-Only Reviewers</h3>
-                        <p class="bento-desc">Reviewers (<code>error-checker</code> & <code>security-auditor</code>) have <code>Write</code> and <code>Edit</code> tools stripped at the tool allowlist layer. They can inspect diffs hostile-reviewer style but physically cannot modify code.</p>
+                        <p class="bento-desc">Reviewers (<code>error-checker</code> & <code>security-auditor</code>) have <code>Write</code> and <code>Edit</code> tools stripped at the permission level. They inspect diffs hostile-reviewer style but physically cannot modify source code.</p>
                     </div>
                 </div>
 
@@ -938,7 +1041,7 @@
                     <div>
                         <div class="bento-icon"><i class="fa-solid fa-file-contract"></i></div>
                         <h3 class="bento-title">Git-Tracked Markdown Memory</h3>
-                        <p class="bento-desc">Project state lives on disk in <code>PROJECT_STATE.md</code> and <code>tasks/*.md</code>. Survives session crashes, memory purges, and /clear commands. Type <code>continue</code> to resume.</p>
+                        <p class="bento-desc">Project state persists on disk in <code>PROJECT_STATE.md</code> and <code>tasks/*.md</code>. Survives session crashes, memory purges, and terminal restarts. Simply type <code>continue</code> to resume.</p>
                     </div>
                 </div>
             </div>
@@ -949,9 +1052,9 @@
     <section id="agents" class="section">
         <div class="container">
             <div class="header-center">
-                <span class="section-tag">15-Member Specialist Crew</span>
-                <h2 class="section-title">The Specialist Subagent Roster</h2>
-                <p class="section-desc">Every agent has a dedicated system prompt, specialized role, and strictly scoped tool permission set.</p>
+                <span class="section-tag">Context Window Isolation</span>
+                <h2 class="section-title">The 15-Member Purpose-Built Agent Architecture</h2>
+                <p class="section-desc">Every agent operates in an unpolluted context window. Read-only reviewers have file mutation tools stripped at the tool allowlist layer.</p>
             </div>
 
             <div class="bento-grid">
@@ -1010,9 +1113,9 @@
     <section id="comparison" class="section">
         <div class="container">
             <div class="header-center">
-                <span class="section-tag">Comparison Matrix</span>
-                <h2 class="section-title">How Thekedar Compares</h2>
-                <p class="section-desc">Feature comparison against standard single-agent & advisory spec tools.</p>
+                <span class="section-tag">Benchmark Breakdown</span>
+                <h2 class="section-title">Built for Systems Engineers, Not Chat Prompts</h2>
+                <p class="section-desc">Compare mechanical bash guard-rails against standard single-agent LLM prompts.</p>
             </div>
 
             <div class="table-wrap">
@@ -1066,7 +1169,7 @@
     <section id="install" class="section">
         <div class="container">
             <div class="header-center">
-                <span class="section-tag">Installation</span>
+                <span class="section-tag">Deployment</span>
                 <h2 class="section-title">Install In Under 30 Seconds</h2>
                 <p class="section-desc">Choose official marketplace plugin or standalone team repository installer.</p>
             </div>
@@ -1113,7 +1216,7 @@
                         <i class="fa-solid fa-hard-hat"></i> THEKEDAR
                     </div>
                     <p style="color: var(--text-muted);">
-                        Your AI coding crew's site supervisor. Kaam pakka, hisaab saaf. Zero-dependency workflow discipline.
+                        The site supervisor for autonomous AI coding crews. Kaam Pakka, Hisaab Saaf. Zero-dependency workflow discipline.
                     </p>
                 </div>
 
