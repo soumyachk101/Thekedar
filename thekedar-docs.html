@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Thekedar (ठेकेदार) — AI Coding Crew Site Supervisor</title>
     <meta name="description" content="Thekedar is an enterprise-grade AI workflow supervisor for Claude Code & AI agents. Enforces modular task specs, 15 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
     
@@ -45,7 +45,7 @@
             --radius-lg: 20px;
             --radius-pill: 9999px;
             
-            --transition: all 0.15s ease;
+            --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -60,6 +60,7 @@
             background-color: var(--bg-void);
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         body {
@@ -68,21 +69,22 @@
             background: 
                 radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
                 var(--bg-void);
+            overflow-x: hidden;
         }
 
         /* Container */
         .container {
             max-width: 1240px;
             margin: 0 auto;
-            padding: 0 1.5rem;
+            padding: 0 1.25rem;
         }
 
-        /* Fixed Ultra-Clean Floating Glass Navbar */
+        /* Responsive Floating Glass Navbar */
         header.navbar-floating-wrapper {
             position: sticky;
-            top: 1rem;
+            top: 0.75rem;
             z-index: 1000;
-            padding: 0 1rem;
+            padding: 0 0.75rem;
             margin-bottom: 2rem;
         }
         .navbar-pill {
@@ -93,7 +95,7 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-pill);
-            padding: 0.5rem 1rem 0.5rem 1.25rem;
+            padding: 0.5rem 1rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -121,6 +123,7 @@
             justify-content: center;
             font-size: 0.95rem;
             font-weight: 800;
+            flex-shrink: 0;
         }
         .brand-name {
             font-size: 1.1rem;
@@ -145,7 +148,7 @@
             box-shadow: 0 0 6px var(--accent-green);
         }
 
-        /* Nav Menu - Strictly Single Line (no wrap!) */
+        /* Desktop Nav Menu */
         .nav-menu {
             display: flex;
             align-items: center;
@@ -162,7 +165,7 @@
             font-weight: 500;
             padding: 0.45rem 0.8rem;
             border-radius: 20px;
-            white-space: nowrap; /* CRITICAL: Prevents line wrapping! */
+            white-space: nowrap;
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -225,7 +228,7 @@
             line-height: 1.3;
         }
 
-        /* Right Nav Actions */
+        /* Right Actions & Mobile Hamburger */
         .nav-actions {
             display: flex;
             align-items: center;
@@ -282,9 +285,72 @@
             transform: translateY(-1px);
         }
 
+        .btn-mobile-hamburger {
+            display: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .btn-mobile-hamburger:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Mobile Glass Navigation Drawer */
+        .mobile-nav-drawer {
+            display: none;
+            position: fixed;
+            top: 4.5rem;
+            left: 1rem;
+            right: 1rem;
+            background: rgba(10, 10, 10, 0.96);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.95);
+            z-index: 999;
+            flex-direction: column;
+            gap: 0.75rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            pointer-events: none;
+        }
+        .mobile-nav-drawer.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .mobile-nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+        .mobile-nav-link:hover, .mobile-nav-link.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+        }
+
         /* Hero Section */
         .hero {
-            padding: 5rem 0 3.5rem;
+            padding: 4rem 0 3rem;
             text-align: center;
         }
         .announcement-badge {
@@ -298,9 +364,11 @@
             border-radius: 30px;
             font-size: 0.82rem;
             font-weight: 500;
-            margin-bottom: 2rem;
+            margin-bottom: 1.75rem;
             text-decoration: none;
             transition: var(--transition);
+            max-width: 100%;
+            white-space: normal;
         }
         .announcement-badge:hover {
             border-color: var(--border-hover);
@@ -335,8 +403,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1.25rem;
-            margin-bottom: 4rem;
+            gap: 1rem;
+            margin-bottom: 3.5rem;
         }
 
         /* Stats Bar */
@@ -368,7 +436,7 @@
 
         /* Section Header */
         .section {
-            padding: 6rem 0;
+            padding: 5rem 0;
             border-top: 1px solid var(--border-subtle);
         }
         .section-tag {
@@ -394,7 +462,7 @@
         .header-center {
             text-align: center;
             max-width: 800px;
-            margin: 0 auto 4rem;
+            margin: 0 auto 3.5rem;
         }
 
         /* Documentation Portal Layout */
@@ -407,7 +475,7 @@
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: 0 30px 60px rgba(0,0,0,0.7);
-            min-height: 620px;
+            min-height: 600px;
         }
         .doc-sidebar {
             background: rgba(0, 0, 0, 0.4);
@@ -446,6 +514,7 @@
             display: flex;
             align-items: center;
             gap: 0.6rem;
+            white-space: nowrap;
         }
         .doc-menu-btn:hover {
             background: rgba(255, 255, 255, 0.05);
@@ -498,7 +567,7 @@
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-            margin-bottom: 6rem;
+            margin-bottom: 5rem;
         }
         .term-header {
             background: rgba(0, 0, 0, 0.6);
@@ -507,6 +576,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
         .term-dots {
             display: flex;
@@ -522,6 +593,7 @@
             display: flex;
             gap: 0.5rem;
             align-items: center;
+            flex-wrap: wrap;
         }
         .btn-start-demo {
             background: #ffffff;
@@ -552,6 +624,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            white-space: nowrap;
         }
         .term-btn:hover, .term-btn.active {
             background: rgba(255, 255, 255, 0.1);
@@ -580,7 +653,7 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 2rem;
+            padding: 1.75rem;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
@@ -605,14 +678,14 @@
             margin-bottom: 1.25rem;
         }
         .bento-title {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             letter-spacing: -0.02em;
         }
         .bento-desc {
             color: var(--text-muted);
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             line-height: 1.6;
         }
 
@@ -621,15 +694,16 @@
             background: var(--bg-code);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
-            padding: 1rem 1.25rem;
+            padding: 0.85rem 1.1rem;
             font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: #f4f4f5;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1rem;
+            gap: 0.75rem;
             margin-bottom: 1.25rem;
+            overflow-x: auto;
         }
         .btn-copy {
             background: rgba(255, 255, 255, 0.1);
@@ -641,6 +715,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            flex-shrink: 0;
         }
         .btn-copy:hover {
             background: #ffffff;
@@ -650,18 +725,20 @@
         /* Comparison Table */
         .table-wrap {
             overflow-x: auto;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
+            -webkit-overflow-scrolling: touch;
         }
         table.v-table {
             width: 100%;
+            min-width: 600px;
             border-collapse: collapse;
             text-align: left;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
         table.v-table th {
             background: rgba(255, 255, 255, 0.02);
             padding: 1rem 1.25rem;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 700;
             border-bottom: 1px solid var(--border-subtle);
             color: var(--text-main);
@@ -705,7 +782,7 @@
         /* Footer */
         footer {
             border-top: 1px solid var(--border-subtle);
-            padding: 5rem 0 3rem;
+            padding: 4rem 0 3rem;
             background: #000000;
             font-size: 0.88rem;
         }
@@ -738,20 +815,46 @@
         }
         .footer-col ul li a:hover { color: var(--text-main); }
 
+        /* ================= MEDIA QUERIES FOR 100% MOBILE RESPONSIVENESS ================= */
         @media (max-width: 1024px) {
-            .hero-title { font-size: 3.4rem; }
-            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 3.6rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
             .bento-grid { grid-template-columns: repeat(2, 1fr); }
             .doc-portal { grid-template-columns: 1fr; }
             .doc-sidebar { border-right: none; border-bottom: 1px solid var(--border-subtle); }
             .footer-grid { grid-template-columns: 1fr repeat(2, 1fr); }
         }
+
         @media (max-width: 768px) {
-            .nav-menu { display: none; }
-            .hero-title { font-size: 2.4rem; }
-            .stats-bar { grid-template-columns: 1fr; }
+            header.navbar-floating-wrapper { top: 0.5rem; padding: 0 0.5rem; }
+            .navbar-pill { padding: 0.5rem 0.85rem; }
+            .nav-menu { display: none; } /* Hide horizontal desktop menu */
+            .btn-mobile-hamburger { display: flex; } /* Show mobile drawer toggle */
+            .brand-hindi { display: none; } /* Compact logo on small mobile */
+
+            .hero { padding: 3rem 0 2rem; }
+            .hero-title { font-size: 2.3rem; line-height: 1.15; }
+            .hero-subtitle { font-size: 1rem; padding: 0 0.5rem; margin-bottom: 1.75rem; }
+            .hero-actions { flex-direction: column; width: 100%; gap: 0.75rem; }
+            .hero-actions .btn-glow-cta, .hero-actions .btn-search-pill { width: 100%; justify-content: center; }
+
+            .section-title { font-size: 2.1rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 1.25rem 1rem; }
+            .stat-item h3 { font-size: 1.8rem; }
+            .stat-item p { font-size: 0.75rem; }
+
             .bento-grid { grid-template-columns: 1fr; }
-            .footer-grid { grid-template-columns: 1fr; }
+            .doc-content { padding: 1.5rem; }
+            .term-body { font-size: 0.78rem; padding: 1.25rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.85rem; }
+            .stats-bar { grid-template-columns: 1fr; }
+            .doc-sidebar { padding: 1rem 0.5rem; }
+            .doc-menu { flex-direction: row; overflow-x: auto; padding-bottom: 0.5rem; }
+            .doc-menu-btn { padding: 0.4rem 0.7rem; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -771,6 +874,7 @@
                 </span>
             </a>
 
+            <!-- Desktop Nav Menu -->
             <nav>
                 <ul class="nav-menu">
                     <li class="nav-item">
@@ -823,9 +927,22 @@
                     <span>Get Started</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
+                <button class="btn-mobile-hamburger" onclick="toggleMobileNav()">
+                    <i class="fa-solid fa-bars" id="hamburgerIcon"></i>
+                </button>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Glass Drawer Overlay -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+        <a href="#docs" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-book-open"></i> Documentation</a>
+        <a href="#playground" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-play"></i> Live Demo</a>
+        <a href="#features" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-shield-halved"></i> Key Features</a>
+        <a href="#agents" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-users-gears"></i> 15 Specialist Crew</a>
+        <a href="#comparison" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-table-list"></i> Comparison Table</a>
+        <a href="#install" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-download"></i> Installation</a>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -1265,14 +1382,14 @@
                 </div>
             </div>
 
-            <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-dim);">
+            <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-dim); flex-wrap: wrap; gap: 1rem;">
                 <div>© 2026 Thekedar Project. MIT Licensed.</div>
                 <div>Built for Claude Code & AI Coding Agents</div>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript Documentation & Terminal Simulation Logic -->
+    <!-- JavaScript Documentation, Terminal Simulation & Mobile Navigation Logic -->
     <script>
         function copyText(str) {
             navigator.clipboard.writeText(str).then(() => {
@@ -1280,6 +1397,18 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2000);
             });
+        }
+
+        // Mobile Nav Drawer Toggle
+        function toggleMobileNav() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            const icon = document.getElementById('hamburgerIcon');
+            drawer.classList.toggle('active');
+            if (drawer.classList.contains('active')) {
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                icon.className = 'fa-solid fa-bars';
+            }
         }
 
         // Animated Interactive Demo Logic
