@@ -46,10 +46,13 @@ Feature IDs reference the [PRD](docs/PRD.md).
 
 A separate, later scale-up track: a catalog-driven factory generating ~120 language/framework/domain/ops specialists, a shared knowledge-pack library (security, best-practices, AI-hallucination-pitfalls, patterns), 15 tool integrations, and a validated 800–1200-file collection — built the same way this project builds anything, in small verified batches, never hand-written wholesale.
 
-- [x] **Phase 11 · The factory** — `catalog/agents.tsv` + `scripts/factory/` (generators + validators) + `validate-all.sh` coherence gate in CI. Foundation laid: 15 agents catalogued, 0 orphans, `gen-agent.sh` proven. See [docs/FACTORY.md](docs/FACTORY.md).
-- [ ] **Phase 12-13 · Knowledge packs** — security (OWASP/CWE), best-practices, the AI-hallucination-pitfalls pack (the real differentiator), review-checklists, patterns
-- [ ] **Phase 14-16 · Agent library** — languages, frameworks, domains, ops, reviewers — golden file per category, then batches of 10, validated per batch
-- [ ] **Phase 17-20 · Integrations, skills, examples, docs auto-gen, v3.0.0**
+- [x] **Phase 11 · The factory** — `catalog/agents.psv` + `scripts/factory/` (generators + validators) + `validate-all.sh` coherence gate in CI. Foundation laid: the catalog became the single source of truth for the roster, 0 orphans, `gen-agent.sh` proven. See [docs/FACTORY.md](docs/FACTORY.md).
+- [x] **Phase 12-13 · Knowledge packs** — security (OWASP/CWE), best-practices, the AI-hallucination-pitfalls pack (the real differentiator), review-checklists, patterns. 50 packs, all ≥ 60 lines, 0 orphans per `validate-knowledge.sh`.
+- [x] **Phase 14-16 · Agent library** — languages, frameworks, domains, ops, reviewers, built in validated batches. 109 agents catalogued and generated; `install.sh --all` and the plugin manifest ship every one.
+- [x] **Phase 19 · Docs auto-gen** — `gen-agent-docs.sh` writes a page per agent into `docs/agents/`; `gen-index.sh` writes `catalog/INDEX.md`. Both regenerate from the catalog, never hand-edited.
+- [ ] **Phase 17 · Integrations** — `catalog/integrations.psv` is still header-only; the per-tool adapters (Cursor, Windsurf, Copilot, Aider, …) are not built yet
+- [ ] **Phase 18 · Skills & examples** — more command skills beyond the 4 shipped; `examples/` has one demo app
+- [ ] **Phase 20 · v3.0.0 release**
 
 The catalog scale-up rides on top of the shipped v2 core rather than replacing it — growing a collection on an unproven engine would be building on sand.
 

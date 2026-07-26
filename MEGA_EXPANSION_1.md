@@ -45,9 +45,9 @@ File math at full catalog (approximate, grows with catalog):
 
 ```
 catalog/
-├── agents.tsv            ← ONE row per agent: name|category|type|tools|model|triggers|knowledge-refs
-├── knowledge.tsv         ← name|category|summary|applies-to
-├── integrations.tsv      ← tool|mechanism(rules-file/plugin/skill)|config-path
+├── agents.psv            ← ONE row per agent: name|category|type|tools|model|triggers|knowledge-refs
+├── knowledge.psv         ← name|category|summary|applies-to
+├── integrations.psv      ← tool|mechanism(rules-file/plugin/skill)|config-path
 └── INDEX.md              ← human-readable master index (generated)
 
 scripts/factory/
@@ -66,7 +66,7 @@ scripts/factory/
 
 **The generation loop (this is how 1000 files stay sane):**
 
-1. Add rows to `catalog/agents.tsv`.
+1. Add rows to `catalog/agents.psv`.
 2. Write ONE **golden agent** per category by hand, reviewed hard (these are the quality anchors).
 3. Claude Code generates the rest **in batches of 10**: `gen-agent.sh` makes the skeleton from
    the catalog row, Claude writes the body following the category's golden file.

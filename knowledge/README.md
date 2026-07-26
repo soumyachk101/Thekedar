@@ -1,6 +1,6 @@
 # Knowledge packs — the crew's shared brain
 
-Referenced-by-path from agent catalog rows (`catalog/agents.tsv`, column 6) and
+Referenced-by-path from agent catalog rows (`catalog/agents.psv`, column 6) and
 validated by `scripts/factory/validate-knowledge.sh`: every pack is ≥ 60
 substantive lines and cited by ≥ 1 agent (no orphans, no dangling refs). Agents
 consult the matching pack instead of reasoning from memory, and cite the class

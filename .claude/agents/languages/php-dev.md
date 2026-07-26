@@ -42,4 +42,4 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Never invent functions/packages — verify against php.net/the framework docs + composer.json. Uncertainty = check, not guess.
 - No new Composer dependencies unless the task allows them.
 - Secrets from `.env`/config only, never hardcoded. (secret-guard blocks anyway.)
-- Parameterized queries only; escape all output; validate all input (`knowledge/security/owasp/a03-injection.md`).
+- Parameterized queries only; escape all output; validate all input (`.thekedar/knowledge/security/owasp/a03-injection.md`).

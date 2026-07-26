@@ -44,4 +44,4 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Never invent APIs — verify against the Scala/library docs. Uncertainty = check, not guess.
 - No partial-function landmines (`.get`/`.head`) on possibly-empty values in real paths.
 - No new dependencies unless the task allows them; secrets from env/config, never hardcoded. (secret-guard blocks anyway.)
-- Parameterized queries only (`knowledge/security/owasp/a03-injection.md`).
+- Parameterized queries only (`.thekedar/knowledge/security/owasp/a03-injection.md`).

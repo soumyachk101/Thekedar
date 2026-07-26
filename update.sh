@@ -2,7 +2,7 @@
 # ============================================================
 #  Thekedar updater
 #  Usage, from your project root:
-#    bash /path/to/thekedar/update.sh [--full]
+#    bash /path/to/thekedar/update.sh [--full|--all]
 #
 #  Pulls the latest thekedar source, then re-runs install.sh
 #  into the current project. install.sh's backup-on-difference

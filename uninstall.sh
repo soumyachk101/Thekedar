@@ -4,33 +4,49 @@
 #  Usage, from your project root:
 #    bash /path/to/thekedar/uninstall.sh
 #
-#  Removes: the 15 known agents, 4 skills, 5 hooks, and their
+#  Removes: every agent listed in catalog/agents.psv (whatever the
+#  installer could have placed), 4 skills, 5 hooks, and their
 #  settings.json entries. Your custom agents are untouched.
 #  KEEPS .thekedar/ — that's your project's history. Delete it
 #  yourself if you truly want it gone.
 # ============================================================
 set -u
 
+SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST="$(pwd)"
 say() { printf '  %s\n' "$*"; }
 
 printf '\n\033[1m🏗️  Thekedar uninstaller\033[0m\n'
 say "target : $DEST"
 
-CORE_AGENTS="planner backend-dev frontend-dev error-checker security-auditor frontend-reviewer"
-EXT_AGENTS="test-writer db-specialist api-designer docs-writer performance-auditor accessibility-auditor dependency-auditor devops-engineer refactor-specialist"
+# Mirror of install.sh: the roster comes from catalog/agents.psv, so an
+# uninstall can never leave behind agents a newer install shipped.
+CATALOG="$SRC/catalog/agents.psv"
+[ -f "$CATALOG" ] || { say "❌ catalog missing: $CATALOG — cannot resolve the agent roster."; exit 1; }
+
+agents_in() { # agents_in <category> → one agent name per line
+  awk -F'|' -v want="$1" '
+    /^[[:space:]]*#/ { next }
+    { gsub(/^[[:space:]]+|[[:space:]]+$/, "", $1)
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2) }
+    $1 == "" || $1 == "name" { next }
+    $2 == want { print $1 }
+  ' "$CATALOG"
+}
+
+CATEGORIES="core extended languages frameworks domains ops reviewers"
 HOOKS="munshi scope-guard secret-guard session-brief drift-check"
 SKILLS="thekedar thekedar-status thekedar-report thekedar-plan"
 
-for a in $CORE_AGENTS; do
-  rm -f "$DEST/.claude/agents/core/$a.md" && say "removed: .claude/agents/core/$a.md"
+for c in $CATEGORIES; do
+  while IFS= read -r a; do
+    [ -n "$a" ] || continue
+    [ -f "$DEST/.claude/agents/$c/$a.md" ] || continue
+    rm -f "$DEST/.claude/agents/$c/$a.md" && say "removed: .claude/agents/$c/$a.md"
+  done < <(agents_in "$c")
+  rmdir "$DEST/.claude/agents/$c" 2>/dev/null || true
 done
-for a in $EXT_AGENTS; do
-  [ -f "$DEST/.claude/agents/extended/$a.md" ] \
-    && rm -f "$DEST/.claude/agents/extended/$a.md" \
-    && say "removed: .claude/agents/extended/$a.md"
-done
-rmdir "$DEST/.claude/agents/core" "$DEST/.claude/agents/extended" "$DEST/.claude/agents" 2>/dev/null || true
+rmdir "$DEST/.claude/agents" 2>/dev/null || true
 
 for s in $SKILLS; do
   rm -rf "$DEST/.claude/skills/$s" && say "removed: .claude/skills/$s/"
@@ -43,6 +59,9 @@ done
 rmdir "$DEST/.claude/hooks" 2>/dev/null || true
 
 rm -rf "$DEST/.thekedar/scripts" && say "removed: .thekedar/scripts/"
+# Shipped content, not project history — goes with the crew that cites it.
+[ -d "$DEST/.thekedar/knowledge" ] \
+  && rm -rf "$DEST/.thekedar/knowledge" && say "removed: .thekedar/knowledge/"
 
 # ---- settings.json: strip our hook entries, keep everything else ----
 SETTINGS="$DEST/.claude/settings.json"

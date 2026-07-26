@@ -1,6 +1,8 @@
-# Agents Guide — the 15-member crew
+# Agents Guide — the 15-agent default crew
 
 Every agent is a markdown file with YAML frontmatter in `.claude/agents/{core,extended}/`. This page is the human-readable index; the file itself is the actual system prompt (read it for the full process/rules — this page summarizes when it fires, what it touches, and what a verdict looks like).
+
+> This page covers the **15 agents installed by default** (`core` + `extended`). The full 109-agent catalog — `languages`, `frameworks`, `domains`, `ops`, `reviewers` — is indexed in [../catalog/INDEX.md](../catalog/INDEX.md), with a generated page per agent under [agents/](agents/). Install them all with `install.sh --all`; the plugin ships every one.
 
 Frontmatter law, mechanically enforced by tool allowlists (verified by `doctor.sh`):
 - **Doers & brains** get `Read, Write, Edit, Bash, Grep, Glob` (brains that only edit the task file itself get `Write` without `Edit`/`Bash`).

@@ -4,6 +4,7 @@
 #  Usage, from YOUR PROJECT ROOT:
 #    bash /path/to/thekedar/install.sh            # core crew (6 agents)
 #    bash /path/to/thekedar/install.sh --full     # + extended crew (9 more)
+#    bash /path/to/thekedar/install.sh --all      # the whole catalog (109 agents)
 #
 #  Idempotent: safe to re-run, including after updates. Never
 #  overwrites a differing file without backing it up to *.bak.
@@ -14,12 +15,14 @@ set -u
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST="$(pwd)"
 FULL=0
+ALL=0
 
 for arg in "$@"; do
   case "$arg" in
     --full) FULL=1 ;;
+    --all)  ALL=1; FULL=1 ;;
     -h|--help)
-      sed -n '2,10p' "${BASH_SOURCE[0]}"; exit 0 ;;
+      sed -n '2,11p' "${BASH_SOURCE[0]}"; exit 0 ;;
   esac
 done
 
@@ -29,7 +32,8 @@ head_(){ printf '\n\033[1m%s\033[0m\n' "$*"; }
 head_ "🏗️  Thekedar installer (v2)"
 say "source : $SRC"
 say "target : $DEST"
-[ "$FULL" -eq 1 ] && say "mode   : --full (core + extended crew)"
+[ "$ALL" -eq 1 ] && say "mode   : --all (the whole catalog)"
+[ "$ALL" -eq 0 ] && [ "$FULL" -eq 1 ] && say "mode   : --full (core + extended crew)"
 
 if [ "$SRC" = "$DEST" ]; then
   say "⚠️  You're running this inside the thekedar repo itself."
@@ -39,18 +43,36 @@ fi
 
 [ -d "$DEST/.git" ] || say "⚠️  No .git here — checkpoints need git. Continuing anyway."
 
-CORE_AGENTS="planner backend-dev frontend-dev error-checker security-auditor frontend-reviewer"
-EXT_AGENTS="test-writer db-specialist api-designer docs-writer performance-auditor accessibility-auditor dependency-auditor devops-engineer refactor-specialist"
+# The agent roster is DERIVED from catalog/agents.psv — the factory's single
+# source of truth. Add a row there and both installers pick it up; never
+# hand-list agent names here again.
+CATALOG="$SRC/catalog/agents.psv"
+[ -f "$CATALOG" ] || { say "❌ catalog missing: $CATALOG — cannot resolve the agent roster."; exit 1; }
+
+agents_in() { # agents_in <category> → one agent name per line
+  awk -F'|' -v want="$1" '
+    /^[[:space:]]*#/ { next }
+    { gsub(/^[[:space:]]+|[[:space:]]+$/, "", $1)
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2) }
+    $1 == "" || $1 == "name" { next }
+    $2 == want { print $1 }
+  ' "$CATALOG"
+}
+
+CATEGORIES="core"
+[ "$FULL" -eq 1 ] && CATEGORIES="core extended"
+[ "$ALL"  -eq 1 ] && CATEGORIES="core extended languages frameworks domains ops reviewers"
+
 HOOKS="munshi scope-guard secret-guard session-brief drift-check"
 SKILLS="thekedar thekedar-status thekedar-report thekedar-plan"
 TEMPLATES="task.md PROJECT_STATE.md changelog-entry.md config.md agent-template.md decision-record.md phase.md"
 SCRIPTS="doctor.sh export-agents-md.sh new-agent.sh report.sh stats.sh"
 
 # ---- 1. Directories ----
-mkdir -p "$DEST/.claude/agents/core" "$DEST/.claude/hooks" \
+mkdir -p "$DEST/.claude/hooks" \
          "$DEST/.thekedar/tasks" "$DEST/.thekedar/changes" \
          "$DEST/.thekedar/templates" "$DEST/.thekedar/scripts"
-[ "$FULL" -eq 1 ] && mkdir -p "$DEST/.claude/agents/extended"
+for c in $CATEGORIES; do mkdir -p "$DEST/.claude/agents/$c"; done
 for s in $SKILLS; do mkdir -p "$DEST/.claude/skills/$s"; done
 
 # ---- 2. Copy files (backup on difference, never silent overwrite) ----
@@ -61,14 +83,16 @@ copy() { # copy <src> <dest>
   cp "$1" "$2" && say "install: ${2#"$DEST"/}"
 }
 
-for a in $CORE_AGENTS; do
-  copy "$SRC/.claude/agents/core/$a.md" "$DEST/.claude/agents/core/$a.md"
+n_agents=0
+for c in $CATEGORIES; do
+  while IFS= read -r a; do
+    [ -n "$a" ] || continue
+    copy "$SRC/.claude/agents/$c/$a.md" "$DEST/.claude/agents/$c/$a.md"
+    n_agents=$((n_agents + 1))
+  done < <(agents_in "$c")
 done
-if [ "$FULL" -eq 1 ]; then
-  for a in $EXT_AGENTS; do
-    copy "$SRC/.claude/agents/extended/$a.md" "$DEST/.claude/agents/extended/$a.md"
-  done
-fi
+[ "$n_agents" -gt 0 ] || { say "❌ catalog resolved 0 agents — refusing a no-op install."; exit 1; }
+
 for s in $SKILLS; do
   copy "$SRC/skills/$s/SKILL.md" "$DEST/.claude/skills/$s/SKILL.md"
 done
@@ -83,6 +107,19 @@ for sc in $SCRIPTS; do
   copy "$SRC/scripts/$sc" "$DEST/.thekedar/scripts/$sc"
   chmod +x "$DEST/.thekedar/scripts/$sc"
 done
+
+# ---- Knowledge packs — the shared brain ----
+# 79 agents cite `.thekedar/knowledge/<pack>.md` by literal path. If the packs
+# don't land in the project, every one of those citations dangles and the
+# agents fall back to whatever they happen to remember. Always installed,
+# regardless of --full/--all: even the core crew cites packs.
+if [ -d "$SRC/knowledge" ]; then
+  mkdir -p "$DEST/.thekedar/knowledge"
+  cp -R "$SRC/knowledge/." "$DEST/.thekedar/knowledge/"
+  say "install: .thekedar/knowledge/ ($(find "$SRC/knowledge" -name '*.md' | wc -l | tr -d ' ') packs)"
+else
+  say "⚠️  no knowledge/ in $SRC — agents' pack citations will dangle."
+fi
 
 # Living state: initialize only if absent, never clobber.
 if [ ! -f "$DEST/.thekedar/PROJECT_STATE.md" ]; then
@@ -175,5 +212,7 @@ head_ "✅ Done. Next steps:"
 say "1. RESTART your Claude Code session (agents/skills/hooks load at session start)."
 say "2. Health check: bash .thekedar/scripts/doctor.sh"
 say "3. Say: \"build me <something>\" — thekedar takes over. Hisaab saaf."
-[ "$FULL" -eq 0 ] && say "   (want the 9 extended specialists? re-run with --full)"
+say "   installed $n_agents agent(s) from: $CATEGORIES"
+[ "$FULL" -eq 0 ] && say "   (more crew: --full for the 9 extended specialists, --all for the whole catalog)"
+[ "$FULL" -eq 1 ] && [ "$ALL" -eq 0 ] && say "   (want every specialist in the catalog? re-run with --all)"
 exit 0

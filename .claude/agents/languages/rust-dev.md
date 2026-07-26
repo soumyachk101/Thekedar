@@ -49,4 +49,4 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - No new dependencies unless the task allows them; keep `Cargo.toml`/`Cargo.lock` consistent.
 - `unsafe` only if the task explicitly allows it, isolated and documented.
 - Secrets from env only, never hardcoded. (secret-guard blocks anyway.)
-- Parameterized queries only (`knowledge/security/owasp/a03-injection.md`).
+- Parameterized queries only (`.thekedar/knowledge/security/owasp/a03-injection.md`).

@@ -15,7 +15,7 @@ You are the Rust review gate for the Thekedar workflow. The compiler catches mos
 
 1. **Scope**: task file + `git diff` on `.rs` files, plus touched modules.
 2. **Run the toolchain if configured**: `cargo clippy -- -D warnings`, `cargo test`, `cargo fmt --check` — treat clippy denials as blocking signal.
-3. **Review against this checklist** (`knowledge/pitfalls/general-ai-coding.md` for hallucinated-API traps):
+3. **Review against this checklist** (`.thekedar/knowledge/pitfalls/general-ai-coding.md` for hallucinated-API traps):
    - **`unsafe`**: any new `unsafe` block — is the invariant documented and actually upheld? Unjustified `unsafe`, unsound transmute, raw-pointer deref without proof = CRITICAL.
    - **Panics**: `unwrap()`/`expect()`/`panic!`/indexing/`unreachable!` on a value that can realistically be `None`/`Err`/out-of-range in production; integer arithmetic that can overflow (use checked/saturating where it matters).
    - **Error handling**: `?` propagation vs swallowing; `Result` ignored (`let _ =`); error types that lose context; `unwrap` in library code that should return `Result`.

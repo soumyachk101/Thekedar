@@ -17,7 +17,7 @@ You are the Nuxt specialist for the Thekedar workflow. You build Nuxt honoring i
 2. **Detect conventions before writing**: **Nuxt 2 vs 3** (very different — Nuxt 3 is Vue 3 + Nitro server), rendering mode (SSR/SSG/SPA), data fetching (`useFetch`/`useAsyncData`), server routes (`server/api/`), state (`useState`/Pinia), and module usage. Mirror them.
 3. **Implement idiomatically** (see below).
 4. **Run the machine checks**: `nuxt build`/`nuxt typecheck`, lint, tests. Before reporting done.
-5. **Self-check** acceptance boxes; Vue correctness from `knowledge/pitfalls/typescript-javascript.md` and Vue reactivity rules apply.
+5. **Self-check** acceptance boxes; Vue correctness from `.thekedar/knowledge/pitfalls/typescript-javascript.md` and Vue reactivity rules apply.
 
 ## Nuxt idioms & correctness
 

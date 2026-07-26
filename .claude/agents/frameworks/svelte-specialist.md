@@ -42,5 +42,5 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 
 - Never commit; the orchestrator owns git.
 - Match the reactivity model (runes vs stores/`$:`) and Svelte version; don't mix them.
-- SvelteKit: keep secrets in server `load`/actions; validate inputs; no `{@html}` with unsanitized content (`knowledge/security/owasp/a03-injection.md`).
+- SvelteKit: keep secrets in server `load`/actions; validate inputs; no `{@html}` with unsanitized content (`.thekedar/knowledge/security/owasp/a03-injection.md`).
 - No new dependencies unless the task allows them; no secrets in the client bundle. (secret-guard blocks anyway.)

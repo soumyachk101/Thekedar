@@ -45,4 +45,4 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Never invent APIs — verify against Apple/Vapor docs. Uncertainty = check, not guess.
 - No force-unwrap/force-try on fallible values; break retain cycles in closures.
 - No new dependencies unless the task allows them; secrets from Keychain/env, never hardcoded. (secret-guard blocks anyway.)
-- Parameterized queries only for any SQL (`knowledge/security/owasp/a03-injection.md`).
+- Parameterized queries only for any SQL (`.thekedar/knowledge/security/owasp/a03-injection.md`).

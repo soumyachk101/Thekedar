@@ -15,7 +15,7 @@ You are the TypeScript/JavaScript review gate for the Thekedar workflow. You cat
 
 1. **Scope**: task file + `git diff` on `.ts`/`.tsx`/`.js` files, plus touched modules.
 2. **Run the toolchain if configured**: `tsc --noEmit`, `eslint`, the test runner — confirm it type-checks and lints.
-3. **Review against this checklist** (`knowledge/pitfalls/typescript-javascript.md`):
+3. **Review against this checklist** (`.thekedar/knowledge/pitfalls/typescript-javascript.md`):
    - **Type escapes**: `any`/`as any`/`as unknown as T` hiding a real mismatch, non-null `!` on a genuinely nullable value, unchecked `@ts-ignore`/`@ts-expect-error`, unsound casts.
    - **Async**: unhandled promise (missing `await`/`.catch`), `await` in a loop that should be `Promise.all`, floating async in an event handler, race on shared state.
    - **Equality/coercion**: `==` vs `===`, truthiness bugs on `0`/`''`/`NaN`, `JSON.parse` untyped then trusted.

@@ -189,8 +189,8 @@ State machine: `IDLE → PLANNING → TASK_ACTIVE → REVIEW → (PASS → LOG+C
 
 ### 3.11 Installer family
 
-- `install.sh [--full]`: idempotent, backup-on-difference (`*.bak`), never clobbers `PROJECT_STATE.md`/`config.md` if already present, python3 JSON-merges hook wiring (falls back to printing the block for manual paste).
-- `uninstall.sh`: removes the 15 known agents + 4 skills + 5 hooks, strips exactly those entries from `settings.json` via a python3 filter, **keeps `.thekedar/`** (project history) and any user-defined `settings.json` keys.
+- `install.sh [--full|--all]`: idempotent, backup-on-difference (`*.bak`), never clobbers `PROJECT_STATE.md`/`config.md` if already present, python3 JSON-merges hook wiring (falls back to printing the block for manual paste). The agent roster is read from `catalog/agents.psv` at run time — `--full` adds the `extended` category, `--all` installs every category — so a new catalog row ships without touching the installer. Always copies `knowledge/` → `.thekedar/knowledge/`, the path agents cite literally; `tests/test-knowledge-ship.sh` asserts 0 dangling citations against a real installed layout, in both script and plugin modes.
+- `uninstall.sh`: removes every agent in `catalog/agents.psv` (same derivation, all categories, so it can never lag the installer) + 4 skills + 5 hooks, strips exactly those entries from `settings.json` via a python3 filter, **keeps `.thekedar/`** (project history) and any user-defined `settings.json` keys.
 - `update.sh [--full]`: `git pull --ff-only` the source clone, then `exec install.sh` with the same flags.
 
 ## 4. Task Lifecycle (data flow)

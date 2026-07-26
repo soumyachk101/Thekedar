@@ -44,4 +44,4 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Never invent APIs — verify against Kotlin/framework docs. Uncertainty = check, not guess.
 - No `!!` on anything that can be null in a real path; no new dependencies unless the task allows them.
 - Secrets from env/config only, never hardcoded. (secret-guard blocks anyway.)
-- Parameterized/prepared queries only (`knowledge/security/owasp/a03-injection.md`).
+- Parameterized/prepared queries only (`.thekedar/knowledge/security/owasp/a03-injection.md`).

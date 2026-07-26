@@ -4,6 +4,44 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 This file is maintained by Thekedar's own workflow discipline — every entry below traces to a real phase commit, not a guess after the fact.
 
+## [Unreleased]
+
+### Fixed
+
+**The shared brain never shipped:**
+- 79 agents cite knowledge packs by literal path (`consult .thekedar/knowledge/pitfalls/react.md`). Neither `install.sh` nor the plugin bootstrap copied `knowledge/` anywhere, so **208 citations across 46 distinct packs pointed at nothing in every real install** — the agents silently fell back to whatever they happened to remember, which is precisely what the packs exist to prevent. `install.sh` now always ships `knowledge/` → `.thekedar/knowledge/` (regardless of `--full`/`--all`; the core crew cites packs too), and `session-brief.sh` bootstraps the same path in plugin mode. Agent citations were rewritten from `knowledge/…` to `.thekedar/knowledge/…`, the path that now exists in an installed project.
+- The plugin bootstrap gate is `[ ! -d .thekedar ]`, so a project scaffolded by an older version would never re-enter it and would run forever without packs. Pack bootstrap is now gated separately and backfills into an existing `.thekedar/`.
+- `uninstall.sh` removes `.thekedar/knowledge/` — shipped content, not project history.
+
+**Why no validator caught it:** `validate-knowledge.sh` only checked packs → catalog ("no orphan pack"), and ran against the source repo, where `knowledge/` obviously exists. It now also checks the reverse — every `.thekedar/knowledge/…` citation in an agent body must resolve, and a bare `knowledge/…` prefix is a hard error. New `tests/test-knowledge-ship.sh` (17 checks) asserts against a real installed layout in both script and plugin modes, including the backfill case. Verified to fail 7 checks against the pre-fix code.
+
+**Distribution — the whole catalog now actually ships:**
+- `.claude-plugin/plugin.json` registered only `core/` and `extended/`, so 94 of the 109 catalogued agents (`languages`, `frameworks`, `domains`, `ops`, `reviewers`) existed on disk, in the catalog, and in the docs, but never reached a single user. All 7 category directories are now listed.
+- `install.sh` / `uninstall.sh` hardcoded the 15 agent names as shell strings and were structurally incapable of installing more. Both now derive the roster from `catalog/agents.psv` at run time, so a new catalog row ships without touching either script. New `install.sh --all` installs every category (`--full` still means core + extended); `update.sh` passes the flag through. The installer refuses a no-op install if the catalog resolves 0 agents.
+- `uninstall.sh` now sweeps every category, so it can never lag behind what a newer installer placed.
+
+**Docs drift:**
+- README, `index.html`, `docs/TRD.md`, `docs/AGENTS-GUIDE.md` and `INSTALL.md` claimed a 15-agent crew while `catalog/INDEX.md` claimed 109. Corrected to 109 with the 15-agent default install called out explicitly. Historical records (ADRs, BLUEPRINT, shipped changelog entries) left as written.
+- `ROADMAP.md` still listed Phases 12–16 as unstarted — the knowledge packs (50) and the agent library (109) have shipped. Phase 17 (integrations) is correctly marked outstanding: `catalog/integrations.psv` is still header-only.
+
+**Landing page:**
+- Deleted `thekedar-docs.html` — a byte-for-byte duplicate of `index.html` (80 KB, one word apart, linked from nowhere) that would have drifted on the next edit.
+- Added `og:image` (new `assets/og-image.jpg`, 1200×630), `twitter:card`, `og:site_name`, canonical URL, `robots` meta, favicon, and `SoftwareApplication` JSON-LD. Link previews were previously bare text cards. Added `robots.txt` + `sitemap.xml`.
+- Removed `maximum-scale=1.0, user-scalable=no` from the viewport — it blocked pinch-zoom (WCAG 1.4.4).
+- Every doc now has its own URL (`/#doc-<key>`): deep-linkable, shareable, and the back button walks doc history. Sidebar buttons, the mobile `<select>`, and the nav/footer links all stay in sync.
+- FontAwesome loads via `media="print"`/`onload` swap so it no longer blocks first paint; `<noscript>` fallback retained.
+- Added a `prefers-reduced-motion` block (WCAG 2.3.3), `aria-label`/`aria-expanded`/`aria-controls` on the mobile menu button, `aria-hidden` on all 36 decorative icons, and the standard `background-clip` alongside its `-webkit-` prefix.
+
+**CI:**
+- `ci.yml` and `shellcheck.yml` only triggered on `main`, so every other branch — including the one this work happened on — ran zero checks. Both now run on all branches and all PRs, with a `concurrency` group so a PR from an in-repo branch doesn't run twice.
+
+### Changed
+
+**Orchestrator routing — the 109 agents are now reachable:**
+- `skills/thekedar/SKILL.md` carried a hardcoded 15-agent routing table and named 6 language specialists as examples, then hand-waved "frameworks/domains/ops specialists arrive by the same rule as they're added". Nothing told the orchestrator what actually exists, so shipping 109 agents changed nothing about which ones got used. The table is now explicitly labelled the fallback, with a specificity ladder (framework → domain → language → generic), the same rule for reviewer gates, and an instruction to read the available-subagent list before routing. Every fallback to a generic doer gets noted in the changelog — a repeated fallback is a signal the catalog needs a new agent.
+
+- `catalog/*.tsv` → `catalog/*.psv`. The files were pipe-delimited all along; the `.tsv` extension silently broke `cut -f`, `awk -F'\t'`, and any spreadsheet import. All references updated; generated docs regenerated.
+
 ## [2.0.0] — 2026-07-09
 
 ### Added

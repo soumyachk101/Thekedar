@@ -4,7 +4,7 @@
 #  Usage, from repo root:
 #    bash scripts/factory/gen-agent.sh <name>
 #
-#  Reads the row for <name> from catalog/agents.tsv and writes
+#  Reads the row for <name> from catalog/agents.psv and writes
 #  .claude/agents/<category>/<name>.md from templates/agent-template.md
 #  with the frontmatter (name/tools/model) and description trigger
 #  filled in. The BODY stays as template placeholders — a Claude
@@ -18,7 +18,7 @@
 set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-CATALOG="$ROOT/catalog/agents.tsv"
+CATALOG="$ROOT/catalog/agents.psv"
 TEMPLATE="$ROOT/templates/agent-template.md"
 NAME="${1:-}"
 

@@ -62,9 +62,11 @@ flowchart TB
 
 Layer 2 is the headline addition in v2: v1 could only log what happened (Layer 1) and hope the prompt held (Layer 3). Layer 2 can say **no**, mechanically, *before* a write lands — closing problem P5 above. Every edit is logged. Every scope violation is blocked before it happens, not caught after. Every task is documented. Every change is reviewed by an agent that **didn't write it**.
 
-## The Crew — 15 agents, 5 hooks, 4 skills
+## The Crew — 109 agents, 5 hooks, 4 skills
 
 Every agent runs in its own fresh context — it never sees the conversation that led to it being invoked, only its own system prompt and the task file. Reviewers additionally have no `Write`/`Edit` tool at all — "read-only" is enforced by Claude Code's runtime, not a promise in a prompt.
+
+The 15 agents tabled below are the default install. The other 94 — `languages`, `frameworks`, `domains`, `ops`, `reviewers` — ship with `install.sh --all` (and always with the plugin). Full roster: **[catalog/INDEX.md](catalog/INDEX.md)**, generated from [`catalog/agents.psv`](catalog/agents.psv).
 
 ### Core crew — always installed
 
@@ -134,6 +136,9 @@ git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/th
 
 # full crew — the 9 extended specialists too (test-writer, db-specialist, devops-engineer, ...)
 bash /tmp/thekedar/install.sh --full
+
+# whole catalog — all 109 agents (languages, frameworks, domains, ops, reviewers)
+bash /tmp/thekedar/install.sh --all
 
 # health check, anytime
 bash .thekedar/scripts/doctor.sh
