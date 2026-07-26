@@ -925,6 +925,19 @@
         .footer-col ul li a:hover { color: var(--text-main); }
 
         /* ================= 100% PERFECT MOBILE RESPONSIVE MEDIA QUERIES ================= */
+        /* The desktop nav lays out at 1153px, so it needs a 1177px viewport once
+           the wrapper padding is counted — measured, not guessed. Collapsing it
+           only at 768px left every width from 769px to 1177px overflowing to the
+           right (359px at 820px), which the overflow-x rule hid rather than
+           fixed; every small laptop and landscape tablet sat in that band.
+           Collapsing at 1200px rather than 1180px leaves ~24px of slack so a
+           font fallback with wider metrics can't push it back into overflow.
+           The drawer carries all six links, so nothing is lost. */
+        @media (max-width: 1200px) {
+            .nav-menu { display: none; }
+            .btn-mobile-hamburger { display: flex; }
+        }
+
         @media (max-width: 1024px) {
             .hero-title { font-size: 3.5rem; }
             .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -938,12 +951,11 @@
             header.navbar-floating-wrapper { top: 0.5rem; padding: 0 0.5rem; }
             .navbar-pill { padding: 0.5rem 0.75rem; }
             
-            /* Hide non-essential desktop header items on mobile to fit 100% cleanly */
-            .nav-menu { display: none; } 
+            /* .nav-menu and the hamburger are already handled at 1150px above.
+               These are the extras that only stop fitting at phone widths. */
             .nav-actions .btn-search-pill { display: none; }
             .nav-actions .btn-glow-cta { display: none; }
             .brand-hindi { display: none; }
-            .btn-mobile-hamburger { display: flex; } /* Show hamburger toggle */
 
             .hero { padding: 2.5rem 0 2rem; }
             .hero-title { font-size: 2.1rem; line-height: 1.15; }

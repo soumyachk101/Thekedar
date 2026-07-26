@@ -40,6 +40,29 @@ else
 fi
 has "header is position: sticky" 'position: sticky'
 
+# ---- nav collapse breakpoint ----
+# The desktop nav lays out at 1153px and needs a ~1177px viewport. Collapsing it
+# at the phone breakpoint left 769-1177px overflowing off-screen. The collapse
+# must therefore live in a media query of at least 1180px, not in the 768 block.
+bp=$(grep -B2 '\.nav-menu { display: none; }' "$PAGE" \
+     | grep -o 'max-width: [0-9]*px' | grep -o '[0-9]*' | sort -rn | head -1)
+if [ -n "$bp" ] && [ "$bp" -ge 1180 ]; then
+  pass "desktop nav collapses at ${bp}px (>= 1180px, so it never overflows)"
+else
+  fail "desktop nav collapses at ${bp:-?}px — below 1180px the navbar overflows off-screen"
+fi
+
+# Collapsing the desktop nav is only safe if the drawer carries every link.
+missing=0
+while IFS= read -r h; do
+  [ -n "$h" ] || continue
+  grep -q "href=\"$h\" class=\"mobile-nav-link\"" "$PAGE" || missing=$((missing + 1))
+done <<EOF
+$(grep -o 'href="#[a-z]*" class="nav-link"' "$PAGE" | sed 's/href="//; s/".*//')
+EOF
+if [ "$missing" -eq 0 ]; then pass "mobile drawer carries every desktop nav link"
+else fail "$missing desktop nav link(s) have no drawer equivalent — unreachable once collapsed"; fi
+
 # ---- scroll-spy ----
 has "nav has an .active style to apply"        '\.nav-link\.active'
 has "scroll-spy observer is wired"             'IntersectionObserver'
