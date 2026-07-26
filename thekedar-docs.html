@@ -27,12 +27,12 @@
             --bg-surface-hover: #121212;
             --bg-code: #050505;
             
-            --border-subtle: rgba(255, 255, 255, 0.1);
-            --border-hover: rgba(255, 255, 255, 0.25);
+            --border-subtle: rgba(255, 255, 255, 0.12);
+            --border-hover: rgba(255, 255, 255, 0.3);
             
             --text-main: #ffffff;
-            --text-muted: #999999;
-            --text-dim: #555555;
+            --text-muted: #a1a1aa;
+            --text-dim: #52525b;
             
             --accent-green: #10b981;
             --accent-blue: #3b82f6;
@@ -45,7 +45,7 @@
             --radius-lg: 20px;
             --radius-pill: 9999px;
             
-            --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: all 0.15s ease;
         }
 
         * {
@@ -77,87 +77,79 @@
             padding: 0 1.5rem;
         }
 
-        /* Floating Glass Pill Navbar */
+        /* Fixed Ultra-Clean Floating Glass Navbar */
         header.navbar-floating-wrapper {
             position: sticky;
-            top: 1.25rem;
+            top: 1rem;
             z-index: 1000;
-            padding: 0 1.5rem;
+            padding: 0 1rem;
             margin-bottom: 2rem;
         }
         .navbar-pill {
-            max-width: 1200px;
+            max-width: 1240px;
             margin: 0 auto;
             background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-pill);
-            padding: 0.7rem 1.75rem;
+            padding: 0.5rem 1rem 0.5rem 1.25rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             box-shadow: 
                 0 20px 40px -15px rgba(0, 0, 0, 0.9),
                 inset 0 1px 0 rgba(255, 255, 255, 0.12);
-            transition: var(--transition);
-        }
-        .navbar-pill:hover {
-            border-color: var(--border-hover);
         }
 
         .brand-logo {
             display: flex;
             align-items: center;
-            gap: 0.85rem;
+            gap: 0.65rem;
             text-decoration: none;
             color: var(--text-main);
+            white-space: nowrap;
         }
         .brand-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #ffffff, #a1a1aa);
+            width: 32px;
+            height: 32px;
+            background: #ffffff;
             color: #000000;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             font-weight: 800;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-            transition: var(--transition);
-        }
-        .brand-logo:hover .brand-icon {
-            transform: scale(1.08) rotate(-5deg);
         }
         .brand-name {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 900;
             letter-spacing: -0.03em;
         }
         .brand-hindi {
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             color: var(--accent-amber);
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            padding: 0.12rem 0.5rem;
-            border-radius: 12px;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 0.1rem 0.45rem;
+            border-radius: 10px;
             font-weight: 600;
         }
         .status-dot {
-            width: 7px;
-            height: 7px;
+            width: 6px;
+            height: 6px;
             background: var(--accent-green);
             border-radius: 50%;
             display: inline-block;
-            box-shadow: 0 0 8px var(--accent-green);
+            box-shadow: 0 0 6px var(--accent-green);
         }
 
-        /* Nav Links with Generous Spacing */
+        /* Nav Menu - Strictly Single Line (no wrap!) */
         .nav-menu {
             display: flex;
             align-items: center;
-            gap: 1.25rem; /* Increased spacing! */
+            gap: 0.4rem;
             list-style: none;
         }
         .nav-item {
@@ -166,21 +158,22 @@
         .nav-link {
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            padding: 0.5rem 0.95rem; /* Comfortable padding */
+            padding: 0.45rem 0.8rem;
             border-radius: 20px;
+            white-space: nowrap; /* CRITICAL: Prevents line wrapping! */
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 0.45rem;
+            gap: 0.35rem;
         }
         .nav-link:hover {
             color: var(--text-main);
             background: rgba(255, 255, 255, 0.08);
         }
 
-        /* Mega Dropdown Card */
+        /* Dropdown Menu */
         .dropdown-menu {
             position: absolute;
             top: 100%;
@@ -190,8 +183,8 @@
             backdrop-filter: blur(20px);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 1.25rem;
-            width: 320px;
+            padding: 1rem;
+            width: 300px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.9);
             opacity: 0;
             visibility: hidden;
@@ -208,7 +201,7 @@
             display: flex;
             align-items: flex-start;
             gap: 0.75rem;
-            padding: 0.6rem;
+            padding: 0.55rem;
             border-radius: var(--radius-sm);
             text-decoration: none;
             color: var(--text-main);
@@ -218,37 +211,40 @@
             background: rgba(255, 255, 255, 0.06);
         }
         .dropdown-icon {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--accent-blue);
-            margin-top: 0.1rem;
+            margin-top: 0.15rem;
         }
         .dropdown-title {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
         }
         .dropdown-desc {
-            font-size: 0.75rem;
+            font-size: 0.73rem;
             color: var(--text-muted);
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
+        /* Right Nav Actions */
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 0.85rem; /* Increased spacing! */
+            gap: 0.5rem;
+            white-space: nowrap;
         }
         .btn-search-pill {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-subtle);
             color: var(--text-muted);
-            padding: 0.48rem 0.95rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
             transition: var(--transition);
+            white-space: nowrap;
         }
         .btn-search-pill:hover {
             border-color: var(--border-hover);
@@ -257,8 +253,8 @@
         }
         .kbd-key {
             background: rgba(255, 255, 255, 0.12);
-            font-size: 0.68rem;
-            padding: 0.1rem 0.4rem;
+            font-size: 0.65rem;
+            padding: 0.1rem 0.35rem;
             border-radius: 4px;
             color: var(--text-main);
             font-weight: 600;
@@ -267,23 +263,23 @@
         .btn-glow-cta {
             background: #ffffff;
             color: #000000;
-            padding: 0.5rem 1.25rem;
+            padding: 0.45rem 1.1rem;
             border-radius: 20px;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             font-weight: 700;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             transition: var(--transition);
             border: none;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
             cursor: pointer;
         }
         .btn-glow-cta:hover {
             background: #e5e5e5;
             transform: translateY(-1px);
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
         }
 
         /* Hero Section */
@@ -770,7 +766,7 @@
                 </div>
                 <span class="brand-name">THEKEDAR</span>
                 <span class="brand-hindi">ठेकेदार</span>
-                <span style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--text-muted); margin-left: 0.2rem;">
+                <span style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; color: var(--text-muted); margin-left: 0.1rem;">
                     <span class="status-dot"></span> v2.0.0
                 </span>
             </a>
@@ -780,7 +776,7 @@
                     <li class="nav-item">
                         <a href="#docs" class="nav-link">
                             <span>Documentation</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; opacity: 0.7;"></i>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem; opacity: 0.7;"></i>
                         </a>
                         <div class="dropdown-menu">
                             <a href="#docs" onclick="loadDoc('overview')" class="dropdown-item">
@@ -820,7 +816,7 @@
                     <span>Search</span>
                     <span class="kbd-key">⌘K</span>
                 </button>
-                <a href="https://github.com/soumyachk101/Thekedar" target="_blank" class="btn-search-pill" style="padding: 0.48rem 0.75rem;">
+                <a href="https://github.com/soumyachk101/Thekedar" target="_blank" class="btn-search-pill" style="padding: 0.4rem 0.65rem;">
                     <i class="fa-brands fa-github"></i>
                 </a>
                 <a href="#install" class="btn-glow-cta">
