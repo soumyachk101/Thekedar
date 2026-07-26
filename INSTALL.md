@@ -15,9 +15,9 @@
 | What lands in your repo | nothing (crew/hooks live in the plugin cache) | `.claude/` + `.thekedar/` committed to your repo |
 | `.thekedar/` scaffolding | auto-created on first session (bootstrap) | created at install time |
 | Best for | trying it, personal use, auto-updates | teams (commit the workflow), full control |
-| Extended crew | included | opt-in via `--full` |
+| Agent roster | all 109, always | 6 by default · `--full` = 15 · `--all` = 109 |
 
-Both give you the same 15-agent crew, 5 hooks, and 4 skills. Pick one — running both against the same project can double-wire hooks.
+Both draw from the same 109-agent catalog ([catalog/INDEX.md](catalog/INDEX.md)), 5 hooks, and 4 skills. Pick one — running both against the same project can double-wire hooks.
 
 ## Option A — Plugin (Claude Code marketplace)
 
@@ -35,14 +35,15 @@ From **your project root**:
 ```bash
 git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar
 bash /tmp/thekedar/install.sh          # core crew (6 agents)
-bash /tmp/thekedar/install.sh --full   # + 9 extended specialists
+bash /tmp/thekedar/install.sh --full   # + 9 extended specialists (15 total)
+bash /tmp/thekedar/install.sh --all    # the whole catalog (109 agents)
 ```
 
 Then **restart your Claude Code session** — subagents and skills load at session start.
 
 ## What the installer does
 
-1. Copies 5 subagents → `.claude/agents/`
+1. Copies the selected subagents → `.claude/agents/<category>/` (roster read from `catalog/agents.psv`)
 2. Copies the orchestrator skill → `.claude/skills/thekedar/SKILL.md`
 3. Copies the munshi hook → `.claude/hooks/munshi.sh` (`chmod +x`)
 4. **Merges** the hook wiring into `.claude/settings.json` — your existing hooks and settings are preserved; a differing file is backed up to `*.bak`

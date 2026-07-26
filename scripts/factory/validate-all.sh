@@ -14,7 +14,7 @@ set -u
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
-CATALOG="$ROOT/catalog/agents.tsv"
+CATALOG="$ROOT/catalog/agents.psv"
 RC=0
 
 printf '\n\033[1m🏭  Thekedar factory — validate-all\033[0m\n'
@@ -29,7 +29,7 @@ while IFS= read -r line; do
   case "$line" in "name |"*|"name|"*) continue ;; esac
   nf="$(printf '%s' "$line" | awk -F'|' '{print NF}')"
   if [ "$nf" -ne 7 ]; then
-    printf '  ❌ agents.tsv line %s: %s fields, expected 7 (name|category|type|tools|model|krefs|trigger)\n' "$lineno" "$nf"
+    printf '  ❌ agents.psv line %s: %s fields, expected 7 (name|category|type|tools|model|krefs|trigger)\n' "$lineno" "$nf"
     csyntax=1
   fi
 done < "$CATALOG"

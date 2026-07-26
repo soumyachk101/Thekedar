@@ -2,23 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thekedar (ठेकेदार) — AI Coding Crew Site Supervisor</title>
-    <meta name="description" content="Thekedar is an enterprise-grade AI workflow supervisor for Claude Code & AI agents. Enforces modular task specs, 15 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
-    
+    <meta name="description" content="Thekedar is an enterprise-grade AI workflow supervisor for Claude Code &amp; AI agents. Enforces modular task specs, 109 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
+    <link rel="canonical" href="https://soumyachk101.github.io/Thekedar/">
+    <meta name="robots" content="index, follow">
+
     <!-- OpenGraph & Twitter Meta -->
+    <meta property="og:site_name" content="Thekedar">
     <meta property="og:title" content="Thekedar — AI Coding Crew Site Supervisor">
-    <meta property="og:description" content="Enforces modular task specs, 15 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
+    <meta property="og:description" content="Enforces modular task specs, 109 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://soumyachk101.github.io/Thekedar/">
+    <meta property="og:image" content="https://soumyachk101.github.io/Thekedar/assets/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Thekedar — ठेकेदार — your AI coding crew's site supervisor.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Thekedar — AI Coding Crew Site Supervisor">
+    <meta name="twitter:description" content="Enforces modular task specs, 109 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
+    <meta name="twitter:image" content="https://soumyachk101.github.io/Thekedar/assets/og-image.jpg">
+
+    <link rel="icon" href="assets/banner.svg" type="image/svg+xml">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Thekedar",
+      "alternateName": "ठेकेदार",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS, Linux, Windows",
+      "description": "Site-supervisor workflow for Claude Code: plans big work into small scoped tasks, routes each to one of 109 specialist subagents, gates every task behind independent read-only review, mechanically enforces scope, and writes a full change record. Zero runtime dependencies.",
+      "url": "https://soumyachk101.github.io/Thekedar/",
+      "codeRepository": "https://github.com/soumyachk101/Thekedar",
+      "softwareVersion": "2.0.0",
+      "license": "https://opensource.org/licenses/MIT",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@type": "Person", "name": "Soumya Chakraborty" }
+    }
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- FontAwesome Icons — loaded async so it never blocks first paint -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          media="print" onload="this.media='all';this.onload=null;">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
     <style>
         :root {
@@ -52,6 +87,17 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Respect the OS "reduce motion" setting — WCAG 2.3.3. */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         html {
@@ -385,6 +431,7 @@
         .hero-title span {
             background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .hero-subtitle {
@@ -891,7 +938,7 @@
         <div class="navbar-pill">
             <a href="#" class="brand-logo">
                 <div class="brand-icon">
-                    <i class="fa-solid fa-hard-hat"></i>
+                    <i class="fa-solid fa-hard-hat" aria-hidden="true"></i>
                 </div>
                 <span class="brand-name">THEKEDAR</span>
                 <span class="brand-hindi">ठेकेदार</span>
@@ -909,21 +956,21 @@
                             <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem; opacity: 0.7;"></i>
                         </a>
                         <div class="dropdown-menu">
-                            <a href="#docs" onclick="loadDoc('overview')" class="dropdown-item">
-                                <i class="fa-solid fa-star dropdown-icon"></i>
+                            <a href="#doc-overview" class="dropdown-item">
+                                <i class="fa-solid fa-star dropdown-icon" aria-hidden="true"></i>
                                 <div>
                                     <div class="dropdown-title">Overview</div>
                                     <div class="dropdown-desc">Core architectural concepts & engineering rationale</div>
                                 </div>
                             </a>
-                            <a href="#docs" onclick="loadDoc('architecture')" class="dropdown-item">
+                            <a href="#doc-architecture" class="dropdown-item">
                                 <i class="fa-solid fa-layer-group dropdown-icon" style="color: var(--accent-purple);"></i>
                                 <div>
                                     <div class="dropdown-title">4-Layer Architecture</div>
                                     <div class="dropdown-desc">Memory, Intelligence, Guard-Rails, Determinism</div>
                                 </div>
                             </a>
-                            <a href="#docs" onclick="loadDoc('scope-guard')" class="dropdown-item">
+                            <a href="#doc-scope-guard" class="dropdown-item">
                                 <i class="fa-solid fa-shield-halved dropdown-icon" style="color: var(--accent-red);"></i>
                                 <div>
                                     <div class="dropdown-title">PreToolUse Guards</div>
@@ -934,7 +981,7 @@
                     </li>
                     <li class="nav-item"><a href="#playground" class="nav-link">Live Demo</a></li>
                     <li class="nav-item"><a href="#features" class="nav-link">Features</a></li>
-                    <li class="nav-item"><a href="#agents" class="nav-link">15 Crew</a></li>
+                    <li class="nav-item"><a href="#agents" class="nav-link">109 Crew</a></li>
                     <li class="nav-item"><a href="#comparison" class="nav-link">Compare</a></li>
                     <li class="nav-item"><a href="#install" class="nav-link">Install</a></li>
                 </ul>
@@ -942,19 +989,21 @@
 
             <div class="nav-actions">
                 <button class="btn-search-pill" onclick="focusDocSearch()">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                     <span>Search</span>
                     <span class="kbd-key">⌘K</span>
                 </button>
                 <a href="https://github.com/soumyachk101/Thekedar" target="_blank" class="btn-search-pill" style="padding: 0.4rem 0.65rem;">
-                    <i class="fa-brands fa-github"></i>
+                    <i class="fa-brands fa-github" aria-hidden="true"></i>
                 </a>
                 <a href="#install" class="btn-glow-cta">
                     <span>Get Started</span>
-                    <i class="fa-solid fa-arrow-right"></i>
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                 </a>
-                <button class="btn-mobile-hamburger" onclick="toggleMobileNav()">
-                    <i class="fa-solid fa-bars" id="hamburgerIcon"></i>
+                <button class="btn-mobile-hamburger" onclick="toggleMobileNav()"
+                        aria-label="Open navigation menu" aria-expanded="false"
+                        aria-controls="mobileNavDrawer" id="hamburgerBtn">
+                    <i class="fa-solid fa-bars" id="hamburgerIcon" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -962,20 +1011,20 @@
 
     <!-- Mobile Glass Drawer Overlay -->
     <div class="mobile-nav-drawer" id="mobileNavDrawer">
-        <a href="#docs" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-book-open"></i> Documentation</a>
-        <a href="#playground" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-play"></i> Live Demo</a>
-        <a href="#features" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-shield-halved"></i> Key Features</a>
-        <a href="#agents" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-users-gears"></i> 15 Specialist Crew</a>
-        <a href="#comparison" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-table-list"></i> Comparison Table</a>
-        <a href="#install" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-download"></i> Installation</a>
+        <a href="#docs" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Documentation</a>
+        <a href="#playground" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-play" aria-hidden="true"></i> Live Demo</a>
+        <a href="#features" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Key Features</a>
+        <a href="#agents" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-users-gears" aria-hidden="true"></i> 109 Specialist Crew</a>
+        <a href="#comparison" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-table-list" aria-hidden="true"></i> Comparison Table</a>
+        <a href="#install" class="mobile-nav-link" onclick="toggleMobileNav()"><i class="fa-solid fa-download" aria-hidden="true"></i> Installation</a>
     </div>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <a href="#install" class="announcement-badge">
-                <i class="fa-solid fa-bolt"></i>
-                <span>v2.0.0 Released — 15 Specialist Subagents & Guard-Rails</span>
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                <span>v2.0.0 Released — 109 Specialist Subagents & Guard-Rails</span>
                 <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
             </a>
 
@@ -985,16 +1034,16 @@
             </h1>
 
             <p class="hero-subtitle">
-                <strong>Kaam Pakka, Hisaab Saaf.</strong> Enforces modular task specs, 15 specialist subagents in unpolluted context windows, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers for Claude Code & AI agents.
+                <strong>Kaam Pakka, Hisaab Saaf.</strong> Enforces modular task specs, 109 specialist subagents in unpolluted context windows, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers for Claude Code & AI agents.
             </p>
 
             <div class="hero-actions">
                 <button onclick="startInteractiveDemo()" class="btn-glow-cta" style="padding: 0.75rem 1.6rem; font-size: 0.95rem; background: #ffffff; color: #000000; cursor: pointer;">
-                    <i class="fa-solid fa-play"></i>
+                    <i class="fa-solid fa-play" aria-hidden="true"></i>
                     <span>▶ Start Live Interactive Demo</span>
                 </button>
                 <a href="#docs" class="btn-search-pill" style="padding: 0.75rem 1.6rem; font-size: 0.95rem; border-radius: 20px;">
-                    <i class="fa-solid fa-book-open"></i>
+                    <i class="fa-solid fa-book-open" aria-hidden="true"></i>
                     <span>Explore Documentation</span>
                 </a>
             </div>
@@ -1010,7 +1059,7 @@
                     <p>Deterministic Scope Protection</p>
                 </div>
                 <div class="stat-item">
-                    <h3>15 Subagents</h3>
+                    <h3>109 Subagents</h3>
                     <p>Purpose-Built Specialists</p>
                 </div>
                 <div class="stat-item">
@@ -1056,44 +1105,44 @@
                     <div>
                         <div class="doc-group-title">Getting Started</div>
                         <ul class="doc-menu">
-                            <li><button class="doc-menu-btn active" onclick="loadDoc('overview', this)"><i class="fa-solid fa-star"></i> Overview & Core Concept</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('install', this)"><i class="fa-solid fa-download"></i> Installation Guide</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('doctor', this)"><i class="fa-solid fa-stethoscope"></i> Doctor Health Check</button></li>
+                            <li><button class="doc-menu-btn active" onclick="loadDoc('overview', this)"><i class="fa-solid fa-star" aria-hidden="true"></i> Overview & Core Concept</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('install', this)"><i class="fa-solid fa-download" aria-hidden="true"></i> Installation Guide</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('doctor', this)"><i class="fa-solid fa-stethoscope" aria-hidden="true"></i> Doctor Health Check</button></li>
                         </ul>
                     </div>
 
                     <div>
                         <div class="doc-group-title">Architecture</div>
                         <ul class="doc-menu">
-                            <li><button class="doc-menu-btn" onclick="loadDoc('architecture', this)"><i class="fa-solid fa-layer-group"></i> 4-Layer Discipline</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('workflow', this)"><i class="fa-solid fa-diagram-project"></i> Task Workflow Loop</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('architecture', this)"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> 4-Layer Discipline</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('workflow', this)"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Task Workflow Loop</button></li>
                         </ul>
                     </div>
 
                     <div>
                         <div class="doc-group-title">Specialist Crew</div>
                         <ul class="doc-menu">
-                            <li><button class="doc-menu-btn" onclick="loadDoc('core-agents', this)"><i class="fa-solid fa-user-gear"></i> 6 Core Subagents</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('ext-agents', this)"><i class="fa-solid fa-user-astronaut"></i> 9 Extended Subagents</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('core-agents', this)"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> 6 Core Subagents</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('ext-agents', this)"><i class="fa-solid fa-user-astronaut" aria-hidden="true"></i> 9 Extended Subagents</button></li>
                         </ul>
                     </div>
 
                     <div>
                         <div class="doc-group-title">Hooks Reference</div>
                         <ul class="doc-menu">
-                            <li><button class="doc-menu-btn" onclick="loadDoc('scope-guard', this)"><i class="fa-solid fa-shield-halved"></i> scope-guard.sh (PreToolUse)</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('secret-guard', this)"><i class="fa-solid fa-key"></i> secret-guard.sh (PreToolUse)</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('munshi', this)"><i class="fa-solid fa-scroll"></i> munshi.sh (PostToolUse)</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('session-brief', this)"><i class="fa-solid fa-file-import"></i> session-brief.sh (SessionStart)</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('scope-guard', this)"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> scope-guard.sh (PreToolUse)</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('secret-guard', this)"><i class="fa-solid fa-key" aria-hidden="true"></i> secret-guard.sh (PreToolUse)</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('munshi', this)"><i class="fa-solid fa-scroll" aria-hidden="true"></i> munshi.sh (PostToolUse)</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('session-brief', this)"><i class="fa-solid fa-file-import" aria-hidden="true"></i> session-brief.sh (SessionStart)</button></li>
                         </ul>
                     </div>
 
                     <div>
                         <div class="doc-group-title">Commands & Customization</div>
                         <ul class="doc-menu">
-                            <li><button class="doc-menu-btn" onclick="loadDoc('commands', this)"><i class="fa-solid fa-terminal"></i> 4 Slash Commands</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('customization', this)"><i class="fa-solid fa-sliders"></i> Config & Custom Agents</button></li>
-                            <li><button class="doc-menu-btn" onclick="loadDoc('faq', this)"><i class="fa-solid fa-circle-question"></i> FAQ & Troubleshooting</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('commands', this)"><i class="fa-solid fa-terminal" aria-hidden="true"></i> 4 Slash Commands</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('customization', this)"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Config & Custom Agents</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('faq', this)"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> FAQ & Troubleshooting</button></li>
                         </ul>
                     </div>
                 </div>
@@ -1115,7 +1164,7 @@
                         <h3>The 4-Layer Systemic Discipline</h3>
                         <ul>
                             <li><strong>Layer 4 · Memory:</strong> Markdown state on disk (<code>PROJECT_STATE.md</code>, <code>tasks/*.md</code>). Survives session crashes and context clear commands.</li>
-                            <li><strong>Layer 3 · Intelligence:</strong> 15 specialist subagents executing in fresh LLM context windows. Reviewers operate strictly in read-only mode.</li>
+                            <li><strong>Layer 3 · Intelligence:</strong> 109 specialist subagents executing in fresh LLM context windows. Reviewers operate strictly in read-only mode.</li>
                             <li><strong>Layer 2 · Guard-Rails:</strong> Executable bash hooks (<code>scope-guard.sh</code> and <code>secret-guard.sh</code>) intercept tool calls and abort illegal writes with Exit Code 2.</li>
                             <li><strong>Layer 1 · Determinism:</strong> Zero-token bash scripts (<code>munshi.sh</code> ledgers and <code>session-brief.sh</code> state injection).</li>
                         </ul>
@@ -1131,7 +1180,7 @@
             <div class="header-center">
                 <span class="section-tag">Live CLI Simulator</span>
                 <h2 class="section-title">Deterministic Workflow Execution in Action</h2>
-                <p class="section-desc">Click the <strong>▶ Start Live Demo</strong> button below to watch step-by-step how Thekedar coordinates 15 subagents, catches scope violations, and records zero-token edit ledgers.</p>
+                <p class="section-desc">Click the <strong>▶ Start Live Demo</strong> button below to watch step-by-step how Thekedar coordinates 109 subagents, catches scope violations, and records zero-token edit ledgers.</p>
             </div>
 
             <div class="terminal-playground">
@@ -1143,7 +1192,7 @@
                     </div>
                     <div class="term-cmds">
                         <button class="btn-start-demo" onclick="startInteractiveDemo()">
-                            <i class="fa-solid fa-play"></i>
+                            <i class="fa-solid fa-play" aria-hidden="true"></i>
                             <span>▶ Start Live Demo</span>
                         </button>
                         <button class="term-btn" onclick="runSimulation('task', this)">/thekedar Command</button>
@@ -1181,7 +1230,7 @@
             <div class="bento-grid">
                 <div class="bento-card">
                     <div>
-                        <div class="bento-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="bento-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
                         <h3 class="bento-title">Mechanical Scope Protection</h3>
                         <p class="bento-desc"><code>scope-guard.sh</code> intercepts all <code>Write</code> and <code>Edit</code> tool calls. If an agent attempts to modify a file outside declared scope, bash returns Exit Code 2 and halts the write before disk mutation.</p>
                     </div>
@@ -1189,7 +1238,7 @@
 
                 <div class="bento-card">
                     <div>
-                        <div class="bento-icon"><i class="fa-solid fa-key"></i></div>
+                        <div class="bento-icon"><i class="fa-solid fa-key" aria-hidden="true"></i></div>
                         <h3 class="bento-title">PreToolUse Secret Interceptor</h3>
                         <p class="bento-desc"><code>secret-guard.sh</code> regex-scans every edit payload for AWS access keys, private PEM blocks, JWTs, and API tokens. Zero hardcoded secrets touch git history.</p>
                     </div>
@@ -1197,7 +1246,7 @@
 
                 <div class="bento-card">
                     <div>
-                        <div class="bento-icon"><i class="fa-solid fa-scroll"></i></div>
+                        <div class="bento-icon"><i class="fa-solid fa-scroll" aria-hidden="true"></i></div>
                         <h3 class="bento-title">Zero-Token Change Ledger</h3>
                         <p class="bento-desc"><code>munshi.sh</code> records <code>| time | tool | file |</code> ledgers instantly via PostToolUse hooks, maintaining an audit trail without wasting model context tokens.</p>
                     </div>
@@ -1205,7 +1254,7 @@
 
                 <div class="bento-card">
                     <div>
-                        <div class="bento-icon"><i class="fa-solid fa-brain"></i></div>
+                        <div class="bento-icon"><i class="fa-solid fa-brain" aria-hidden="true"></i></div>
                         <h3 class="bento-title">Fresh Context Subagent Routing</h3>
                         <p class="bento-desc">Rather than relying on a long multi-hour chat that degrades over time, every task dispatches a purpose-built subagent in an unpolluted context window.</p>
                     </div>
@@ -1213,7 +1262,7 @@
 
                 <div class="bento-card">
                     <div>
-                        <div class="bento-icon"><i class="fa-solid fa-lock"></i></div>
+                        <div class="bento-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></div>
                         <h3 class="bento-title">Enforced Read-Only Reviewers</h3>
                         <p class="bento-desc">Reviewers (<code>error-checker</code> & <code>security-auditor</code>) have <code>Write</code> and <code>Edit</code> tools stripped at the permission level. They inspect diffs hostile-reviewer style but physically cannot modify source code.</p>
                     </div>
@@ -1221,7 +1270,7 @@
 
                 <div class="bento-card">
                     <div>
-                        <div class="bento-icon"><i class="fa-solid fa-file-contract"></i></div>
+                        <div class="bento-icon"><i class="fa-solid fa-file-contract" aria-hidden="true"></i></div>
                         <h3 class="bento-title">Git-Tracked Markdown Memory</h3>
                         <p class="bento-desc">Project state persists on disk in <code>PROJECT_STATE.md</code> and <code>tasks/*.md</code>. Survives session crashes, memory purges, and terminal restarts. Simply type <code>continue</code> to resume.</p>
                     </div>
@@ -1230,12 +1279,12 @@
         </div>
     </section>
 
-    <!-- 15 Subagents Roster -->
+    <!-- 109 Subagents Roster -->
     <section id="agents" class="section">
         <div class="container">
             <div class="header-center">
                 <span class="section-tag">Context Window Isolation</span>
-                <h2 class="section-title">The 15-Member Purpose-Built Agent Architecture</h2>
+                <h2 class="section-title">The 109-Member Purpose-Built Agent Architecture</h2>
                 <p class="section-desc">Every agent operates in an unpolluted context window. Read-only reviewers have file mutation tools stripped at the tool allowlist layer.</p>
             </div>
 
@@ -1327,7 +1376,7 @@
                             <td><strong>Context Window Isolation</strong></td>
                             <td>❌ Monolithic</td>
                             <td>⚠️ Manual</td>
-                            <td class="td-highlight">✅ 15 Isolated Subagents</td>
+                            <td class="td-highlight">✅ 109 Isolated Subagents</td>
                         </tr>
                         <tr>
                             <td><strong>Read-Only Code Reviews</strong></td>
@@ -1378,8 +1427,8 @@
                     </h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Commits <code>.claude/</code> and <code>.thekedar/</code> scaffolding directly into project repo.</p>
                     <div class="code-box" style="margin-bottom: 0;">
-                        <code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --full</code>
-                        <button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --full')">Copy</button>
+                        <code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all</code>
+                        <button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all')">Copy</button>
                     </div>
                 </div>
             </div>
@@ -1395,7 +1444,7 @@
             <div class="footer-grid">
                 <div>
                     <div class="footer-logo">
-                        <i class="fa-solid fa-hard-hat"></i> THEKEDAR
+                        <i class="fa-solid fa-hard-hat" aria-hidden="true"></i> THEKEDAR
                     </div>
                     <p style="color: var(--text-muted);">
                         The site supervisor for autonomous AI coding crews. Kaam Pakka, Hisaab Saaf. Zero-dependency workflow discipline.
@@ -1405,17 +1454,17 @@
                 <div class="footer-col">
                     <h5>Architecture</h5>
                     <ul>
-                        <li><a href="#docs" onclick="loadDoc('architecture')">4-Layer System</a></li>
-                        <li><a href="#docs" onclick="loadDoc('scope-guard')">Scope Protection</a></li>
-                        <li><a href="#docs" onclick="loadDoc('secret-guard')">Secret Scanner</a></li>
+                        <li><a href="#doc-architecture">4-Layer System</a></li>
+                        <li><a href="#doc-scope-guard">Scope Protection</a></li>
+                        <li><a href="#doc-secret-guard">Secret Scanner</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-col">
                     <h5>Specialists</h5>
                     <ul>
-                        <li><a href="#docs" onclick="loadDoc('core-agents')">6 Core Subagents</a></li>
-                        <li><a href="#docs" onclick="loadDoc('ext-agents')">9 Extended Subagents</a></li>
+                        <li><a href="#doc-core-agents">6 Core Subagents</a></li>
+                        <li><a href="#doc-ext-agents">9 Extended Subagents</a></li>
                     </ul>
                 </div>
 
@@ -1449,11 +1498,13 @@
         function toggleMobileNav() {
             const drawer = document.getElementById('mobileNavDrawer');
             const icon = document.getElementById('hamburgerIcon');
-            drawer.classList.toggle('active');
-            if (drawer.classList.contains('active')) {
-                icon.className = 'fa-solid fa-xmark';
-            } else {
-                icon.className = 'fa-solid fa-bars';
+            const btn = document.getElementById('hamburgerBtn');
+            const open = drawer.classList.toggle('active');
+            icon.className = open ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+            icon.setAttribute('aria-hidden', 'true');
+            if (btn) {
+                btn.setAttribute('aria-expanded', String(open));
+                btn.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
             }
         }
 
@@ -1525,7 +1576,7 @@
                     <ul>
                         <li><strong>Context bloat → hallucination:</strong> Solved via fresh LLM context per subagent.</li>
                         <li><strong>No paper trail:</strong> Solved via zero-token Munshi change ledgers.</li>
-                        <li><strong>One agent, every hat:</strong> Solved via 15 specialist agents with enforced tool permissions.</li>
+                        <li><strong>One agent, every hat:</strong> Solved via 109 specialist agents with enforced tool permissions.</li>
                         <li><strong>Session dies, knowledge dies:</strong> Solved via git-tracked Markdown disk state.</li>
                         <li><strong>Prompting isn't enforcement:</strong> Solved via PreToolUse bash hooks throwing Exit Code 2.</li>
                     </ul>
@@ -1539,7 +1590,7 @@
                     <div class="code-box"><code>claude plugin marketplace add soumyachk101/Thekedar</code><button class="btn-copy" onclick="copyText('claude plugin marketplace add soumyachk101/Thekedar')">Copy</button></div>
                     <div class="code-box"><code>claude plugin install thekedar@thekedar</code><button class="btn-copy" onclick="copyText('claude plugin install thekedar@thekedar')">Copy</button></div>
                     <h3>Option 2: Script Installer (Full Crew)</h3>
-                    <div class="code-box"><code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --full</code><button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --full')">Copy</button></div>
+                    <div class="code-box"><code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all</code><button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all')">Copy</button></div>
                 </article>
             `,
             doctor: `
@@ -1591,7 +1642,7 @@
                         <li><strong>planner (नक्शा-वाला):</strong> Decomposes goals into modular task specs. Tools: Read, Grep, Write.</li>
                         <li><strong>backend-dev (मिस्त्री):</strong> Implements backend logic & APIs within task target files. Tools: Read, Write, Edit, Bash.</li>
                         <li><strong>frontend-dev (रंग-मिस्त्री):</strong> UI components & design systems. Tools: Read, Write, Edit, Bash.</li>
-                        <li><strong>error-checker (Inspector):</strong> Read-only. Runs tests, linters, and type-checks. Tools: Read, Bash, Grep.</li>
+                        <li><strong>error-checker (Inspector):</strong> Read-only. Runs tests, linters, and type-checkers. Tools: Read, Bash, Grep.</li>
                         <li><strong>security-auditor (चौकीदार):</strong> Read-only. Audits diffs for secrets, injection, and auth gaps. Tools: Read, Grep, Bash.</li>
                         <li><strong>frontend-reviewer (Finisher):</strong> Read-only. Validates responsive layouts, accessibility, and visual polish. Tools: Read, Grep, Bash.</li>
                     </ul>
@@ -1680,15 +1731,33 @@
         };
 
         function loadDoc(key, btnElem) {
-            if (btnElem) {
-                document.querySelectorAll('.doc-menu-btn').forEach(btn => btn.classList.remove('active'));
-                btnElem.classList.add('active');
-            }
-            const view = document.getElementById('docContentView');
-            if (docsData[key]) {
-                view.innerHTML = docsData[key];
-            }
+            if (!docsData[key]) return;
+            // No btnElem when routed from the URL — find the matching sidebar button.
+            const btn = btnElem || [...document.querySelectorAll('.doc-menu-btn')]
+                .find(b => (b.getAttribute('onclick') || '').includes("'" + key + "'"));
+            document.querySelectorAll('.doc-menu-btn').forEach(b => b.classList.toggle('active', b === btn));
+            const sel = document.querySelector('.mobile-doc-select');
+            if (sel && sel.value !== key) sel.value = key;
+            document.getElementById('docContentView').innerHTML = docsData[key];
+            if (location.hash !== '#doc-' + key) history.replaceState(null, '', '#doc-' + key);
         }
+
+        // Every doc gets its own URL: /#doc-<key>. Deep-linkable, shareable,
+        // and the browser back button walks the doc history.
+        function docKeyFromHash() {
+            const m = /^#doc-(.+)$/.exec(location.hash);
+            return m && docsData[m[1]] ? m[1] : null;
+        }
+        window.addEventListener('hashchange', () => {
+            const key = docKeyFromHash();
+            if (key) loadDoc(key);
+        });
+        window.addEventListener('DOMContentLoaded', () => {
+            const key = docKeyFromHash();
+            if (!key) return;
+            loadDoc(key);
+            document.getElementById('docs').scrollIntoView();
+        });
 
         function focusDocSearch() {
             document.getElementById('docs').scrollIntoView({ behavior: 'smooth' });

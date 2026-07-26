@@ -21,7 +21,7 @@
 set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-CATALOG="$ROOT/catalog/agents.tsv"
+CATALOG="$ROOT/catalog/agents.psv"
 AGENTS_DIR="$ROOT/.claude/agents"
 FAIL=0
 
@@ -112,7 +112,7 @@ while IFS= read -r f; do
   # catalog membership + type-driven tool law + type-driven section law
   ctype="$(lookup "$base" 2)"
   if [ -z "$ctype" ]; then
-    err "$rel: no catalog row for '$base' (orphan file — add it to catalog/agents.tsv)"
+    err "$rel: no catalog row for '$base' (orphan file — add it to catalog/agents.psv)"
   else
     case "$ctype" in
       gate)

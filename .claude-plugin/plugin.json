@@ -20,7 +20,12 @@
   ],
   "agents": [
     "./.claude/agents/core/",
-    "./.claude/agents/extended/"
+    "./.claude/agents/extended/",
+    "./.claude/agents/languages/",
+    "./.claude/agents/frameworks/",
+    "./.claude/agents/domains/",
+    "./.claude/agents/ops/",
+    "./.claude/agents/reviewers/"
   ],
   "skills": [
     "./skills/"

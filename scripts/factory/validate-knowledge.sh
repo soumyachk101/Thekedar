@@ -8,7 +8,7 @@
 #    · every knowledge file is substantive (≥ MIN_LINES lines) —
 #      no empty stubs padding the file count
 #    · no orphan packs: every knowledge/<path> is referenced by
-#      ≥ 1 agent row in catalog/agents.tsv
+#      ≥ 1 agent row in catalog/agents.psv
 #
 #  Until the knowledge library is built (Phases 12-13), knowledge/
 #  is absent/empty and this validator passes with a note.
@@ -18,7 +18,7 @@ set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 KDIR="$ROOT/knowledge"
-CATALOG="$ROOT/catalog/agents.tsv"
+CATALOG="$ROOT/catalog/agents.psv"
 MIN_LINES=60
 FAIL=0
 
@@ -53,7 +53,7 @@ while IFS= read -r f; do
   [ "$lines" -ge "$MIN_LINES" ] || err "$rel: only $lines lines (min $MIN_LINES) — stub, not a pack"
 
   if ! printf '%s\n' "$REFS" | grep -qxF "$krel"; then
-    err "$rel: orphan pack — no agent row in catalog/agents.tsv references 'knowledge/$krel'"
+    err "$rel: orphan pack — no agent row in catalog/agents.psv references 'knowledge/$krel'"
   fi
 done <<EOF
 $(find "$KDIR" -type f -name '*.md' 2>/dev/null | sort)

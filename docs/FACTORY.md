@@ -12,9 +12,9 @@ Thekedar's crew is not hand-maintained as a pile of markdown files. It is **cata
 
 ```
 catalog/
-├── agents.tsv          ← ONE row per agent: name|category|type|tools|model|krefs|trigger
-├── knowledge.tsv       ← the shared-brain packs (built in the Mega expansion)
-├── integrations.tsv    ← per-tool adapters (built in the Mega expansion)
+├── agents.psv          ← ONE row per agent: name|category|type|tools|model|krefs|trigger
+├── knowledge.psv       ← the shared-brain packs (built in the Mega expansion)
+├── integrations.psv    ← per-tool adapters (built in the Mega expansion)
 └── INDEX.md            ← GENERATED master index, grouped by category
 
 scripts/factory/
@@ -30,7 +30,7 @@ scripts/factory/
 
 ## The generation loop
 
-1. **Add rows** to `catalog/agents.tsv`.
+1. **Add rows** to `catalog/agents.psv`.
 2. **Write one golden agent per category** by hand, reviewed hard — the quality anchor.
 3. **Generate the rest in small batches**: `gen-agent.sh <name>` produces a valid skeleton (frontmatter filled from the row, `MUST BE USED when <trigger>` already in place); a Claude Code session fills the body following the category's golden file.
 4. **Gate every batch**: `validate-all.sh` must pass, then commit. A batch that fails is fixed before the next one starts — never proceed dirty.

@@ -2,12 +2,15 @@ name: shellcheck
 
 on:
   push:
-    branches: [main]
+    branches: ['**']
   pull_request:
-    branches: [main]
 
 permissions:
   contents: read
+
+concurrency:
+  group: shellcheck-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   shellcheck:
