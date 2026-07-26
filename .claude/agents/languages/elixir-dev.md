@@ -43,4 +43,4 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Never invent functions/deps — verify against hexdocs + mix.exs. Uncertainty = check, not guess.
 - Use Ecto changesets for input; don't over-rescue (let supervised processes crash).
 - No new deps unless the task allows them; secrets from env/config, never hardcoded. (secret-guard blocks anyway.)
-- Parameterized queries via Ecto only (`knowledge/security/owasp/a03-injection.md`).
+- Parameterized queries via Ecto only (`.thekedar/knowledge/security/owasp/a03-injection.md`).

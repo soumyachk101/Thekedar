@@ -8,6 +8,13 @@ This file is maintained by Thekedar's own workflow discipline — every entry be
 
 ### Fixed
 
+**The shared brain never shipped:**
+- 79 agents cite knowledge packs by literal path (`consult .thekedar/knowledge/pitfalls/react.md`). Neither `install.sh` nor the plugin bootstrap copied `knowledge/` anywhere, so **208 citations across 46 distinct packs pointed at nothing in every real install** — the agents silently fell back to whatever they happened to remember, which is precisely what the packs exist to prevent. `install.sh` now always ships `knowledge/` → `.thekedar/knowledge/` (regardless of `--full`/`--all`; the core crew cites packs too), and `session-brief.sh` bootstraps the same path in plugin mode. Agent citations were rewritten from `knowledge/…` to `.thekedar/knowledge/…`, the path that now exists in an installed project.
+- The plugin bootstrap gate is `[ ! -d .thekedar ]`, so a project scaffolded by an older version would never re-enter it and would run forever without packs. Pack bootstrap is now gated separately and backfills into an existing `.thekedar/`.
+- `uninstall.sh` removes `.thekedar/knowledge/` — shipped content, not project history.
+
+**Why no validator caught it:** `validate-knowledge.sh` only checked packs → catalog ("no orphan pack"), and ran against the source repo, where `knowledge/` obviously exists. It now also checks the reverse — every `.thekedar/knowledge/…` citation in an agent body must resolve, and a bare `knowledge/…` prefix is a hard error. New `tests/test-knowledge-ship.sh` (17 checks) asserts against a real installed layout in both script and plugin modes, including the backfill case. Verified to fail 7 checks against the pre-fix code.
+
 **Distribution — the whole catalog now actually ships:**
 - `.claude-plugin/plugin.json` registered only `core/` and `extended/`, so 94 of the 109 catalogued agents (`languages`, `frameworks`, `domains`, `ops`, `reviewers`) existed on disk, in the catalog, and in the docs, but never reached a single user. All 7 category directories are now listed.
 - `install.sh` / `uninstall.sh` hardcoded the 15 agent names as shell strings and were structurally incapable of installing more. Both now derive the roster from `catalog/agents.psv` at run time, so a new catalog row ships without touching either script. New `install.sh --all` installs every category (`--full` still means core + extended); `update.sh` passes the flag through. The installer refuses a no-op install if the catalog resolves 0 agents.
@@ -29,6 +36,9 @@ This file is maintained by Thekedar's own workflow discipline — every entry be
 - `ci.yml` and `shellcheck.yml` only triggered on `main`, so every other branch — including the one this work happened on — ran zero checks. Both now run on all branches and all PRs, with a `concurrency` group so a PR from an in-repo branch doesn't run twice.
 
 ### Changed
+
+**Orchestrator routing — the 109 agents are now reachable:**
+- `skills/thekedar/SKILL.md` carried a hardcoded 15-agent routing table and named 6 language specialists as examples, then hand-waved "frameworks/domains/ops specialists arrive by the same rule as they're added". Nothing told the orchestrator what actually exists, so shipping 109 agents changed nothing about which ones got used. The table is now explicitly labelled the fallback, with a specificity ladder (framework → domain → language → generic), the same rule for reviewer gates, and an instruction to read the available-subagent list before routing. Every fallback to a generic doer gets noted in the changelog — a repeated fallback is a signal the catalog needs a new agent.
 
 - `catalog/*.tsv` → `catalog/*.psv`. The files were pipe-delimited all along; the `.tsv` extension silently broke `cut -f`, `awk -F'\t'`, and any spreadsheet import. All references updated; generated docs regenerated.
 

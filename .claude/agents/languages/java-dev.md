@@ -48,4 +48,4 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Never invent APIs — verify against the JDK/framework docs. Uncertainty = check, not guess.
 - No new dependencies unless the task allows them; keep the build file consistent.
 - Secrets from env/config only, never hardcoded. (secret-guard blocks anyway.)
-- Parameterized queries / prepared statements only; never string-built SQL (`knowledge/security/owasp/a03-injection.md`).
+- Parameterized queries / prepared statements only; never string-built SQL (`.thekedar/knowledge/security/owasp/a03-injection.md`).

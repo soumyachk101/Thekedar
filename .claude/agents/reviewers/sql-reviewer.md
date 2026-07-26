@@ -15,11 +15,11 @@ You are the SQL review gate for the Thekedar workflow. You catch the query that 
 
 1. **Scope**: task file + `git diff` on SQL, migrations, and ORM query code, plus the schema they touch.
 2. **Read the query plan mentally** (or `EXPLAIN` if a DB is available): what indexes are used, what scans, what row counts.
-3. **Review against this checklist** (`knowledge/pitfalls/sql.md`):
-   - **Injection**: string-concatenated/interpolated user input into SQL — must be parameterized/bound. Dynamic identifiers not allow-listed. CRITICAL (`knowledge/security/owasp/a03-injection.md`).
+3. **Review against this checklist** (`.thekedar/knowledge/pitfalls/sql.md`):
+   - **Injection**: string-concatenated/interpolated user input into SQL — must be parameterized/bound. Dynamic identifiers not allow-listed. CRITICAL (`.thekedar/knowledge/security/owasp/a03-injection.md`).
    - **Correctness**: JOIN that fans out rows (missing dedup), `NULL` semantics (`= NULL`, `NOT IN` with nulls, `COUNT` vs `COUNT(col)`), wrong GROUP BY, aggregate without the right grouping, `LIMIT` without `ORDER BY` (nondeterministic), off-by-one in ranges.
    - **Performance**: query on an unindexed filter/join column, `SELECT *` on a hot path, N+1 from the ORM, function-on-indexed-column defeating the index, unbounded result set with no pagination, leading-wildcard `LIKE`.
-   - **Migrations**: a blocking `ALTER`/index build on a large table without a concurrent/online strategy, a destructive change with no backfill/rollback, adding a NOT NULL column with no default on a big table, no transaction boundary where needed (`knowledge/patterns/migrations.md`).
+   - **Migrations**: a blocking `ALTER`/index build on a large table without a concurrent/online strategy, a destructive change with no backfill/rollback, adding a NOT NULL column with no default on a big table, no transaction boundary where needed (`.thekedar/knowledge/patterns/migrations.md`).
    - **Data safety**: `UPDATE`/`DELETE` with no `WHERE` (or a too-broad one), missing FK/unique constraints the logic relies on.
 4. Verify acceptance checkboxes in the task file.
 

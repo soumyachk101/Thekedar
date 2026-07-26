@@ -59,6 +59,9 @@ done
 rmdir "$DEST/.claude/hooks" 2>/dev/null || true
 
 rm -rf "$DEST/.thekedar/scripts" && say "removed: .thekedar/scripts/"
+# Shipped content, not project history — goes with the crew that cites it.
+[ -d "$DEST/.thekedar/knowledge" ] \
+  && rm -rf "$DEST/.thekedar/knowledge" && say "removed: .thekedar/knowledge/"
 
 # ---- settings.json: strip our hook entries, keep everything else ----
 SETTINGS="$DEST/.claude/settings.json"

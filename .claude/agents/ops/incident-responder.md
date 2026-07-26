@@ -21,8 +21,8 @@ You are the incident-response specialist for the Thekedar workflow. During an in
 ## Incident-response correctness (build to the packs)
 
 - **Runbooks**: symptom → diagnosis steps → mitigation → verify-recovered → escalation path. Exact commands, expected output, and the rollback for each action.
-- **Mitigation scripts**: idempotent, dry-run/confirm before destructive action, log what they did; never widen blast radius (`knowledge/patterns/observability.md` for the health signals they check).
-- **Alert routing**: right severity to the right channel; dedupe/group; every page links its runbook (`knowledge/review-checklists/logging.md` for what the diagnostic logs must expose).
+- **Mitigation scripts**: idempotent, dry-run/confirm before destructive action, log what they did; never widen blast radius (`.thekedar/knowledge/patterns/observability.md` for the health signals they check).
+- **Alert routing**: right severity to the right channel; dedupe/group; every page links its runbook (`.thekedar/knowledge/review-checklists/logging.md` for what the diagnostic logs must expose).
 - **Safety**: read-only diagnostics before any write; capture state (logs/metrics snapshot) before mitigating, for the postmortem.
 - **Postmortem**: blameless template — timeline, impact, root cause, action items with owners.
 

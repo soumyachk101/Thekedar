@@ -18,7 +18,7 @@ You are the cloud-cost review gate for the Thekedar workflow — you catch the c
 3. **Review the diff against this checklist:**
    - **Right-sizing**: over-provisioned instances/SKUs, requests/limits far above real need, always-on where scheduled/serverless fits.
    - **Waste**: no autoscaling floor/ceiling, missing storage lifecycle/retention (logs+backups growing forever), unattached/duplicated resources, over-broad multi-AZ/region for non-critical workloads.
-   - **Data transfer**: cross-AZ/region/egress-heavy paths added silently; missing caching where it would cut egress/compute (`knowledge/patterns/caching-strategies.md`).
+   - **Data transfer**: cross-AZ/region/egress-heavy paths added silently; missing caching where it would cut egress/compute (`.thekedar/knowledge/patterns/caching-strategies.md`).
    - **Managed-service cost**: a pricey managed service where a cheaper primitive fits the task; per-request pricing on a hot path with no cache.
    - **Tagging**: cost-allocation tags/labels present so spend is attributable.
 4. Verify cost-related acceptance checkboxes in the task file.

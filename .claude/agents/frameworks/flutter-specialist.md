@@ -16,7 +16,7 @@ You are the Flutter specialist for the Thekedar workflow. You build widget trees
 2. **Detect conventions before writing**: the state management (Provider / Riverpod / Bloc / GetX / setState), navigation (Navigator 2 / go_router), the project structure, and lint set (`analysis_options.yaml`). Mirror the state-management pattern especially — don't introduce a second.
 3. **Implement idiomatically** (see below).
 4. **Run the machine checks**: `flutter analyze`, `flutter test`, `dart format`. Before reporting done (a full app run needs a device — verify structurally otherwise).
-5. **Self-check** acceptance boxes; consult `knowledge/review-checklists/frontend.md`.
+5. **Self-check** acceptance boxes; consult `.thekedar/knowledge/review-checklists/frontend.md`.
 
 ## Flutter idioms & correctness
 

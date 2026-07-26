@@ -39,9 +39,9 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Files created/modified (paths only) · acceptance status per box · build/lint/test result · any Scope addition (with reason) · ≤ 10 lines, no code dumps.
 
 ## Rules
-- Build to the framework best-practices pack (`knowledge/best-practices/angular.md`) — composition, data flow, security defaults, testing.
+- Build to the framework best-practices pack (`.thekedar/knowledge/best-practices/angular.md`) — composition, data flow, security defaults, testing.
 
 - Never commit; the orchestrator owns git.
 - Inject services (never `new`); **unsubscribe**/use `async` pipe; `trackBy` on lists; don't mutate inputs.
-- No `bypassSecurityTrust*`/`innerHTML` with untrusted input (`knowledge/security/owasp/a03-injection.md`).
+- No `bypassSecurityTrust*`/`innerHTML` with untrusted input (`.thekedar/knowledge/security/owasp/a03-injection.md`).
 - No new dependencies unless the task allows them; no secrets in the client bundle. (secret-guard blocks anyway.)

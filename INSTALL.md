@@ -48,6 +48,7 @@ Then **restart your Claude Code session** — subagents and skills load at sessi
 3. Copies the munshi hook → `.claude/hooks/munshi.sh` (`chmod +x`)
 4. **Merges** the hook wiring into `.claude/settings.json` — your existing hooks and settings are preserved; a differing file is backed up to `*.bak`
 5. Creates `.thekedar/` (tasks, changes, templates) and initializes `PROJECT_STATE.md`
+6. Copies the knowledge packs → `.thekedar/knowledge/` — the crew's shared brain. Agents cite these by path (`.thekedar/knowledge/pitfalls/react.md`), so they ship on every install regardless of `--full`/`--all`. Plugin installs get the same packs at the same path via the SessionStart bootstrap.
 
 Idempotent — re-run anytime, including after pulling a new Thekedar version.
 

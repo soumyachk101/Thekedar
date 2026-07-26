@@ -108,6 +108,19 @@ for sc in $SCRIPTS; do
   chmod +x "$DEST/.thekedar/scripts/$sc"
 done
 
+# ---- Knowledge packs — the shared brain ----
+# 79 agents cite `.thekedar/knowledge/<pack>.md` by literal path. If the packs
+# don't land in the project, every one of those citations dangles and the
+# agents fall back to whatever they happen to remember. Always installed,
+# regardless of --full/--all: even the core crew cites packs.
+if [ -d "$SRC/knowledge" ]; then
+  mkdir -p "$DEST/.thekedar/knowledge"
+  cp -R "$SRC/knowledge/." "$DEST/.thekedar/knowledge/"
+  say "install: .thekedar/knowledge/ ($(find "$SRC/knowledge" -name '*.md' | wc -l | tr -d ' ') packs)"
+else
+  say "⚠️  no knowledge/ in $SRC — agents' pack citations will dangle."
+fi
+
 # Living state: initialize only if absent, never clobber.
 if [ ! -f "$DEST/.thekedar/PROJECT_STATE.md" ]; then
   cp "$SRC/templates/PROJECT_STATE.md" "$DEST/.thekedar/PROJECT_STATE.md"

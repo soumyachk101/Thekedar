@@ -43,4 +43,4 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 - Never invent APIs — verify against the .NET docs. Uncertainty = check, not guess.
 - No `async void` (except handlers); no `.Result`/`.Wait()` on async; dispose disposables.
 - No new dependencies unless the task allows them; secrets from config/env/secret manager, never hardcoded. (secret-guard blocks anyway.)
-- Parameterized queries / EF Core (never string-built SQL) (`knowledge/security/owasp/a03-injection.md`).
+- Parameterized queries / EF Core (never string-built SQL) (`.thekedar/knowledge/security/owasp/a03-injection.md`).

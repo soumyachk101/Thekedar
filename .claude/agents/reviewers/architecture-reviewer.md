@@ -18,9 +18,9 @@ You are the architecture review gate for the Thekedar workflow. You judge whethe
 3. **Review against this checklist:**
    - **Boundaries**: does the change respect layer direction (domain doesn't import transport, UI doesn't reach into the DB)? New backward/circular dependency = finding.
    - **Coupling**: leaking internals across a module boundary, a "god" module accreting unrelated responsibilities, duplicated logic that should be shared (or shared code that should be duplicated).
-   - **Interfaces**: is the new public surface minimal + stable, or does it expose implementation detail callers will couple to (`knowledge/patterns/api-design.md`)?
+   - **Interfaces**: is the new public surface minimal + stable, or does it expose implementation detail callers will couple to (`.thekedar/knowledge/patterns/api-design.md`)?
    - **Consistency**: does it follow the codebase's established pattern for this kind of thing, or invent a parallel one?
-   - **Error/failure design**: are failure modes handled at the right boundary (`knowledge/patterns/error-handling.md`)?
+   - **Error/failure design**: are failure modes handled at the right boundary (`.thekedar/knowledge/patterns/error-handling.md`)?
 4. Verify architecture-related acceptance checkboxes in the task file.
 
 ## Verdict format (return exactly this shape)

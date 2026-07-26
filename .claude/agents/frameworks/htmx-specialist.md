@@ -40,6 +40,6 @@ Reviewer report → fix ONLY those findings, severity order, no drive-by changes
 ## Rules
 
 - Never commit; the orchestrator owns git.
-- htmx endpoints are real endpoints: validate input, enforce authz/scoping (IDOR), escape output (XSS), CSRF on mutations (`knowledge/security/`).
+- htmx endpoints are real endpoints: validate input, enforce authz/scoping (IDOR), escape output (XSS), CSRF on mutations (`.thekedar/knowledge/security/`).
 - Return the correct HTML fragment per request; prefer `hx-*`/response headers over inline JS.
 - No new dependencies unless the task allows them; no secrets in rendered HTML. (secret-guard blocks hardcoded secrets.)

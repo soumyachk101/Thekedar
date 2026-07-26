@@ -14,8 +14,8 @@ You are the logging review gate for the Thekedar workflow. Logs are a security s
 
 1. **Scope**: task file + `git diff`, focusing on log/print/telemetry statements and what data flows into them.
 2. **Trace the data** in each log call: could it contain a secret, token, password, full PII, or an entire request body?
-3. **Review against this checklist** (`knowledge/review-checklists/logging.md`, `knowledge/patterns/observability.md`):
-   - **Leakage**: logging passwords/tokens/API keys/session ids, full auth headers, card/SSN/PII, raw request/response bodies with credentials. Redact or drop (`knowledge/security/secrets-patterns.md`). This is CRITICAL.
+3. **Review against this checklist** (`.thekedar/knowledge/review-checklists/logging.md`, `.thekedar/knowledge/patterns/observability.md`):
+   - **Leakage**: logging passwords/tokens/API keys/session ids, full auth headers, card/SSN/PII, raw request/response bodies with credentials. Redact or drop (`.thekedar/knowledge/security/secrets-patterns.md`). This is CRITICAL.
    - **Levels**: errors logged at `error`, expected conditions not logged as errors (alert fatigue), debug spam left at `info` in hot paths, an exception logged AND rethrown (double-logging).
    - **Actionability**: enough context to diagnose (ids, correlation/trace id, operation) without a novel; structured fields over string-concatenation where the project uses structured logging.
    - **Volume/cost**: logging inside a tight loop / per-row, unbounded payloads, PII-as-index-key.

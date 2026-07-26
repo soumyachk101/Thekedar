@@ -45,6 +45,19 @@ if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ ! -d "$PROJ/.thekedar" ]; then
   } 2>/dev/null || true
 fi
 
+# ---- knowledge packs ----
+# Gated separately from the scaffolding block above, on purpose: a project
+# bootstrapped by an older version already has .thekedar/, so it would never
+# re-enter that block and would run forever without the packs its agents cite.
+if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -d "$PROJ/.thekedar" ] \
+   && [ ! -d "$PROJ/.thekedar/knowledge" ] && [ -d "$CLAUDE_PLUGIN_ROOT/knowledge" ]; then
+  {
+    mkdir -p "$PROJ/.thekedar/knowledge"
+    cp -R "$CLAUDE_PLUGIN_ROOT/knowledge/." "$PROJ/.thekedar/knowledge/"
+    echo "=== THEKEDAR: installed .thekedar/knowledge/ — the shared brain the crew cites ==="
+  } 2>/dev/null || true
+fi
+
 STATE="$PROJ/.thekedar/PROJECT_STATE.md"
 
 [ -f "$STATE" ] || exit 0
