@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thekedar — ठेकेदार | AI Coding Crew Site Supervisor</title>
+    <meta name="description" content="Thekedar (ठेकेदार) is your AI coding crew's site supervisor. Enforces task breakdown, subagent isolation, PreToolUse guard-rails, read-only code reviews, and zero-token change ledgers.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #07090e;
+            --bg-card: #0e131f;
+            --bg-card-hover: #141c2e;
+            --bg-code: #090c14;
+            --bg-glass: rgba(14, 19, 31, 0.75);
+            
+            --primary: #ff6b00;
+            --primary-glow: rgba(255, 107, 0, 0.35);
+            --primary-light: #ff8e3c;
+            --primary-dark: #cc5200;
+            
+            --accent-amber: #f59e0b;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-red: #ef4444;
+            
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(255, 107, 0, 0.4);
+            
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+            
+            --shadow-glow: 0 0 35px rgba(255, 107, 0, 0.15);
+            --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        body {
+            line-height: 1.65;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 107, 0, 0.07) 0%, transparent 60%),
+                        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+                        var(--bg-dark);
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Utility Classes */
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #ffd8be 40%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-amber {
+            background: linear-gradient(135deg, var(--accent-amber), #fde047);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+
+        /* Header Navigation */
+        header.navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(7, 9, 14, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition-fast);
+        }
+        .nav-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+        }
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+            background: rgba(255, 107, 0, 0.12);
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            margin-left: 0.3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .search-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: var(--transition-fast);
+        }
+        .search-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+        }
+        .kbd-shortcut {
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 0.7rem;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            padding: 0.55rem 1.25rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.88rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            transition: var(--transition-fast);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.45);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-main);
+            padding: 0.55rem 1.25rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.88rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 6rem 0 4rem;
+            text-align: center;
+            position: relative;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255, 107, 0, 0.08);
+            border: 1px solid rgba(255, 107, 0, 0.25);
+            padding: 0.4rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(8px);
+        }
+        .hero-badge i {
+            color: var(--primary);
+        }
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            max-width: 950px;
+            margin: 0 auto 1.5rem;
+        }
+        .hero-subtitle {
+            font-size: 1.35rem;
+            color: var(--text-muted);
+            max-width: 780px;
+            margin: 0 auto 2.5rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        .hero-subtitle span {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: 1.25rem;
+            margin-bottom: 3.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Hero Terminal Box */
+        .terminal-box {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), var(--shadow-glow);
+            text-align: left;
+        }
+        .terminal-header {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .terminal-dots {
+            display: flex;
+            gap: 0.45rem;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+        
+        .terminal-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .term-tab {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.25rem 0.65rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        .term-tab.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+        }
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #d1d5db;
+            line-height: 1.7;
+            position: relative;
+        }
+        .terminal-line {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .prompt-symbol {
+            color: var(--primary);
+            user-select: none;
+        }
+        .copy-code-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        .copy-code-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* Metrics Strip */
+        .metrics-section {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(14, 19, 31, 0.4);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        .metric-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1;
+            margin-bottom: 0.4rem;
+        }
+        .metric-card p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        /* Section Layouts */
+        section.section-block {
+            padding: 6rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        .section-header {
+            margin-bottom: 3.5rem;
+            text-align: center;
+        }
+        .section-tag {
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.75rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        /* Cards Grid */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.75rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 107, 0, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: rgba(255, 107, 0, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid rgba(255, 107, 0, 0.2);
+        }
+        .feature-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Interactive Pipeline Stepper */
+        .pipeline-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+        .pipeline-stepper {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+        .pipeline-stepper::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+        .step-node {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition-fast);
+        }
+        .step-node.active .step-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        .step-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            color: var(--text-muted);
+            transition: var(--transition-fast);
+            text-align: center;
+        }
+        .step-node.active .step-label {
+            color: var(--text-main);
+        }
+        
+        .pipeline-details {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            min-height: 220px;
+        }
+        .pipeline-panel {
+            display: none;
+        }
+        .pipeline-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 4-Layer Stack Visualizer */
+        .layer-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+        .layer-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 6px solid var(--border-color);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            padding: 1.5rem 2rem;
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+        .layer-card:hover {
+            transform: translateX(6px);
+            background: var(--bg-card-hover);
+        }
+        .layer-4 { border-left-color: var(--accent-purple); }
+        .layer-3 { border-left-color: var(--accent-blue); }
+        .layer-2 { border-left-color: var(--accent-red); }
+        .layer-1 { border-left-color: var(--accent-green); }
+
+        .layer-tag {
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+        .layer-4 .layer-tag { color: var(--accent-purple); }
+        .layer-3 .layer-tag { color: var(--accent-blue); }
+        .layer-2 .layer-tag { color: var(--accent-red); }
+        .layer-1 .layer-tag { color: var(--accent-green); }
+
+        .layer-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Agent Crew Showcase */
+        .crew-filter {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.5rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 1.5rem;
+        }
+        .agent-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition-fast);
+        }
+        .agent-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        }
+        .agent-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .agent-name-group {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .agent-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+        .agent-hindi {
+            font-size: 0.82rem;
+            color: var(--primary);
+            font-weight: 600;
+            background: rgba(255, 107, 0, 0.1);
+            padding: 0.1rem 0.45rem;
+            border-radius: 4px;
+        }
+        .badge-role {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+        }
+        .badge-doer { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-gate { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-planner { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.3); }
+
+        .agent-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+        .agent-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.75rem;
+        }
+
+        /* Config Builder Interactive */
+        .config-builder {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+        }
+        .config-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .form-group label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .form-group input, .form-group select {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.6rem 0.9rem;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .config-preview {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        /* Comparison Table */
+        .comparison-table-wrap {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+        }
+        table.comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        table.comparison-table th {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.2rem 1.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-color);
+        }
+        table.comparison-table td {
+            padding: 1.1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+        table.comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        table.comparison-table td:nth-child(2) {
+            color: var(--text-dim);
+        }
+        table.comparison-table td:nth-child(3) {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* Accordion FAQ */
+        .faq-accordion {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: var(--transition-fast);
+        }
+        .faq-question {
+            padding: 1.35rem 1.75rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-main);
+        }
+        .faq-answer {
+            padding: 0 1.75rem 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: none;
+        }
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+
+        /* Search Modal */
+        .search-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 10vh;
+        }
+        .search-modal-backdrop.active {
+            display: flex;
+        }
+        .search-modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            width: 90%;
+            max-width: 650px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+        }
+        .search-input-wrap {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .search-input-wrap input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.1rem;
+            width: 100%;
+            outline: none;
+        }
+        .search-results {
+            max-height: 380px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        .search-result-item {
+            padding: 0.85rem 1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            transition: var(--transition-fast);
+        }
+        .search-result-item:hover {
+            background: rgba(255, 107, 0, 0.12);
+        }
+        .result-title {
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .result-snippet {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(255, 107, 0, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition-fast);
+            z-index: 3000;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 0 2rem;
+            color: var(--text-muted);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr repeat(3, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-brand h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+        }
+        .footer-col h5 {
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1.2rem;
+        }
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .footer-col a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            transition: var(--transition-fast);
+        }
+        .footer-col a:hover {
+            color: var(--primary);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            .hero-title { font-size: 3rem; }
+            .nav-links { display: none; }
+            .config-builder { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .hero-title { font-size: 2.2rem; }
+            .hero-subtitle { font-size: 1.05rem; }
+            .grid-3, .grid-2 { grid-template-columns: 1fr; }
+            .pipeline-stepper { flex-wrap: wrap; gap: 1rem; justify-content: center; }
+            .pipeline-stepper::before { display: none; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="#" class="brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <span class="brand-title">THEKEDAR <span class="gradient-text">ठेकेदार</span></span>
+                    <span class="brand-subtitle">v2.0.0</span>
+                </a>
+
+                <ul class="nav-links">
+                    <li><a href="#overview"><i class="fa-solid fa-compass"></i> Overview</a></li>
+                    <li><a href="#architecture"><i class="fa-solid fa-layer-group"></i> Architecture</a></li>
+                    <li><a href="#crew"><i class="fa-solid fa-users"></i> Crew (21)</a></li>
+                    <li><a href="#guards"><i class="fa-solid fa-shield-halved"></i> Guards</a></li>
+                    <li><a href="#skills"><i class="fa-solid fa-terminal"></i> Skills</a></li>
+                    <li><a href="#config"><i class="fa-solid fa-sliders"></i> Config</a></li>
+                    <li><a href="#factory"><i class="fa-solid fa-industry"></i> Factory</a></li>
+                    <li><a href="#faq"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <button class="search-btn" id="openSearchBtn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Search docs...</span>
+                        <span class="kbd-shortcut">⌘K</span>
+                    </button>
+                    <a href="https://github.com/soumyachk101/Thekedar" target="_blank" class="btn-secondary">
+                        <i class="fa-brands fa-github"></i> Star
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="overview">
+        <div class="container">
+            <div class="hero-badge">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Zero-Dependency AI Site Supervisor for Claude Code</span>
+            </div>
+
+            <h1 class="hero-title">
+                Your AI Coding Crew's <br>
+                <span class="gradient-text">Site Supervisor</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Breaks big projects into small tasks, assigns specialist agents, gates every task behind independent review, <span>mechanically enforces scope via bash guards</span>, and keeps a zero-token written record of every change.
+                <br><br>
+                <em style="color: var(--primary-light); font-size: 1.1rem; font-style: normal; font-weight: 600;">"Kaam pakka, hisaab saaf." (Solid work, clean records.)</em>
+            </p>
+
+            <div class="hero-cta">
+                <a href="#install" class="btn-primary">
+                    <i class="fa-solid fa-download"></i> Install Plugin
+                </a>
+                <a href="#pipeline" class="btn-secondary">
+                    <i class="fa-solid fa-play"></i> Watch Pipeline Work
+                </a>
+            </div>
+
+            <!-- Hero Terminal Box -->
+            <div class="terminal-box">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="dot dot-red"></div>
+                        <div class="dot dot-yellow"></div>
+                        <div class="dot dot-green"></div>
+                    </div>
+                    <div class="terminal-tabs">
+                        <button class="term-tab active" onclick="switchTerminalTab('plugin', this)">Plugin Install</button>
+                        <button class="term-tab" onclick="switchTerminalTab('script', this)">Script Install</button>
+                        <button class="term-tab" onclick="switchTerminalTab('doctor', this)">Doctor Check</button>
+                    </div>
+                </div>
+                <div class="terminal-body" id="terminalContent">
+                    <button class="copy-code-btn" onclick="copyTerminalCode()"><i class="fa-regular fa-copy"></i> Copy</button>
+                    <div class="terminal-line">
+                        <span class="prompt-symbol">$</span>
+                        <span id="termCode">claude plugin marketplace add soumyachk101/Thekedar && claude plugin install thekedar@thekedar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Section -->
+    <div class="metrics-section">
+        <div class="container">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>21+</h3>
+                    <p>Specialist Agents & Gates</p>
+                </div>
+                <div class="metric-card">
+                    <h3 style="color: var(--accent-green);">5</h3>
+                    <p>Native Bash Hooks</p>
+                </div>
+                <div class="metric-card">
+                    <h3 style="color: var(--accent-amber);">0</h3>
+                    <p>Runtime Dependencies</p>
+                </div>
+                <div class="metric-card">
+                    <h3 style="color: var(--accent-purple);">2–4×</h3>
+                    <p>Token Budget Efficiency</p>
+                </div>
+                <div class="metric-card">
+                    <h3 style="color: var(--accent-blue);">100%</h3>
+                    <p>PreToolUse Scope Enforcement</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Sections -->
+    <main>
+
+        <!-- Problem & Solution Section -->
+        <section class="section-block">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">The Problem & Solution</span>
+                    <h2 class="section-title">Why Single-Context Agents Fail</h2>
+                    <p class="section-desc">AI coding agents are brilliant for 20 minutes. After turn 40, context pollution causes severe hallucination, forgotten requirements, and unvetted edits.</p>
+                </div>
+
+                <div class="grid-3">
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-brain-circuit"></i></div>
+                        <h4>1. Context Bloat → Hallucination</h4>
+                        <p>Give an agent a whole codebase and a vague goal. By turn 40 it's confidently editing non-existent files. Thekedar isolates every task into a <strong>fresh subagent context</strong>.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-file-signature"></i></div>
+                        <h4>2. No Paper Trail</h4>
+                        <p>"What did the AI change yesterday?" Git diff shows <em>what</em>, never <em>why</em> or <em>what was deliberately left untouched</em>. Munshi logs every tool edit live at zero token cost.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-user-ninja"></i></div>
+                        <h4>3. One Agent, Every Hat</h4>
+                        <p>The same context window writes backend code, checks security, and reviews UI. It grades its own homework. Thekedar routes work to <strong>read-only specialist reviewers</strong>.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-rotate-right"></i></div>
+                        <h4>4. Session Dies, Memory Dies</h4>
+                        <p>Crash, <code>/clear</code>, or a new day — the agent restarts from zero. Thekedar stores <code>PROJECT_STATE.md</code> on disk so <code>session-brief.sh</code> auto-resumes instantaneously.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-shield-cat"></i></div>
+                        <h4>5. Prompting Isn't Enforcement</h4>
+                        <p>"Don't touch that file" is a polite request, not a wall. Under context pressure, prompts get ignored. <code>scope-guard.sh</code> intercepts PreToolUse bash calls and says <strong>NO</strong>.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-microchip"></i></div>
+                        <h4>6. Token Waste</h4>
+                        <p>Asking giant models to perform simple logging or status reporting burns money. Thekedar pushes determinism down to zero-token local bash hooks.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline Turn-by-Turn Simulator Section -->
+        <section class="section-block" id="pipeline" style="background: rgba(14, 19, 31, 0.3);">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Interactive Pipeline</span>
+                    <h2 class="section-title">See Thekedar Execute One Task</h2>
+                    <p class="section-desc">Click through the turns below to see how planner, contract designer, doers, PreToolUse guards, and reviewers interact step-by-step.</p>
+                </div>
+
+                <div class="pipeline-container">
+                    <div class="pipeline-stepper">
+                        <div class="step-node active" onclick="showPipelineStep(1, this)">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Plan</div>
+                        </div>
+                        <div class="step-node" onclick="showPipelineStep(2, this)">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Contract</div>
+                        </div>
+                        <div class="step-node" onclick="showPipelineStep(3, this)">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Implement</div>
+                        </div>
+                        <div class="step-node" onclick="showPipelineStep(4, this)">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Guard Check</div>
+                        </div>
+                        <div class="step-node" onclick="showPipelineStep(5, 5, this)">
+                            <div class="step-circle">5</div>
+                            <div class="step-label">Review</div>
+                        </div>
+                        <div class="step-node" onclick="showPipelineStep(6, this)">
+                            <div class="step-circle">6</div>
+                            <div class="step-label">Commit</div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-details">
+                        <div class="pipeline-panel active" id="pipe-step-1">
+                            <h4 style="color: var(--accent-purple); margin-bottom: 0.5rem;"><i class="fa-solid fa-map"></i> Step 1: Naksha-Wala (Planner) Breaks Down Scope</h4>
+                            <p>You say: <em>"Build me JWT authentication with rate limiting."</em></p>
+                            <p>The orchestrator skill detects a multi-file request and invokes <code>planner</code> in a <strong>fresh context</strong>. It scans the codebase and writes <code>.thekedar/tasks/004-jwt-auth.md</code> detailing declared target files, non-scope boundaries, and acceptance criteria.</p>
+                        </div>
+
+                        <div class="pipeline-panel" id="pipe-step-2">
+                            <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;"><i class="fa-solid fa-drafting-compass"></i> Step 2: API Designer Draws Contract</h4>
+                            <p>Before any backend developer writes code, <code>api-designer</code> specifies exact request/response schemas, HTTP status codes, and security requirements inside the task file.</p>
+                        </div>
+
+                        <div class="pipeline-panel" id="pipe-step-3">
+                            <h4 style="color: var(--accent-amber); margin-bottom: 0.5rem;"><i class="fa-solid fa-hammer"></i> Step 3: Mistri (Backend Dev) Implements</h4>
+                            <p><code>backend-dev</code> receives the task file in a clean context. It performs <code>Write</code> and <code>Edit</code> calls strictly targeted at the task's expected files.</p>
+                        </div>
+
+                        <div class="pipeline-panel" id="pipe-step-4">
+                            <h4 style="color: var(--accent-red); margin-bottom: 0.5rem;"><i class="fa-solid fa-shield-halved"></i> Step 4: PreToolUse Guards Intercept Edits</h4>
+                            <p>Every single write call triggers <code>scope-guard.sh</code> (rejects out-of-scope files with exit 2) and <code>secret-guard.sh</code> (blocks AWS/JWT/Stripe key leaks). On allowed writes, <code>munshi.sh</code> logs the exact timestamp and file in today's ledger at 0 token cost.</p>
+                        </div>
+
+                        <div class="pipeline-panel" id="pipe-step-5">
+                            <h4 style="color: var(--accent-cyan); margin-bottom: 0.5rem;"><i class="fa-solid fa-user-check"></i> Step 5: Read-Only Reviewers Gate the Task</h4>
+                            <p><code>error-checker</code> runs unit tests; <code>security-auditor</code> inspects vulnerabilities. Both run in parallel, fresh, read-only contexts. If tests fail, a fix loop returns findings back to the doer.</p>
+                        </div>
+
+                        <div class="pipeline-panel" id="pipe-step-6">
+                            <h4 style="color: var(--accent-green); margin-bottom: 0.5rem;"><i class="fa-solid fa-check-double"></i> Step 6: Drift Check & Git Checkpoint</h4>
+                            <p><code>drift-check.sh</code> verifies zero unexpected files were modified. The orchestrator writes <code>changes/task-004.md</code> and issues a clean git commit: <code>"thekedar(task-004): JWT middleware"</code>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4-Layer Architecture Section -->
+        <section class="section-block" id="architecture">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">System Architecture</span>
+                    <h2 class="section-title">The 4-Layer Stack Discipline</h2>
+                    <p class="section-desc">Design Rule: <strong>Push work down the stack.</strong> If bash can enforce something, don't spend tokens asking an LLM nicely. If a small context can do a job, never hand it to a polluted one.</p>
+                </div>
+
+                <div class="layer-stack">
+                    <div class="layer-card layer-4">
+                        <span class="layer-tag">Layer 4 — Memory (Markdown on disk, git-tracked)</span>
+                        <h3 class="layer-title">PROJECT_STATE.md · config.md · tasks/*.md · changes/*.md</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Persists knowledge cleanly on disk. Survives crashes, <code>/clear</code>, and session restarts without relying on hidden database daemons.</p>
+                    </div>
+
+                    <div class="layer-card layer-3">
+                        <span class="layer-tag">Layer 3 — Intelligence (Fresh subagent LLM contexts)</span>
+                        <h3 class="layer-title">Orchestrator · Planner · 6 Doers · 6 Read-Only Reviewers</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Every subagent gets a targeted, clean context. Structural tool restrictions prevent gatekeepers from altering code during reviews.</p>
+                    </div>
+
+                    <div class="layer-card layer-2">
+                        <span class="layer-tag">Layer 2 — Guard-Rails (Bash PreToolUse — ONLY layer allowed to say NO)</span>
+                        <h3 class="layer-title">scope-guard.sh · secret-guard.sh</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Intercepts tool invocations before writes land on disk. Exit 2 capability mechanically blocks unauthorized modifications and key leaks.</p>
+                    </div>
+
+                    <div class="layer-card layer-1">
+                        <span class="layer-tag">Layer 1 — Determinism (Bash, zero tokens, never blocks)</span>
+                        <h3 class="layer-title">munshi.sh ledger · session-brief.sh · drift-check.sh · Git commits</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Executes fast, deterministic logging and brief injections. Completely token-free, running on local system bash.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Crew Inspector Section (21 Agents) -->
+        <section class="section-block" id="crew">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Specialist Roster</span>
+                    <h2 class="section-title">The Crew — 21 Specialist Agents</h2>
+                    <p class="section-desc">Every agent runs in its own isolated context. Reviewers carry no <code>Write/Edit</code> tools — read-only enforcement is structural.</p>
+                </div>
+
+                <div class="crew-filter">
+                    <button class="filter-btn active" onclick="filterCrew('all', this)">All Crew (21)</button>
+                    <button class="filter-btn" onclick="filterCrew('core', this)">Core Crew (6)</button>
+                    <button class="filter-btn" onclick="filterCrew('extended', this)">Extended Specialists (9)</button>
+                    <button class="filter-btn" onclick="filterCrew('languages', this)">Language Devs (6)</button>
+                    <button class="filter-btn" onclick="filterCrew('gates', this)">Read-Only Gates (6)</button>
+                </div>
+
+                <div class="agent-grid" id="agentGrid">
+
+                    <!-- Core Agents -->
+                    <div class="agent-card" data-cat="core">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">planner</span>
+                                    <span class="agent-hindi">नक्शा-वाला</span>
+                                </div>
+                                <span class="badge-role badge-planner">Planner</span>
+                            </div>
+                            <p class="agent-desc">Blueprint maker. Breaks complex user requests into scoped, sequential task markdown files with clear expected boundaries.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-screwdriver-wrench"></i> Read, Grep, Glob, Write</span>
+                            <span>Model: inherit</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="core">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">backend-dev</span>
+                                    <span class="agent-hindi">मिस्त्री</span>
+                                </div>
+                                <span class="badge-role badge-doer">Doer</span>
+                            </div>
+                            <p class="agent-desc">The primary backend mason. Implements APIs, databases, business logic, and scripts strictly within active task scope.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-code"></i> Read, Write, Edit, Bash</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="core">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">frontend-dev</span>
+                                    <span class="agent-hindi">रंग-मिस्त्री</span>
+                                </div>
+                                <span class="badge-role badge-doer">Doer</span>
+                            </div>
+                            <p class="agent-desc">Finishing mason. Handles UI components, styles, interactive layouts, accessibility, and client state.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-palette"></i> Read, Write, Edit, Bash</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <!-- Gates -->
+                    <div class="agent-card" data-cat="core gates">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">error-checker</span>
+                                    <span class="agent-hindi">The Inspector</span>
+                                </div>
+                                <span class="badge-role badge-gate">Read-Only Gate</span>
+                            </div>
+                            <p class="agent-desc">Executes tests, linter checks, and build verification. Fires on every task to catch regressions immediately.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-shield"></i> Read, Bash, Grep (No Write)</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="core gates">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">security-auditor</span>
+                                    <span class="agent-hindi">चौकीदार</span>
+                                </div>
+                                <span class="badge-role badge-gate">Read-Only Gate</span>
+                            </div>
+                            <p class="agent-desc">The guard. Audits code changes for injection flaws, authentication gaps, input sanitization, and key leaks.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-lock"></i> Read, Grep, Bash (No Write)</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="core gates">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">frontend-reviewer</span>
+                                    <span class="agent-hindi">The Finisher</span>
+                                </div>
+                                <span class="badge-role badge-gate">Read-Only Gate</span>
+                            </div>
+                            <p class="agent-desc">Inspects frontend UI component hygiene, responsive layouts, style consistency, and render performance.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-eye"></i> Read, Grep, Bash (No Write)</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <!-- Extended Crew -->
+                    <div class="agent-card" data-cat="extended">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">api-designer</span>
+                                    <span class="agent-hindi">Doorframe Drawer</span>
+                                </div>
+                                <span class="badge-role badge-planner">Planner</span>
+                            </div>
+                            <p class="agent-desc">Drafts REST / GraphQL API contracts before backend implementation starts, enforcing clean interfaces.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-network-wired"></i> Read, Grep, Write</span>
+                            <span>Model: inherit</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="extended">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">db-specialist</span>
+                                    <span class="agent-hindi">Foundations Eng</span>
+                                </div>
+                                <span class="badge-role badge-doer">Doer</span>
+                            </div>
+                            <p class="agent-desc">Specializes in SQL/NoSQL database schemas, ORM migrations, indexing strategies, and query optimization.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-database"></i> Read, Write, Edit, Bash</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="extended">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">devops-engineer</span>
+                                    <span class="agent-hindi">Site Services Eng</span>
+                                </div>
+                                <span class="badge-role badge-doer">Doer</span>
+                            </div>
+                            <p class="agent-desc">Manages Docker containers, CI/CD pipelines, environment variables, build artifacts, and deployment scripts.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-server"></i> Read, Write, Edit, Bash</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="extended">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">test-writer</span>
+                                    <span class="agent-hindi">Proof Writer</span>
+                                </div>
+                                <span class="badge-role badge-doer">Doer</span>
+                            </div>
+                            <p class="agent-desc">Writes unit tests, integration suites, and regression locks before major refactors take place.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-vial"></i> Read, Write, Edit, Bash</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="extended">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">docs-writer</span>
+                                    <span class="agent-hindi">Munshi's Cousin</span>
+                                </div>
+                                <span class="badge-role badge-doer">Doer</span>
+                            </div>
+                            <p class="agent-desc">Maintains project documentation, API guides, and changelogs sourced directly from code, never memory.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-book"></i> Read, Write, Grep</span>
+                            <span>Model: haiku</span>
+                        </div>
+                    </div>
+
+                    <!-- Language Specialists -->
+                    <div class="agent-card" data-cat="languages">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">python-dev</span>
+                                    <span class="agent-hindi">Golden Spec</span>
+                                </div>
+                                <span class="badge-role badge-doer">Language Doer</span>
+                            </div>
+                            <p class="agent-desc">Python ecosystem expert. FastAPI, Pytest, Django, type annotations, and idiomatic Pythonic architecture.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-brands fa-python"></i> Read, Write, Edit, Bash</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="languages">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">typescript-dev</span>
+                                    <span class="agent-hindi">TS Master</span>
+                                </div>
+                                <span class="badge-role badge-doer">Language Doer</span>
+                            </div>
+                            <p class="agent-desc">Strict TypeScript typing, Node.js, Next.js, tsconfig configuration, and async control flows.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-brands fa-js"></i> Read, Write, Edit, Bash</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card" data-cat="languages">
+                        <div>
+                            <div class="agent-top">
+                                <div class="agent-name-group">
+                                    <span class="agent-name">go-dev</span>
+                                    <span class="agent-hindi">Go Engineer</span>
+                                </div>
+                                <span class="badge-role badge-doer">Language Doer</span>
+                            </div>
+                            <p class="agent-desc">Idiomatic Go code, goroutine safety, interface design, standard library patterns, and high-performance APIs.</p>
+                        </div>
+                        <div class="agent-meta">
+                            <span><i class="fa-solid fa-cubes"></i> Read, Write, Edit, Bash</span>
+                            <span>Model: sonnet</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Guard-Rails Section -->
+        <section class="section-block" id="guards">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">PreToolUse Guards</span>
+                    <h2 class="section-title">Mechanical Scope & Secret Enforcement</h2>
+                    <p class="section-desc">Layer 2 is the headline feature in v2. While prompts can be forgotten, bash hooks execute <em>before</em> a tool call lands on disk.</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card">
+                        <div class="card-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--accent-red);"><i class="fa-solid fa-ban"></i></div>
+                        <h4>1. scope-guard.sh</h4>
+                        <p>Intercepts <code>Write</code>, <code>Edit</code>, and <code>MultiEdit</code> calls. Canonicalizes paths to eliminate <code>../</code> bypasses and checks them against the active task's <code>## Expected files</code> list.</p>
+                        <br>
+                        <p style="font-size: 0.85rem; background: var(--bg-code); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color);" class="mono">
+                            <span style="color: var(--accent-red);">SCOPE-GUARD REJECTED:</span> src/auth/secret.ts is outside task 004's declared scope.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-amber);"><i class="fa-solid fa-key"></i></div>
+                        <h4>2. secret-guard.sh</h4>
+                        <p>Scans only newly proposed edit content for 9 high-confidence secret patterns (AWS keys, PEM private keys, JWTs, GitHub/Slack/Stripe/Anthropic/Google API tokens).</p>
+                        <br>
+                        <p style="font-size: 0.85rem; background: var(--bg-code); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color);" class="mono">
+                            <span style="color: var(--accent-amber);">SECRET-GUARD REJECTED:</span> High-confidence AWS secret pattern detected in proposed write.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Fail-Open Highlight Box -->
+                <div style="margin-top: 2rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 1.5rem 2rem;">
+                    <h4 style="color: var(--accent-green); margin-bottom: 0.5rem;"><i class="fa-solid fa-shield-heart"></i> Non-Negotiable Contract: Fail Open Safety</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">
+                        If <code>jq</code> or <code>python3</code> is missing, or if an unreadable task file is encountered, the guards <strong>exit 0</strong> (allow write) rather than risk bricking your developer session. A bug costs one uncaught edit, never a locked terminal.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Config Builder -->
+        <section class="section-block" id="config">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Interactive Configuration</span>
+                    <h2 class="section-title">Configure .thekedar/config.md</h2>
+                    <p class="section-desc">Adjust settings below to instantly generate your project's custom configuration file.</p>
+                </div>
+
+                <div class="config-builder">
+                    <div class="config-form">
+                        <div class="form-group">
+                            <label>Fix Loop Cap (Max attempts on reviewer fail)</label>
+                            <input type="number" id="cfgFixLoop" value="3" min="1" max="10" onchange="updateConfigPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Auto Continue Between Tasks</label>
+                            <select id="cfgAutoContinue" onchange="updateConfigPreview()">
+                                <option value="true">true (Automatic mode)</option>
+                                <option value="false">false (Pause for approval)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Default Doer Model</label>
+                            <select id="cfgModel" onchange="updateConfigPreview()">
+                                <option value="sonnet">sonnet (Recommended)</option>
+                                <option value="haiku">haiku (Fast & Cheap)</option>
+                                <option value="opus">opus (Maximum reasoning)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Scope Guard Enforcement</label>
+                            <select id="cfgScopeGuard" onchange="updateConfigPreview()">
+                                <option value="on">on (Strict exit 2 blocking)</option>
+                                <option value="off">off (Advisory ledger logging only)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Git Commit Prefix</label>
+                            <input type="text" id="cfgCommitPrefix" value="thekedar" oninput="updateConfigPreview()">
+                        </div>
+                    </div>
+
+                    <div class="config-preview">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                            <span style="color: var(--text-muted); font-size: 0.8rem;">.thekedar/config.md</span>
+                            <button class="btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;" onclick="copyConfigText()"><i class="fa-regular fa-copy"></i> Copy</button>
+                        </div>
+                        <pre style="color: var(--primary-light);"><code id="configOutputText"># Thekedar configuration
+fix_loop_cap: 3
+auto_continue: true
+default_doer_model: sonnet
+scope_guard: on
+commit_prefix: "thekedar"
+enable_performance_auditor: false
+enable_accessibility_auditor: false</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills & Commands Section -->
+        <section class="section-block" id="skills">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Command System</span>
+                    <h2 class="section-title">4 Built-in Skills</h2>
+                    <p class="section-desc">Invoke workflow commands directly inside your Claude Code session.</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-play"></i></div>
+                        <h4><code>/thekedar</code> (Auto-triggers & Manual)</h4>
+                        <p>The main orchestrator. Triggers automatically on multi-file requests. Executes the complete Plan → Build → Review → Log → Git Commit cycle.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                        <h4><code>/thekedar-plan</code></h4>
+                        <p>Plan only. Invokes <code>planner</code> to break down tasks into <code>.thekedar/tasks/</code>, then hard-stops before building code, allowing prompt review.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                        <h4><code>/thekedar-status</code></h4>
+                        <p>Instant 6-line read-only status snapshot. Shows phase, active task, recent edit paths, git commit hash, next task, and blockers without burning tokens.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-file-export"></i></div>
+                        <h4><code>/thekedar-report</code></h4>
+                        <p>Generates a comprehensive <code>REPORT.md</code> document compiling edit counters, task changelogs, reviewer pass rates, and git checkpoints.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Factory & Catalog Section -->
+        <section class="section-block" id="factory">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Catalog-Driven Engine</span>
+                    <h2 class="section-title">The Agent Factory (v3 Ready)</h2>
+                    <p class="section-desc">Thekedar scales gracefully without prompt decay. The crew is generated and validated mechanically from catalog TSV files.</p>
+                </div>
+
+                <div class="grid-3">
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-table-cells"></i></div>
+                        <h4>1. TSV Master Catalog</h4>
+                        <p>Single source of truth in <code>catalog/agents.tsv</code> defining agent names, models, tool rules, knowledge pack references, and trigger conditions.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-gears"></i></div>
+                        <h4>2. Deterministic Generators</h4>
+                        <p><code>gen-agent.sh</code> and <code>gen-agent-docs.sh</code> turn catalog rows into validated frontmatter skeletons and documentation automatically.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="card-icon"><i class="fa-solid fa-check-double"></i></div>
+                        <h4>3. Hard Validation Gates</h4>
+                        <p><code>validate-all.sh</code> enforces bidirectional zero-orphan integrity. A catalog row without an agent file, or an agent without a catalog entry, fails CI instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Matrix -->
+        <section class="section-block">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Feature Comparison</span>
+                    <h2 class="section-title">Raw Claude Code vs + Thekedar</h2>
+                </div>
+
+                <div class="comparison-table-wrap">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature Dimension</th>
+                                <th>Raw Claude Code</th>
+                                <th>+ Thekedar Workflow</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Planning</strong></td>
+                                <td>Ad hoc, unstructured conversation</td>
+                                <td>Written task files, explicit scope & NOT-scope boundaries</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scope Enforcement</strong></td>
+                                <td>Prompt instructions (easily forgotten)</td>
+                                <td>Mechanically enforced — <code>scope-guard.sh</code> exits 2 on miss</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Code Review</strong></td>
+                                <td>Self-review by same polluted context</td>
+                                <td>Fresh, read-only reviewer subagents with zero edit tools</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Audit Trail</strong></td>
+                                <td>Git commits only</td>
+                                <td>Zero-token per-edit ledger + per-task changelog records</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Session Recovery</strong></td>
+                                <td>Manual user re-explanation</td>
+                                <td><code>session-brief.sh</code> auto-injects state on start</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Secret Protection</strong></td>
+                                <td>None</td>
+                                <td><code>secret-guard.sh</code> scans edit content for 9 key patterns</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="section-block" id="faq">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Questions & Answers</span>
+                    <h2 class="section-title">Frequently Asked Questions</h2>
+                </div>
+
+                <div class="faq-accordion">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>What does Thekedar cost in token consumption?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Estimated token usage is 2–4× a raw single-session request for structured work. However, because subagent contexts remain small and targeted, you avoid the massive token waste caused by context bloat and hallucination fix loops in long sessions.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Does scope-guard mean the AI cannot touch unapproved files?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Yes. While an active task is running, <code>scope-guard.sh</code> intercepts any <code>Write</code> or <code>Edit</code> targeted outside the declared files and exits 2, rejecting the write at the bash runtime level.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Does Thekedar require node, npm, or python packages?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Zero dependencies ever. Thekedar relies purely on standard system <code>bash</code>, <code>git</code>, and markdown files. Hooks fail open gracefully even without <code>jq</code> or <code>python3</code>.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Can I use Thekedar in other AI editors like Cursor, Windsurf, or Copilot?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Yes! Run <code>scripts/export-agents-md.sh</code> to generate a single <code>AGENTS.md</code> file that flattens the crew rules into a format compatible with Cursor, Windsurf, Codex, and Copilot.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Search Modal -->
+    <div class="search-modal-backdrop" id="searchModal">
+        <div class="search-modal">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                <input type="text" id="searchInput" placeholder="Search documentation, agents, hooks, configs..." oninput="performSearch()">
+            </div>
+            <div class="search-results" id="searchResults">
+                <!-- Search results will populate dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toastMsg">Copied to clipboard!</div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>THEKEDAR <span style="color: var(--primary);">ठेकेदार</span></h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Your AI coding crew's site supervisor. Kaam pakka, hisaab saaf.</p>
+                    <p style="font-size: 0.82rem; color: var(--text-dim);">Inspired by every thekedar on Indian construction sites who never allowed compromised work. 🫡</p>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Architecture</h5>
+                    <ul>
+                        <li><a href="docs/ARCHITECTURE.md">Architecture Overview</a></li>
+                        <li><a href="docs/PRD.md">PRD Requirements</a></li>
+                        <li><a href="docs/TRD.md">Technical Spec</a></li>
+                        <li><a href="docs/FACTORY.md">Agent Factory</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Guides & ADRs</h5>
+                    <ul>
+                        <li><a href="docs/AGENTS-GUIDE.md">Agents Guide</a></li>
+                        <li><a href="docs/HOOKS-GUIDE.md">Hooks Guide</a></li>
+                        <li><a href="docs/adr/0001-markdown-as-the-interface.md">ADR-0001 Markdown</a></li>
+                        <li><a href="docs/adr/0002-hooks-never-block-except-guards.md">ADR-0002 Fail Open</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Repository</h5>
+                    <ul>
+                        <li><a href="https://github.com/soumyachk101/Thekedar" target="_blank">GitHub Repo</a></li>
+                        <li><a href="LICENSE">MIT License</a></li>
+                        <li><a href="CHANGELOG.md">Changelog</a></li>
+                        <li><a href="SECURITY.md">Security Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Soumya Chakraborty · Open Source under MIT License · Built with pure HTML/CSS/JS</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Terminal Tab Switcher
+        const terminalCommands = {
+            plugin: 'claude plugin marketplace add soumyachk101/Thekedar && claude plugin install thekedar@thekedar',
+            script: 'git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --full',
+            doctor: 'bash .thekedar/scripts/doctor.sh'
+        };
+
+        function switchTerminalTab(key, btn) {
+            document.querySelectorAll('.term-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('termCode').innerText = terminalCommands[key];
+        }
+
+        function copyTerminalCode() {
+            const text = document.getElementById('termCode').innerText;
+            navigator.clipboard.writeText(text);
+            showToast("Command copied to clipboard!");
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Pipeline Stepper
+        function showPipelineStep(stepNum, el) {
+            document.querySelectorAll('.step-node').forEach(node => node.classList.remove('active'));
+            el.classList.add('active');
+
+            document.querySelectorAll('.pipeline-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(`pipe-step-${stepNum}`).classList.add('active');
+        }
+
+        // Crew Inspector Filtering
+        function filterCrew(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.agent-card');
+            cards.forEach(card => {
+                const cats = card.getAttribute('data-cat');
+                if (category === 'all' || cats.includes(category)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Config Preview Generator
+        function updateConfigPreview() {
+            const fixLoop = document.getElementById('cfgFixLoop').value;
+            const autoCont = document.getElementById('cfgAutoContinue').value;
+            const model = document.getElementById('cfgModel').value;
+            const scopeGuard = document.getElementById('cfgScopeGuard').value;
+            const prefix = document.getElementById('cfgCommitPrefix').value;
+
+            const configText = `# Thekedar configuration
+fix_loop_cap: ${fixLoop}
+auto_continue: ${autoCont}
+default_doer_model: ${model}
+scope_guard: ${scopeGuard}
+commit_prefix: "${prefix}"
+enable_performance_auditor: false
+enable_accessibility_auditor: false`;
+
+            document.getElementById('configOutputText').innerText = configText;
+        }
+
+        function copyConfigText() {
+            const text = document.getElementById('configOutputText').innerText;
+            navigator.clipboard.writeText(text);
+            showToast("Config copied to clipboard!");
+        }
+
+        // FAQ Toggle
+        function toggleFaq(el) {
+            const item = el.parentElement;
+            item.classList.toggle('open');
+        }
+
+        // Search Modal Handling
+        const searchModal = document.getElementById('searchModal');
+        const openSearchBtn = document.getElementById('openSearchBtn');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        const docsIndex = [
+            { title: "Architecture Overview (4 Layers)", section: "#architecture", snippet: "Layer 4 Memory, Layer 3 Intelligence, Layer 2 Guard-Rails, Layer 1 Determinism" },
+            { title: "scope-guard.sh (PreToolUse)", section: "#guards", snippet: "Blocks write calls outside active task declared expected files list." },
+            { title: "secret-guard.sh (Key Scanner)", section: "#guards", snippet: "Scans new edit content for AWS keys, JWTs, Stripe keys, and private PEM blocks." },
+            { title: "planner (Naksha-Wala)", section: "#crew", snippet: "Blueprint maker agent that breaks complex goals into scoped task files." },
+            { title: "error-checker & security-auditor", section: "#crew", snippet: "Read-only reviewers enforcing test pass and security auditing." },
+            { title: "Config Builder (.thekedar/config.md)", section: "#config", snippet: "Configure fix_loop_cap, auto_continue, default_doer_model, and scope_guard." },
+            { title: "Plugin Installation Guide", section: "#overview", snippet: "claude plugin marketplace add soumyachk101/Thekedar" }
+        ];
+
+        openSearchBtn.addEventListener('click', () => {
+            searchModal.classList.add('active');
+            searchInput.focus();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                searchModal.classList.add('active');
+                searchInput.focus();
+            }
+            if (e.key === 'Escape') {
+                searchModal.classList.remove('active');
+            }
+        });
+
+        searchModal.addEventListener('click', (e) => {
+            if (e.target === searchModal) {
+                searchModal.classList.remove('active');
+            }
+        });
+
+        function performSearch() {
+            const query = searchInput.value.toLowerCase();
+            searchResults.innerHTML = '';
+            if (!query) return;
+
+            const matches = docsIndex.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.snippet.toLowerCase().includes(query)
+            );
+
+            if (matches.length === 0) {
+                searchResults.innerHTML = `<div style="padding: 1rem; color: var(--text-dim); text-align: center;">No matching documentation found.</div>`;
+                return;
+            }
+
+            matches.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'search-result-item';
+                div.innerHTML = `
+                    <span class="result-title">${item.title}</span>
+                    <span class="result-snippet">${item.snippet}</span>
+                `;
+                div.onclick = () => {
+                    searchModal.classList.remove('active');
+                    window.location.href = item.section;
+                };
+                searchResults.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
