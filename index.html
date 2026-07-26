@@ -525,6 +525,26 @@
         .term-cmds {
             display: flex;
             gap: 0.5rem;
+            align-items: center;
+        }
+        .btn-start-demo {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 0.45rem 1rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+        }
+        .btn-start-demo:hover {
+            background: #e5e5e5;
+            transform: scale(1.03);
         }
         .term-btn {
             background: transparent;
@@ -538,15 +558,15 @@
             transition: var(--transition);
         }
         .term-btn:hover, .term-btn.active {
-            background: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
         }
         .term-body {
             padding: 1.75rem;
             font-family: 'Fira Code', monospace;
             font-size: 0.88rem;
-            line-height: 1.8;
+            line-height: 1.85;
             background: var(--bg-code);
             color: #e4e4e7;
             min-height: 380px;
@@ -830,13 +850,13 @@
             </p>
 
             <div class="hero-actions">
-                <a href="#docs" class="btn-glow-cta" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
+                <button onclick="startInteractiveDemo()" class="btn-glow-cta" style="padding: 0.75rem 1.6rem; font-size: 0.95rem; background: #ffffff; color: #000000; cursor: pointer;">
+                    <i class="fa-solid fa-play"></i>
+                    <span>▶ Start Live Interactive Demo</span>
+                </button>
+                <a href="#docs" class="btn-search-pill" style="padding: 0.75rem 1.6rem; font-size: 0.95rem; border-radius: 20px;">
                     <i class="fa-solid fa-book-open"></i>
                     <span>Explore Documentation</span>
-                </a>
-                <a href="#install" class="btn-search-pill" style="padding: 0.75rem 1.6rem; font-size: 0.95rem; border-radius: 20px;">
-                    <i class="fa-solid fa-terminal"></i>
-                    <span>Install in 30 Seconds</span>
                 </a>
             </div>
 
@@ -950,9 +970,9 @@
     <section id="playground" class="section">
         <div class="container">
             <div class="header-center">
-                <span class="section-tag">Live CLI Simulation</span>
+                <span class="section-tag">Live CLI Simulator</span>
                 <h2 class="section-title">Deterministic Workflow Execution in Action</h2>
-                <p class="section-desc">Simulate how Thekedar orchestrates subagent planning, intercepts out-of-scope write operations with Exit Code 2, and logs change ledgers without wasting model context tokens.</p>
+                <p class="section-desc">Click the <strong>▶ Start Live Demo</strong> button below to watch step-by-step how Thekedar coordinates 15 subagents, catches scope violations, and records zero-token edit ledgers.</p>
             </div>
 
             <div class="terminal-playground">
@@ -963,15 +983,18 @@
                         <div class="term-dot"></div>
                     </div>
                     <div class="term-cmds">
-                        <button class="term-btn active" onclick="runSimulation('task', this)">/thekedar "Add JWT Auth"</button>
-                        <button class="term-btn" onclick="runSimulation('block', this)">Simulate Scope Violation (Exit 2)</button>
+                        <button class="btn-start-demo" onclick="startInteractiveDemo()">
+                            <i class="fa-solid fa-play"></i>
+                            <span>▶ Start Live Demo</span>
+                        </button>
+                        <button class="term-btn" onclick="runSimulation('task', this)">/thekedar Command</button>
+                        <button class="term-btn" onclick="runSimulation('block', this)">Scope Intercept (Exit 2)</button>
                         <button class="term-btn" onclick="runSimulation('status', this)">/thekedar-status</button>
-                        <button class="term-btn" onclick="runSimulation('doctor', this)">bash doctor.sh</button>
                     </div>
                     <span style="font-size: 0.75rem; color: var(--text-dim);">zsh — 80x24</span>
                 </div>
                 <div class="term-body" id="termBody">
-                    <p style="color: var(--text-dim);"># Click a command button above to trigger live CLI execution simulation...</p>
+                    <p style="color: var(--text-dim);"># Click "▶ Start Live Demo" above to watch live CLI execution stream...</p>
                     <p style="color: #ffffff;"><span style="color: var(--accent-blue);">$</span> /thekedar "Implement JWT authentication and rate limiting"</p>
                     <p><span style="color: #ffffff; font-weight: 600;">[1/5] orchestrator:</span> Spawning <code>planner</code> in fresh LLM context...</p>
                     <p style="color: var(--accent-blue);">→ Written task spec: .thekedar/tasks/004-jwt-auth.md</p>
@@ -1263,28 +1286,46 @@
             });
         }
 
-        // Terminal Simulation Logic
+        // Animated Interactive Demo Logic
+        let demoTimer = null;
+        function startInteractiveDemo() {
+            document.getElementById('playground').scrollIntoView({ behavior: 'smooth' });
+            const body = document.getElementById('termBody');
+            body.innerHTML = `<p style="color: var(--accent-blue);">$ /thekedar "Implement JWT authentication and rate limiting"</p>`;
+            
+            const steps = [
+                { delay: 800, html: `<p><span style="color: #ffffff; font-weight: 600;">[1/5] orchestrator:</span> Spawning <code>planner</code> (नक्शा-वाला) in fresh LLM context...</p>` },
+                { delay: 1600, html: `<p style="color: var(--accent-blue);">→ Task spec created: .thekedar/tasks/004-jwt-auth.md</p>` },
+                { delay: 2400, html: `<p style="color: var(--accent-amber);">→ Target File Scope declared: [src/auth.js, tests/auth.test.js]</p>` },
+                { delay: 3200, html: `<p><span style="color: #ffffff; font-weight: 600;">[2/5] orchestrator:</span> Assigning <code>backend-dev</code> (मिस्त्री) to task 004...</p>` },
+                { delay: 4000, html: `<p style="color: var(--accent-purple);">⚙️ PreToolUse scope-guard.sh: Target 'src/auth.js' matches active scope (Exit Code 0)</p>` },
+                { delay: 4800, html: `<p style="color: var(--accent-purple);">⚙️ PreToolUse secret-guard.sh: 0 Hardcoded credentials detected (Exit Code 0)</p>` },
+                { delay: 5600, html: `<p style="color: var(--accent-green);">[3/5] ✅ Inspector (error-checker): 14/14 Unit tests PASSING</p>` },
+                { delay: 6400, html: `<p style="color: var(--accent-green);">[4/5] ✅ Chowkidar (security-auditor): 0 Security vulnerabilities found</p>` },
+                { delay: 7200, html: `<p style="color: var(--text-dim);">[5/5] munshi.sh: Logged 3 edit rows to ledger-2026-07-26.md (0 LLM tokens)</p>` },
+                { delay: 8000, html: `<p style="color: #ffffff; font-weight: 700; margin-top: 0.5rem;">✅ TASK COMPLETE: Git commit created (thekedar(task-004): JWT auth middleware)</p>` }
+            ];
+
+            if(demoTimer) clearTimeout(demoTimer);
+            steps.forEach(step => {
+                setTimeout(() => {
+                    body.innerHTML += step.html;
+                    body.scrollTop = body.scrollHeight;
+                }, step.delay);
+            });
+        }
+
+        // Static Simulation Switcher
         function runSimulation(type, btn) {
             document.querySelectorAll('.term-btn').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
 
             const body = document.getElementById('termBody');
             if (type === 'task') {
-                body.innerHTML = `
-                    <p style="color: #ffffff;"><span style="color: var(--accent-blue);">$</span> /thekedar "Implement JWT authentication and rate limiting"</p>
-                    <p><span style="color: #ffffff; font-weight: 600;">[1/5] orchestrator:</span> Spawning <code>planner</code> in fresh LLM context...</p>
-                    <p style="color: var(--accent-blue);">→ Written task spec: .thekedar/tasks/004-jwt-auth.md</p>
-                    <p style="color: var(--accent-amber);">→ Declared Target File Scope: [src/auth.js, tests/auth.test.js]</p>
-                    <p><span style="color: #ffffff; font-weight: 600;">[2/5] orchestrator:</span> Assigning <code>backend-dev</code> (मिस्त्री) to task 004...</p>
-                    <p style="color: var(--accent-purple);">⚙️ PreToolUse scope-guard.sh: Target 'src/auth.js' matches active scope (Exit Code 0)</p>
-                    <p style="color: var(--accent-purple);">⚙️ PreToolUse secret-guard.sh: 0 Hardcoded credentials detected (Exit Code 0)</p>
-                    <p style="color: var(--accent-green);">[3/5] ✅ Inspector (error-checker): 14/14 Unit tests PASSING</p>
-                    <p style="color: var(--accent-green);">[4/5] ✅ Chowkidar (security-auditor): 0 Security vulnerabilities found</p>
-                    <p style="color: #ffffff; font-weight: 600;">[5/5] → Commit created: thekedar(task-004): JWT auth middleware</p>
-                `;
+                startInteractiveDemo();
             } else if (type === 'block') {
                 body.innerHTML = `
-                    <p style="color: #ffffff;"><span style="color: var(--accent-blue);">$</span> backend-dev attempting Edit tool on 'src/config.py'...</p>
+                    <p style="color: #ffffff;"><span style="color: var(--accent-blue);">$</span> backend-dev attempting Edit tool call on 'src/config.py'...</p>
                     <p style="color: var(--accent-red); font-weight: 700;">🚨 PRETOOLUSE INTERCEPTED (Exit Code 2): Scope Violation!</p>
                     <p style="color: var(--text-muted);">scope-guard.sh: Target file 'src/config.py' is NOT listed in declared task target scope.</p>
                     <p style="color: var(--accent-amber);">→ Interceptor message sent back to model: Add a "## Scope addition" entry first.</p>
@@ -1299,16 +1340,6 @@
                     <p>Declared Scope: [src/auth.js, tests/auth.test.js]</p>
                     <p>Munshi Edit Ledger: 3 edits recorded today in .thekedar/changes/ledger-2026-07-26.md</p>
                     <p style="color: var(--accent-green);">================================================================</p>
-                `;
-            } else if (type === 'doctor') {
-                body.innerHTML = `
-                    <p style="color: #ffffff;"><span style="color: var(--accent-blue);">$</span> bash .thekedar/scripts/doctor.sh</p>
-                    <p style="color: var(--accent-green);">[PASS] session-brief.sh (+x executable)</p>
-                    <p style="color: var(--accent-green);">[PASS] scope-guard.sh (+x executable, PreToolUse wired)</p>
-                    <p style="color: var(--accent-green);">[PASS] secret-guard.sh (+x executable, Regex scanner active)</p>
-                    <p style="color: var(--accent-green);">[PASS] munshi.sh (+x executable, PostToolUse ledger active)</p>
-                    <p style="color: var(--accent-green);">[PASS] doctor.sh (+x executable, 15 subagents verified)</p>
-                    <p style="color: #ffffff; font-weight: 700; margin-top: 0.5rem;">✅ Health Check: All 5 hooks & 15 agents operational (0 errors).</p>
                 `;
             }
         }
