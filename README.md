@@ -128,6 +128,15 @@ claude plugin marketplace add soumyachk101/Thekedar
 claude plugin install thekedar@thekedar
 ```
 
+**As a Codex plugin** (same skills + hook scripts, installed through Codex's plugin browser/CLI):
+
+```bash
+codex plugin marketplace add soumyachk101/Thekedar
+codex plugin add thekedar@thekedar
+```
+
+Then start a new Codex session and use `$thekedar`, `$thekedar-plan`, `$thekedar-status`, or `$thekedar-report`.
+
 **Or via the script** (commits `.claude/` + `.thekedar/` into your repo — best for teams):
 
 ```bash
@@ -144,9 +153,19 @@ bash /tmp/thekedar/install.sh --all
 bash .thekedar/scripts/doctor.sh
 ```
 
+**Codex / Antigravity repo-local adapters:**
+
+```bash
+# Codex: native .agents/skills + .codex/hooks + AGENTS.md fallback
+bash /tmp/thekedar/scripts/install-codex.sh --all
+
+# Antigravity: portable AGENTS.md mode + .thekedar/ state
+bash /tmp/thekedar/scripts/install-antigravity.sh --all
+```
+
 Pick one path (running both against one project can double-wire hooks). Full comparison + manual install: [INSTALL.md](INSTALL.md). The installer is idempotent (safe to re-run, including after `update.sh`), backs up any file it would overwrite to `<file>.bak`, and never touches `PROJECT_STATE.md` or `config.md` once they exist.
 
-**Requirements:** Claude Code ≥ 2.x, `bash`, `git`. `jq` or `python3` recommended — hooks degrade gracefully without either, and `secret-guard.sh` specifically fails open (allows the write, scans nothing) if neither is present, rather than risk a false block. Zero npm/pip dependencies, ever — see [ADR-0001](docs/adr/0001-markdown-as-the-interface.md).
+**Requirements:** Claude Code ≥ 2.x or Codex for full hook/skill mode; any AGENTS.md-aware agent for portable mode. `bash`, `git`, and `jq` or `python3` are recommended — hooks degrade gracefully without parsers, and `secret-guard.sh` specifically fails open (allows the write, scans nothing) if neither is present, rather than risk a false block. Zero npm/pip dependencies, ever — see [ADR-0001](docs/adr/0001-markdown-as-the-interface.md).
 
 ## Quick Start
 
@@ -274,7 +293,7 @@ your-project/
 - **Munshi and the guards are deterministic, not smart.** They log and block on pattern matches, for free. The *reasoning* — the changelog, the scope judgment calls — is written by the orchestrator, once, at task boundaries.
 - **Reviewers can be wrong.** They cut the slip-through rate a lot; they don't replace your eyes on a final PR.
 - **Two sessions on one project isn't safe yet.** State and task files can race if you run Thekedar concurrently against the same repo — see [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
-- **No subagent isolation in your tool?** `export-agents-md.sh` flattens the whole crew into a single `AGENTS.md` for Cursor/Codex CLI/Copilot/Windsurf. It's honestly weaker there — the "reviewer" shares the doer's context and blind spots — but it still beats no review at all.
+- **No subagent isolation in your tool?** `export-agents-md.sh` flattens the whole crew into a single `AGENTS.md` for Antigravity/Cursor/Copilot/Windsurf and as a Codex fallback. It's honestly weaker there — the "reviewer" shares the doer's context and blind spots — but it still beats no review at all.
 
 ## How Thekedar Compares
 

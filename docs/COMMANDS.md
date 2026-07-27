@@ -1,6 +1,8 @@
 # Commands — the 4 skills
 
-Thekedar has one orchestrator skill (auto-triggers on multi-step requests, no invocation needed) and three explicit command skills. All four are markdown files under `.claude/skills/<name>/SKILL.md`, loaded at session start (progressive disclosure — only `name`+`description` load until triggered).
+Thekedar has one orchestrator skill (auto-triggers on multi-step requests when the host supports implicit skill invocation) and three explicit command skills. In Claude Code repo installs they live under `.claude/skills/<name>/SKILL.md`; in Codex repo installs they live under `.agents/skills/<name>/SKILL.md`; plugin installs load them from the plugin bundle.
+
+Codex explicit invocation uses `$thekedar`, `$thekedar-plan`, `$thekedar-status`, and `$thekedar-report`.
 
 ## thekedar (the orchestrator — auto-triggers)
 

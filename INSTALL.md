@@ -2,22 +2,23 @@
 
 ## Requirements
 
-- **Claude Code ≥ 2.x** (primary target)
+- **Claude Code ≥ 2.x** or **Codex** for full skills/hooks mode
+- Any `AGENTS.md`-aware coding agent for portable mode (Antigravity, Cursor, Copilot, Windsurf, ...)
 - `bash`, `git`
 - `jq` **or** `python3` (recommended — the munshi hook uses them to parse events; it degrades gracefully without them)
 - OS: macOS, Linux, WSL, Git Bash on Windows
 
-## Two ways to install
+## Install matrix
 
-| | Plugin (marketplace) | Script (`install.sh`) |
-|---|---|---|
-| Command | `claude plugin marketplace add …` | `git clone … && bash install.sh` |
-| What lands in your repo | nothing (crew/hooks live in the plugin cache) | `.claude/` + `.thekedar/` committed to your repo |
-| `.thekedar/` scaffolding | auto-created on first session (bootstrap) | created at install time |
-| Best for | trying it, personal use, auto-updates | teams (commit the workflow), full control |
-| Agent roster | all 109, always | 6 by default · `--full` = 15 · `--all` = 109 |
+| Target | Command | What lands in your repo | Best for |
+|---|---|---|---|
+| Claude Code plugin | `claude plugin marketplace add …` + `claude plugin install …` | `.thekedar/` scaffolding on first session | trying it, personal use, auto-updates |
+| Codex plugin | `codex plugin marketplace add …` + `codex plugin add …` | `.thekedar/` scaffolding on first session | native Codex skills/hooks |
+| Claude Code repo install | `bash install.sh [--full|--all]` | `.claude/` + `.thekedar/` | teams using Claude Code |
+| Codex repo install | `bash scripts/install-codex.sh [--full|--all]` | `.agents/skills/` + `.codex/` + `AGENTS.md` + `.thekedar/` | teams using Codex |
+| Antigravity portable install | `bash scripts/install-antigravity.sh [--full|--all]` | `AGENTS.md` + `.thekedar/` | AGENTS.md-only workflow |
 
-Both draw from the same 109-agent catalog ([catalog/INDEX.md](catalog/INDEX.md)), 5 hooks, and 4 skills. Pick one — running both against the same project can double-wire hooks.
+All paths draw from the same 109-agent catalog ([catalog/INDEX.md](catalog/INDEX.md)), 5 hooks, and 4 skills where the target supports them. Pick one hook-bearing path per project — running both Claude and Codex hook installs against one repo can double-log edits.
 
 ## Option A — Plugin (Claude Code marketplace)
 
@@ -28,7 +29,16 @@ claude plugin install thekedar@thekedar
 
 On your next session in any project, the plugin's SessionStart hook creates the `.thekedar/` scaffolding (tasks/, changes/, templates/, scripts/, PROJECT_STATE.md, config.md) automatically, then the crew is ready. Say *"build me &lt;something&gt;"* or `/thekedar-plan`.
 
-## Option B — Script install
+## Option B — Plugin (Codex)
+
+```bash
+codex plugin marketplace add soumyachk101/Thekedar
+codex plugin add thekedar@thekedar
+```
+
+Start a new Codex session after installing. Use `$thekedar`, `$thekedar-plan`, `$thekedar-status`, or `$thekedar-report`. See [docs/integrations/codex.md](docs/integrations/codex.md).
+
+## Option C — Claude Code script install
 
 From **your project root**:
 
@@ -40,6 +50,30 @@ bash /tmp/thekedar/install.sh --all    # the whole catalog (109 agents)
 ```
 
 Then **restart your Claude Code session** — subagents and skills load at session start.
+
+## Option D — Codex repo install
+
+From **your project root**:
+
+```bash
+git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar
+bash /tmp/thekedar/scripts/install-codex.sh          # core crew in AGENTS.md
+bash /tmp/thekedar/scripts/install-codex.sh --full   # core + extended crew
+bash /tmp/thekedar/scripts/install-codex.sh --all    # whole catalog
+```
+
+Then restart Codex. This installs native repo skills under `.agents/skills`, project hooks under `.codex/`, and `AGENTS.md` as a fallback.
+
+## Option E — Antigravity / portable AGENTS.md install
+
+From **your project root**:
+
+```bash
+git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar
+bash /tmp/thekedar/scripts/install-antigravity.sh --all
+```
+
+Then reopen the project in Antigravity so it reloads `AGENTS.md`. See [docs/integrations/antigravity.md](docs/integrations/antigravity.md).
 
 ## What the installer does
 
@@ -100,9 +134,9 @@ Then add to `.claude/settings.json`:
 
 Commit `.claude/` and `.thekedar/` to the repo. Every teammate's Claude Code picks up the same crew, same workflow, same records. The changelog directory doubles as async standup notes.
 
-## Other tools (Cursor, Codex, Copilot, ...)
+## Other tools (Cursor, Copilot, Windsurf, ...)
 
-v1 is Claude-Code-first. A degraded single-context mode via the **AGENTS.md standard** is on the [roadmap](ROADMAP.md) (F10): the same plan→build→review→log loop as sequential rules, same files on disk — just without subagent isolation.
+Use `bash .thekedar/scripts/export-agents-md.sh` after a Claude/Codex repo install, or run `scripts/install-antigravity.sh` directly. This gives the same plan→build→review→log loop as sequential rules, same files on disk — just without subagent isolation or mechanical hook enforcement.
 
 ## Uninstall
 

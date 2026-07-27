@@ -19,10 +19,11 @@ Version 2.0 · July 2026 · Companion to [PRD.md](PRD.md)
 | Target | Mechanism | v2 support |
 |---|---|---|
 | Claude Code ≥ 2.x | Subagents + Skills + SessionStart/PreToolUse/PostToolUse hooks | ✅ Full |
-| Cursor, Codex CLI, Copilot, Windsurf, etc. | Generated `AGENTS.md` (workflow-as-rules; no subagent isolation, no guard hooks) | ✅ Shipped (F10) |
+| Codex | Plugin/repo skills + Codex hooks + `AGENTS.md` fallback | ✅ Shipped |
+| Antigravity, Cursor, Copilot, Windsurf, etc. | Generated `AGENTS.md` (workflow-as-rules; no subagent isolation, no guard hooks) | ✅ Shipped (F10) |
 | OS | macOS, Linux, WSL, Git Bash | ✅ |
 
-Degraded mode (AGENTS.md) = one agent plays every role sequentially in one context, following the same plan→build→review→log loop. Weaker isolation (the reviewer role shares the doer's memory), same paper trail. The guard hooks (scope-guard, secret-guard) have no equivalent — degraded mode relies on the model reading and following the NOT-in-scope section as text, same as v1's core weakness (see PRD §2, P5).
+Degraded mode (AGENTS.md) = one agent plays every role sequentially in one context, following the same plan→build→review→log loop. Weaker isolation (the reviewer role shares the doer's memory), same paper trail. On hosts without lifecycle hooks, scope-guard and secret-guard have no equivalent — degraded mode relies on the model reading and following the NOT-in-scope section as text, same as v1's core weakness (see PRD §2, P5).
 
 ## 3. Component Specifications
 
@@ -56,6 +57,8 @@ project/
     ├── phases/                       # phase-N.md, big projects only
     └── changes/                      # ledger-YYYY-MM-DD.md + task-NNN.md
 ```
+
+Codex repo installs use `.agents/skills/` for skills and `.codex/hooks.json` + `.codex/hooks/*.sh` for hooks instead of `.claude/`. Portable installs write only `AGENTS.md` plus `.thekedar/`.
 
 Rationale for `.thekedar/` vs `.claude/`: project *artifacts* (tasks, state, changelogs, config) are tool-agnostic and belong to the repo; `.claude/` holds only Claude-Code-specific configuration. Both are committed to git. See [ADR-0007](adr/0007-dotthekedar-vs-dotclaude-split.md).
 

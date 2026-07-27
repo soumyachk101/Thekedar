@@ -1,0 +1,46 @@
+{
+  "description": "Thekedar lifecycle hooks for Codex. These mirror the Claude Code plugin hooks and resolve the target project from the Git root when possible.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PROJ=\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\"; PLUG=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}\"; CLAUDE_PROJECT_DIR=\"$PROJ\" CLAUDE_PLUGIN_ROOT=\"$PLUG\" bash \"$PLUG/hooks/session-brief.sh\"",
+            "statusMessage": "Loading Thekedar project state"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PROJ=\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\"; PLUG=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}\"; CLAUDE_PROJECT_DIR=\"$PROJ\" CLAUDE_PLUGIN_ROOT=\"$PLUG\" bash \"$PLUG/hooks/scope-guard.sh\"",
+            "statusMessage": "Checking Thekedar scope"
+          },
+          {
+            "type": "command",
+            "command": "PROJ=\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\"; PLUG=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}\"; CLAUDE_PROJECT_DIR=\"$PROJ\" CLAUDE_PLUGIN_ROOT=\"$PLUG\" bash \"$PLUG/hooks/secret-guard.sh\"",
+            "statusMessage": "Checking for secrets"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PROJ=\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)\"; PLUG=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}\"; CLAUDE_PROJECT_DIR=\"$PROJ\" CLAUDE_PLUGIN_ROOT=\"$PLUG\" bash \"$PLUG/hooks/munshi.sh\"",
+            "statusMessage": "Recording Thekedar ledger"
+          }
+        ]
+      }
+    ]
+  }
+}

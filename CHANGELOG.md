@@ -6,6 +6,14 @@ This file is maintained by Thekedar's own workflow discipline — every entry be
 
 ## [Unreleased]
 
+### Added
+
+**Codex and Antigravity support:**
+- Added a Codex plugin manifest (`.codex-plugin/plugin.json`) plus Codex hook bundle (`.codex/hooks/hooks.json`) so the same Thekedar skills and lifecycle hooks can be installed with `codex plugin marketplace add soumyachk101/Thekedar` and `codex plugin add thekedar@thekedar`.
+- Added `scripts/install-codex.sh`, which installs native Codex repo skills under `.agents/skills`, project hooks under `.codex/`, the shared `.thekedar/` state/templates/scripts/knowledge packs, and an `AGENTS.md` fallback generated from the real crew files.
+- Added `scripts/install-antigravity.sh`, a portable `AGENTS.md` installer for Google Antigravity and other AGENTS.md-aware agents. This path intentionally ships workflow discipline and project records without claiming hook or plugin support that has not been verified for Antigravity.
+- Added integration docs for Codex and Antigravity under `docs/integrations/`.
+
 ### Fixed
 
 **The shared brain never shipped:**
