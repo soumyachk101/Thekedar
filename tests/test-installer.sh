@@ -80,6 +80,28 @@ check "9 extended agents with --full" 9 "$n"
 ( cd "$ROOT" && bash "$ROOT/install.sh" >/dev/null 2>&1 ); code=$?
 check "refuses to install into itself (exit 1)" 1 "$code"
 
+# 6b. Codex installer creates native skills/hooks and AGENTS.md
+CB="$(mktemp -d)"
+git -C "$CB" init -q
+( cd "$CB" && bash "$ROOT/scripts/install-codex.sh" --full >/dev/null 2>&1 ); code=$?
+check "Codex install exits 0" 0 "$code"
+n=$(find "$CB/.agents/skills" -mindepth 2 -maxdepth 2 -name 'SKILL.md' 2>/dev/null | wc -l | tr -d ' ')
+check "Codex install writes 4 skills" 4 "$n"
+n=$(find "$CB/.codex/hooks" -maxdepth 1 -name '*.sh' 2>/dev/null | wc -l | tr -d ' ')
+check "Codex install writes 5 hooks" 5 "$n"
+exists "Codex hooks.json written" "$CB/.codex/hooks.json"
+exists "Codex AGENTS.md written" "$CB/AGENTS.md"
+exists "Codex PROJECT_STATE initialized" "$CB/.thekedar/PROJECT_STATE.md"
+
+# 6c. Antigravity installer creates portable AGENTS.md and .thekedar state only
+AB="$(mktemp -d)"
+git -C "$AB" init -q
+( cd "$AB" && bash "$ROOT/scripts/install-antigravity.sh" --full >/dev/null 2>&1 ); code=$?
+check "Antigravity install exits 0" 0 "$code"
+exists "Antigravity AGENTS.md written" "$AB/AGENTS.md"
+exists "Antigravity PROJECT_STATE initialized" "$AB/.thekedar/PROJECT_STATE.md"
+absent "Antigravity does not write .codex hooks" "$AB/.codex/hooks.json"
+
 # 7. uninstall: crew gone, history + user settings kept
 ( cd "$SB" && bash "$ROOT/uninstall.sh" >/dev/null 2>&1 ); code=$?
 check "uninstall exits 0" 0 "$code"

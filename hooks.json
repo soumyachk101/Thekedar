@@ -1,0 +1,25 @@
+{
+  "thekedar-session-brief": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "bash ./hooks/antigravity/pre-invocation.sh",
+        "timeout": 10
+      }
+    ]
+  },
+  "thekedar-guards": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ./hooks/antigravity/pre-tool-use.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

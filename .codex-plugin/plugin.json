@@ -1,0 +1,42 @@
+{
+  "name": "thekedar",
+  "version": "2.0.0",
+  "description": "Site-supervisor workflow for Codex: plan small tasks, route work to specialists, run independent review gates, guard scope/secrets, and write a full project record.",
+  "author": {
+    "name": "Soumya Chakraborty"
+  },
+  "homepage": "https://github.com/soumyachk101/Thekedar",
+  "repository": "https://github.com/soumyachk101/Thekedar",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "agents",
+    "skills",
+    "multi-agent",
+    "workflow",
+    "code-review",
+    "hooks",
+    "zero-dependency"
+  ],
+  "skills": "./skills/",
+  "hooks": "./.codex/hooks/hooks.json",
+  "interface": {
+    "displayName": "Thekedar",
+    "shortDescription": "Plan, build, review, and log coding work with a disciplined AI crew.",
+    "longDescription": "Thekedar brings a site-supervisor workflow to Codex: it breaks large work into scoped task files, routes implementation to specialist roles, runs review gates, records every task in markdown, and uses hooks for scope and secret checks where supported.",
+    "developerName": "Soumya Chakraborty",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills",
+      "Hooks",
+      "Code Review"
+    ],
+    "websiteURL": "https://github.com/soumyachk101/Thekedar",
+    "defaultPrompt": [
+      "Use $thekedar to build this feature.",
+      "Use $thekedar-plan to break this into tasks.",
+      "Use $thekedar-status to summarize progress."
+    ],
+    "brandColor": "#111827"
+  }
+}

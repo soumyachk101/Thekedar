@@ -1,0 +1,20 @@
+{
+  "name": "thekedar",
+  "interface": {
+    "displayName": "Thekedar"
+  },
+  "plugins": [
+    {
+      "name": "thekedar",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

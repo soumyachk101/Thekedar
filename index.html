@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thekedar (ठेकेदार) — AI Coding Crew Site Supervisor</title>
-    <meta name="description" content="Thekedar is an enterprise-grade AI workflow supervisor for Claude Code &amp; AI agents. Enforces modular task specs, 109 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
+    <meta name="description" content="Thekedar is an enterprise-grade AI workflow supervisor for Claude Code, OpenAI Codex &amp; Google Antigravity. Enforces modular task specs, 109 specialist subagents, 50 knowledge packs, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
     <link rel="canonical" href="https://soumyachk101.github.io/Thekedar/">
     <meta name="robots" content="index, follow">
 
     <!-- OpenGraph & Twitter Meta -->
     <meta property="og:site_name" content="Thekedar">
     <meta property="og:title" content="Thekedar — AI Coding Crew Site Supervisor">
-    <meta property="og:description" content="Enforces modular task specs, 109 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
+    <meta property="og:description" content="Enforces modular task specs, 109 specialist subagents, 50 knowledge packs, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers across Claude Code, Codex, and Google Antigravity.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://soumyachk101.github.io/Thekedar/">
     <meta property="og:image" content="https://soumyachk101.github.io/Thekedar/assets/og-image.jpg">
@@ -20,7 +20,7 @@
     <meta property="og:image:alt" content="Thekedar — ठेकेदार — your AI coding crew's site supervisor.">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Thekedar — AI Coding Crew Site Supervisor">
-    <meta name="twitter:description" content="Enforces modular task specs, 109 specialist subagents, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers.">
+    <meta name="twitter:description" content="Enforces modular task specs, 109 specialist subagents, 50 knowledge packs, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers across Claude Code, Codex, and Google Antigravity.">
     <meta name="twitter:image" content="https://soumyachk101.github.io/Thekedar/assets/og-image.jpg">
 
     <link rel="icon" href="assets/banner.svg" type="image/svg+xml">
@@ -33,7 +33,7 @@
       "alternateName": "ठेकेदार",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "macOS, Linux, Windows",
-      "description": "Site-supervisor workflow for Claude Code: plans big work into small scoped tasks, routes each to one of 109 specialist subagents, gates every task behind independent read-only review, mechanically enforces scope, and writes a full change record. Zero runtime dependencies.",
+      "description": "Site-supervisor workflow for Claude Code, OpenAI Codex, and Google Antigravity: plans big work into small scoped tasks, routes each to one of 109 specialist subagents, ships 50 shared knowledge packs, gates every task behind independent read-only review, mechanically enforces scope, and writes a full change record. Zero runtime dependencies.",
       "url": "https://soumyachk101.github.io/Thekedar/",
       "codeRepository": "https://github.com/soumyachk101/Thekedar",
       "softwareVersion": "2.0.0",
@@ -106,16 +106,23 @@
             background-color: var(--bg-void);
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
+            /* `hidden` here makes html a scroll container, which silently kills
+               position:sticky on every descendant — the floating navbar scrolled
+               away with the page. `clip` stops the overflow without creating a
+               scroll container, so sticky survives. `hidden` stays first as the
+               fallback for Safari < 16, which lacks `clip`. */
             overflow-x: hidden;
+            overflow-x: clip;
         }
 
         body {
             line-height: 1.6;
             min-height: 100vh;
-            background: 
+            background:
                 radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
                 var(--bg-void);
             overflow-x: hidden;
+            overflow-x: clip;
         }
 
         /* Container */
@@ -220,6 +227,43 @@
         .nav-link:hover {
             color: var(--text-main);
             background: rgba(255, 255, 255, 0.08);
+        }
+        /* Set by the scroll-spy below — the nav tracks where you actually are. */
+        .nav-link.active {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: inset 0 0 0 1px var(--border-subtle);
+        }
+        .nav-link.active::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+            flex-shrink: 0;
+        }
+        /* Keyboard users need to see focus even where hover styling exists. */
+        .nav-link:focus-visible,
+        .dropdown-item:focus-visible,
+        .mobile-nav-link:focus-visible,
+        .btn-search-pill:focus-visible,
+        .btn-glow-cta:focus-visible,
+        .btn-mobile-hamburger:focus-visible {
+            outline: 2px solid var(--accent-green);
+            outline-offset: 2px;
+        }
+
+        /* Scrolled state — the floating pill tightens once you leave the hero. */
+        .navbar-pill {
+            transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        header.navbar-floating-wrapper.scrolled .navbar-pill {
+            background: rgba(8, 8, 8, 0.94);
+            border-color: var(--border-hover);
+            box-shadow:
+                0 24px 48px -18px rgba(0, 0, 0, 0.95),
+                inset 0 1px 0 rgba(255, 255, 255, 0.16);
         }
 
         /* Dropdown Menu */
@@ -881,6 +925,19 @@
         .footer-col ul li a:hover { color: var(--text-main); }
 
         /* ================= 100% PERFECT MOBILE RESPONSIVE MEDIA QUERIES ================= */
+        /* The desktop nav lays out at 1153px, so it needs a 1177px viewport once
+           the wrapper padding is counted — measured, not guessed. Collapsing it
+           only at 768px left every width from 769px to 1177px overflowing to the
+           right (359px at 820px), which the overflow-x rule hid rather than
+           fixed; every small laptop and landscape tablet sat in that band.
+           Collapsing at 1200px rather than 1180px leaves ~24px of slack so a
+           font fallback with wider metrics can't push it back into overflow.
+           The drawer carries all six links, so nothing is lost. */
+        @media (max-width: 1200px) {
+            .nav-menu { display: none; }
+            .btn-mobile-hamburger { display: flex; }
+        }
+
         @media (max-width: 1024px) {
             .hero-title { font-size: 3.5rem; }
             .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -894,12 +951,11 @@
             header.navbar-floating-wrapper { top: 0.5rem; padding: 0 0.5rem; }
             .navbar-pill { padding: 0.5rem 0.75rem; }
             
-            /* Hide non-essential desktop header items on mobile to fit 100% cleanly */
-            .nav-menu { display: none; } 
+            /* .nav-menu and the hamburger are already handled at 1150px above.
+               These are the extras that only stop fitting at phone widths. */
             .nav-actions .btn-search-pill { display: none; }
             .nav-actions .btn-glow-cta { display: none; }
             .brand-hindi { display: none; }
-            .btn-mobile-hamburger { display: flex; } /* Show hamburger toggle */
 
             .hero { padding: 2.5rem 0 2rem; }
             .hero-title { font-size: 2.1rem; line-height: 1.15; }
@@ -953,7 +1009,7 @@
                     <li class="nav-item">
                         <a href="#docs" class="nav-link">
                             <span>Documentation</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem; opacity: 0.7;"></i>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem; opacity: 0.7;" aria-hidden="true"></i>
                         </a>
                         <div class="dropdown-menu">
                             <a href="#doc-overview" class="dropdown-item">
@@ -964,14 +1020,14 @@
                                 </div>
                             </a>
                             <a href="#doc-architecture" class="dropdown-item">
-                                <i class="fa-solid fa-layer-group dropdown-icon" style="color: var(--accent-purple);"></i>
+                                <i class="fa-solid fa-layer-group dropdown-icon" style="color: var(--accent-purple);" aria-hidden="true"></i>
                                 <div>
                                     <div class="dropdown-title">4-Layer Architecture</div>
                                     <div class="dropdown-desc">Memory, Intelligence, Guard-Rails, Determinism</div>
                                 </div>
                             </a>
                             <a href="#doc-scope-guard" class="dropdown-item">
-                                <i class="fa-solid fa-shield-halved dropdown-icon" style="color: var(--accent-red);"></i>
+                                <i class="fa-solid fa-shield-halved dropdown-icon" style="color: var(--accent-red);" aria-hidden="true"></i>
                                 <div>
                                     <div class="dropdown-title">PreToolUse Guards</div>
                                     <div class="dropdown-desc">Exit Code 2 mechanical write interceptors</div>
@@ -993,7 +1049,9 @@
                     <span>Search</span>
                     <span class="kbd-key">⌘K</span>
                 </button>
-                <a href="https://github.com/soumyachk101/Thekedar" target="_blank" class="btn-search-pill" style="padding: 0.4rem 0.65rem;">
+                <a href="https://github.com/soumyachk101/Thekedar" target="_blank" rel="noopener noreferrer"
+                   class="btn-search-pill" style="padding: 0.4rem 0.65rem;"
+                   aria-label="Thekedar on GitHub (opens in a new tab)">
                     <i class="fa-brands fa-github" aria-hidden="true"></i>
                 </a>
                 <a href="#install" class="btn-glow-cta">
@@ -1024,8 +1082,8 @@
         <div class="container">
             <a href="#install" class="announcement-badge">
                 <i class="fa-solid fa-bolt" aria-hidden="true"></i>
-                <span>v2.0.0 Released — 109 Specialist Subagents & Guard-Rails</span>
-                <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
+                <span>v2.0.0 Released — 109 Specialist Subagents, 50 Knowledge Packs & Multi-Platform Support</span>
+                <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;" aria-hidden="true"></i>
             </a>
 
             <h1 class="hero-title">
@@ -1034,7 +1092,7 @@
             </h1>
 
             <p class="hero-subtitle">
-                <strong>Kaam Pakka, Hisaab Saaf.</strong> Enforces modular task specs, 109 specialist subagents in unpolluted context windows, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers for Claude Code & AI agents.
+                <strong>Kaam Pakka, Hisaab Saaf.</strong> Enforces modular task specs, 109 specialist subagents, 50 shared knowledge packs, PreToolUse mechanical guard-rails, read-only code review, and zero-token change ledgers across Claude Code, OpenAI Codex, and Google Antigravity.
             </p>
 
             <div class="hero-actions">
@@ -1060,11 +1118,11 @@
                 </div>
                 <div class="stat-item">
                     <h3>109 Subagents</h3>
-                    <p>Purpose-Built Specialists</p>
+                    <p>7 Specialist Categories</p>
                 </div>
                 <div class="stat-item">
-                    <h3>0 Tokens</h3>
-                    <p>Change Ledger Overhead</p>
+                    <h3>50 Packs</h3>
+                    <p>Shared Knowledge Brain</p>
                 </div>
             </div>
         </div>
@@ -1084,6 +1142,8 @@
                 <select class="mobile-doc-select" onchange="loadDoc(this.value)">
                     <option value="overview">📂 Overview & Core Concept</option>
                     <option value="install">📥 Installation Guide</option>
+                    <option value="integrations">🔌 Platform Integrations (Codex / Antigravity)</option>
+                    <option value="knowledge-packs">🧠 Knowledge Brain (50 Packs)</option>
                     <option value="doctor">🩺 Doctor Health Check</option>
                     <option value="architecture">🏗️ 4-Layer Discipline</option>
                     <option value="workflow">🔄 Task Workflow Loop</option>
@@ -1107,6 +1167,8 @@
                         <ul class="doc-menu">
                             <li><button class="doc-menu-btn active" onclick="loadDoc('overview', this)"><i class="fa-solid fa-star" aria-hidden="true"></i> Overview & Core Concept</button></li>
                             <li><button class="doc-menu-btn" onclick="loadDoc('install', this)"><i class="fa-solid fa-download" aria-hidden="true"></i> Installation Guide</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('integrations', this)"><i class="fa-solid fa-plug" aria-hidden="true"></i> Platform Integrations</button></li>
+                            <li><button class="doc-menu-btn" onclick="loadDoc('knowledge-packs', this)"><i class="fa-solid fa-brain" aria-hidden="true"></i> Knowledge Brain (50 Packs)</button></li>
                             <li><button class="doc-menu-btn" onclick="loadDoc('doctor', this)"><i class="fa-solid fa-stethoscope" aria-hidden="true"></i> Doctor Health Check</button></li>
                         </ul>
                     </div>
@@ -1255,8 +1317,16 @@
                 <div class="bento-card">
                     <div>
                         <div class="bento-icon"><i class="fa-solid fa-brain" aria-hidden="true"></i></div>
-                        <h3 class="bento-title">Fresh Context Subagent Routing</h3>
-                        <p class="bento-desc">Rather than relying on a long multi-hour chat that degrades over time, every task dispatches a purpose-built subagent in an unpolluted context window.</p>
+                        <h3 class="bento-title">50 Shipped Knowledge Packs</h3>
+                        <p class="bento-desc">Curated knowledge packs auto-shipped into <code>.thekedar/knowledge/</code> provide localized API contracts, security rules, and framework patterns cited by 79 subagents to eliminate hallucinations.</p>
+                    </div>
+                </div>
+
+                <div class="bento-card">
+                    <div>
+                        <div class="bento-icon"><i class="fa-solid fa-plug" aria-hidden="true"></i></div>
+                        <h3 class="bento-title">Multi-Platform Compatibility</h3>
+                        <p class="bento-desc">Native plugins and hooks for Claude Code and OpenAI Codex, plus portable <code>AGENTS.md</code> workflow discipline for Google Antigravity, Cursor, and Copilot.</p>
                     </div>
                 </div>
 
@@ -1265,14 +1335,6 @@
                         <div class="bento-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></div>
                         <h3 class="bento-title">Enforced Read-Only Reviewers</h3>
                         <p class="bento-desc">Reviewers (<code>error-checker</code> & <code>security-auditor</code>) have <code>Write</code> and <code>Edit</code> tools stripped at the permission level. They inspect diffs hostile-reviewer style but physically cannot modify source code.</p>
-                    </div>
-                </div>
-
-                <div class="bento-card">
-                    <div>
-                        <div class="bento-icon"><i class="fa-solid fa-file-contract" aria-hidden="true"></i></div>
-                        <h3 class="bento-title">Git-Tracked Markdown Memory</h3>
-                        <p class="bento-desc">Project state persists on disk in <code>PROJECT_STATE.md</code> and <code>tasks/*.md</code>. Survives session crashes, memory purges, and terminal restarts. Simply type <code>continue</code> to resume.</p>
                     </div>
                 </div>
             </div>
@@ -1402,33 +1464,48 @@
             <div class="header-center">
                 <span class="section-tag">Deployment</span>
                 <h2 class="section-title">Install In Under 30 Seconds</h2>
-                <p class="section-desc">Choose official marketplace plugin or standalone team repository installer.</p>
+                <p class="section-desc">Supports Claude Code, OpenAI Codex, and Google Antigravity with zero runtime dependencies.</p>
             </div>
 
-            <div style="max-width: 800px; margin: 0 auto; display: grid; gap: 1.5rem;">
+            <div style="max-width: 900px; margin: 0 auto; display: grid; gap: 1.5rem;">
                 <div class="bento-card">
                     <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">
-                        Option A: Official Claude Code Plugin Marketplace (Recommended)
+                        <i class="fa-solid fa-terminal" style="color: var(--accent-blue);" aria-hidden="true"></i> Claude Code (Plugin or Script)
                     </h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Zero repo pollution; auto-updates managed directly by marketplace.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Official marketplace plugin or repository script installer for all 109 specialist agents.</p>
                     <div class="code-box">
-                        <code>claude plugin marketplace add soumyachk101/Thekedar</code>
-                        <button class="btn-copy" onclick="copyText('claude plugin marketplace add soumyachk101/Thekedar')">Copy</button>
+                        <code>claude plugin marketplace add soumyachk101/Thekedar && claude plugin install thekedar@thekedar</code>
+                        <button class="btn-copy" onclick="copyText('claude plugin marketplace add soumyachk101/Thekedar && claude plugin install thekedar@thekedar')">Copy</button>
                     </div>
                     <div class="code-box" style="margin-bottom: 0;">
-                        <code>claude plugin install thekedar@thekedar</code>
-                        <button class="btn-copy" onclick="copyText('claude plugin install thekedar@thekedar')">Copy</button>
+                        <code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all</code>
+                        <button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all')">Copy</button>
                     </div>
                 </div>
 
                 <div class="bento-card">
                     <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">
-                        Option B: Standalone Script Installer (Full Crew)
+                        <i class="fa-solid fa-code" style="color: var(--accent-purple);" aria-hidden="true"></i> OpenAI Codex (Plugin or Script)
                     </h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Commits <code>.claude/</code> and <code>.thekedar/</code> scaffolding directly into project repo.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Native Codex plugin manifest or <code>.agents/skills</code> + <code>.codex/</code> project hooks installer.</p>
+                    <div class="code-box">
+                        <code>codex plugin marketplace add soumyachk101/Thekedar && codex plugin add thekedar@thekedar</code>
+                        <button class="btn-copy" onclick="copyText('codex plugin marketplace add soumyachk101/Thekedar && codex plugin add thekedar@thekedar')">Copy</button>
+                    </div>
                     <div class="code-box" style="margin-bottom: 0;">
-                        <code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all</code>
-                        <button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all')">Copy</button>
+                        <code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/scripts/install-codex.sh --all</code>
+                        <button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/scripts/install-codex.sh --all')">Copy</button>
+                    </div>
+                </div>
+
+                <div class="bento-card">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">
+                        <i class="fa-solid fa-robot" style="color: var(--accent-green);" aria-hidden="true"></i> Google Antigravity & Portable AGENTS.md
+                    </h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Portable installer writing <code>AGENTS.md</code> and <code>.thekedar/</code> state for Antigravity, Cursor, and Copilot.</p>
+                    <div class="code-box" style="margin-bottom: 0;">
+                        <code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/scripts/install-antigravity.sh --all</code>
+                        <button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/scripts/install-antigravity.sh --all')">Copy</button>
                     </div>
                 </div>
             </div>
@@ -1471,8 +1548,8 @@
                 <div class="footer-col">
                     <h5>Links</h5>
                     <ul>
-                        <li><a href="https://github.com/soumyachk101/Thekedar" target="_blank">GitHub Repo</a></li>
-                        <li><a href="https://github.com/soumyachk101/Thekedar/blob/main/LICENSE" target="_blank">MIT License</a></li>
+                        <li><a href="https://github.com/soumyachk101/Thekedar" target="_blank" rel="noopener noreferrer">GitHub Repo</a></li>
+                        <li><a href="https://github.com/soumyachk101/Thekedar/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
                     </ul>
                 </div>
             </div>
@@ -1585,12 +1662,46 @@
             install: `
                 <article class="doc-article">
                     <h2>Installation Guide</h2>
-                    <p>Thekedar can be installed either as a <strong>Claude Code Plugin</strong> or via the <strong>Standalone Script Installer</strong>.</p>
-                    <h3>Option 1: Claude Code Plugin Marketplace</h3>
-                    <div class="code-box"><code>claude plugin marketplace add soumyachk101/Thekedar</code><button class="btn-copy" onclick="copyText('claude plugin marketplace add soumyachk101/Thekedar')">Copy</button></div>
-                    <div class="code-box"><code>claude plugin install thekedar@thekedar</code><button class="btn-copy" onclick="copyText('claude plugin install thekedar@thekedar')">Copy</button></div>
-                    <h3>Option 2: Script Installer (Full Crew)</h3>
+                    <p>Thekedar supports official marketplace plugins and repository installers for <strong>Claude Code</strong>, <strong>OpenAI Codex</strong>, and <strong>Google Antigravity</strong>.</p>
+                    
+                    <h3>Option 1: Claude Code (Plugin or Script)</h3>
+                    <div class="code-box"><code>claude plugin marketplace add soumyachk101/Thekedar && claude plugin install thekedar@thekedar</code><button class="btn-copy" onclick="copyText('claude plugin marketplace add soumyachk101/Thekedar && claude plugin install thekedar@thekedar')">Copy</button></div>
                     <div class="code-box"><code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all</code><button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/install.sh --all')">Copy</button></div>
+
+                    <h3>Option 2: OpenAI Codex (Plugin or Script)</h3>
+                    <div class="code-box"><code>codex plugin marketplace add soumyachk101/Thekedar && codex plugin add thekedar@thekedar</code><button class="btn-copy" onclick="copyText('codex plugin marketplace add soumyachk101/Thekedar && codex plugin add thekedar@thekedar')">Copy</button></div>
+                    <div class="code-box"><code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/scripts/install-codex.sh --all</code><button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/scripts/install-codex.sh --all')">Copy</button></div>
+
+                    <h3>Option 3: Google Antigravity & Portable AGENTS.md Mode</h3>
+                    <div class="code-box"><code>git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/scripts/install-antigravity.sh --all</code><button class="btn-copy" onclick="copyText('git clone https://github.com/soumyachk101/Thekedar /tmp/thekedar && bash /tmp/thekedar/scripts/install-antigravity.sh --all')">Copy</button></div>
+                </article>
+            `,
+            integrations: `
+                <article class="doc-article">
+                    <h2>Multi-Platform Integrations</h2>
+                    <p>Thekedar brings enterprise site-supervisor workflow discipline across multiple AI platforms.</p>
+                    
+                    <h3>Claude Code</h3>
+                    <p>Full support for 109 specialist subagents in unpolluted context windows, PreToolUse mechanical guard hooks (<code>scope-guard.sh</code>, <code>secret-guard.sh</code>), PostToolUse zero-token change ledgers (<code>munshi.sh</code>), and SessionStart brief injection.</p>
+
+                    <h3>OpenAI Codex</h3>
+                    <p>Installs native Codex skills in <code>.agents/skills</code>, project hooks in <code>.codex/</code>, and a single-context fallback <code>AGENTS.md</code>. Available via official Codex plugin marketplace or <code>install-codex.sh</code> script.</p>
+
+                    <h3>Google Antigravity & Portable AGENTS.md</h3>
+                    <p>Installs portable <code>AGENTS.md</code> workflow discipline along with <code>.thekedar/</code> state, templates, scripts, and 50 knowledge packs. Works seamlessly with Google Antigravity, Cursor, Windsurf, and GitHub Copilot.</p>
+                </article>
+            `,
+            'knowledge-packs': `
+                <article class="doc-article">
+                    <h2>Shared Knowledge Brain (50 Packs)</h2>
+                    <p>Subagents routinely hallucinate API parameters and security assumptions when relying solely on base model training memory. Thekedar ships <strong>50 curated knowledge packs</strong> under <code>.thekedar/knowledge/</code> to act as an offline shared brain.</p>
+                    
+                    <h3>Structure & Auto-Shipment</h3>
+                    <ul>
+                        <li><strong>Location:</strong> Automatically copied to <code>.thekedar/knowledge/</code> on every script or plugin install.</li>
+                        <li><strong>Categories:</strong> Covered areas include <code>pitfalls/</code> (React, Go, Python, Async), <code>security/</code> (OWASP, JWT, Auth), <code>db/</code> (Migrations, Indexing), and <code>api/</code> contracts.</li>
+                        <li><strong>Deterministic Citation:</strong> 79 specialist subagents cite these packs by direct relative path (e.g. <code>.thekedar/knowledge/pitfalls/react.md</code>) before attempting changes.</li>
+                    </ul>
                 </article>
             `,
             doctor: `
@@ -1758,6 +1869,56 @@
             loadDoc(key);
             document.getElementById('docs').scrollIntoView();
         });
+
+        // ---- Navbar: scroll-spy + scrolled state ----
+        // IntersectionObserver rather than a scroll listener: no per-frame layout
+        // reads, and it stays correct when the user jumps by hash link, back
+        // button, or search-result anchor instead of actually scrolling.
+        (function () {
+            const sections = Array.from(document.querySelectorAll('section[id]'));
+            const links = Array.from(document.querySelectorAll(
+                '.nav-link[href^="#"], .mobile-nav-link[href^="#"]'));
+            if (!sections.length || !links.length) return;
+
+            const visible = new Set();
+            function paint() {
+                // Several sections can straddle the band at once; topmost wins,
+                // which is what "where am I" means when a section is half-scrolled.
+                const current = sections.find(s => visible.has(s.id));
+                links.forEach(a => {
+                    const on = !!current && a.getAttribute('href') === '#' + current.id;
+                    a.classList.toggle('active', on);
+                    if (on) a.setAttribute('aria-current', 'true');
+                    else a.removeAttribute('aria-current');
+                });
+            }
+
+            // Band sits between 15% and 40% of the viewport — deep enough that the
+            // last section still qualifies at the bottom of the page, narrow enough
+            // that two sections rarely tie. No match (hero, footer) = no active link.
+            const spy = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) visible.add(e.target.id);
+                    else visible.delete(e.target.id);
+                });
+                paint();
+            }, { rootMargin: '-15% 0px -60% 0px' });
+            sections.forEach(function (s) { spy.observe(s); });
+
+            // Scrolled state off a 1px sentinel at the top of the document. The
+            // header is sticky, so it can never observe its own position.
+            const header = document.querySelector('header.navbar-floating-wrapper');
+            if (header) {
+                const sentinel = document.createElement('div');
+                sentinel.setAttribute('aria-hidden', 'true');
+                sentinel.style.cssText =
+                    'position:absolute;top:0;left:0;height:1px;width:1px;pointer-events:none;';
+                document.body.prepend(sentinel);
+                new IntersectionObserver(function (entries) {
+                    header.classList.toggle('scrolled', !entries[0].isIntersecting);
+                }).observe(sentinel);
+            }
+        })();
 
         function focusDocSearch() {
             document.getElementById('docs').scrollIntoView({ behavior: 'smooth' });

@@ -34,6 +34,8 @@ Feature IDs reference the [PRD](docs/PRD.md).
 ## v2.x — fast follows
 
 - [x] **F14 · Plugin packaging** — `claude plugin marketplace add soumyachk101/Thekedar` → `claude plugin install thekedar@thekedar`; SessionStart bootstrap creates `.thekedar/` on first run so plugin mode matches the script install
+- [x] **Codex plugin + skills** — `.codex-plugin/plugin.json`, Codex hook bundle, native `.agents/skills` repo installer, and `$thekedar*` invocation docs
+- [x] **Antigravity adapter** — portable `AGENTS.md` installer with `.thekedar/` scaffolding
 - [ ] **F15 · Agent Teams mode** — parallel independent tasks across sessions (waits for the feature to leave experimental)
 - [ ] Windows-native (PowerShell) hook variants — currently Git Bash/WSL only
 - [ ] Real benchmark runs against the [BENCHMARKS.md](docs/BENCHMARKS.md) methodology — no numbers published yet
@@ -50,7 +52,7 @@ A separate, later scale-up track: a catalog-driven factory generating ~120 langu
 - [x] **Phase 12-13 · Knowledge packs** — security (OWASP/CWE), best-practices, the AI-hallucination-pitfalls pack (the real differentiator), review-checklists, patterns. 50 packs, all ≥ 60 lines, 0 orphans per `validate-knowledge.sh`.
 - [x] **Phase 14-16 · Agent library** — languages, frameworks, domains, ops, reviewers, built in validated batches. 109 agents catalogued and generated; `install.sh --all` and the plugin manifest ship every one.
 - [x] **Phase 19 · Docs auto-gen** — `gen-agent-docs.sh` writes a page per agent into `docs/agents/`; `gen-index.sh` writes `catalog/INDEX.md`. Both regenerate from the catalog, never hand-edited.
-- [ ] **Phase 17 · Integrations** — `catalog/integrations.psv` is still header-only; the per-tool adapters (Cursor, Windsurf, Copilot, Aider, …) are not built yet
+- [ ] **Phase 17 · Integrations** — Codex and Antigravity adapters are shipped; `catalog/integrations.psv` is still header-only and the remaining per-tool adapters (Cursor, Windsurf, Copilot, Aider, …) are not built yet
 - [ ] **Phase 18 · Skills & examples** — more command skills beyond the 4 shipped; `examples/` has one demo app
 - [ ] **Phase 20 · v3.0.0 release**
 

@@ -5,7 +5,7 @@
 #    bash .thekedar/scripts/export-agents-md.sh [output-path]
 #
 #  Flattens the Thekedar workflow into a single AGENTS.md for
-#  tools without subagent isolation (Cursor, Codex CLI, Copilot,
+#  tools without subagent isolation (Antigravity, Cursor, Copilot,
 #  Windsurf, ...): one context follows the same plan → build →
 #  review → log loop sequentially. Weaker isolation, same
 #  discipline, same files on disk.
@@ -41,7 +41,7 @@ cat <<'HEADER'
 > Source of truth: .claude/agents/*.md + the thekedar skill.
 >
 > This file encodes the Thekedar site-supervisor discipline for agents WITHOUT
-> subagent isolation (Cursor, Codex CLI, Copilot, Windsurf, ...). You are one
+> subagent isolation (Antigravity, Cursor, Copilot, Windsurf, ...). You are one
 > context playing every role IN SEQUENCE. The isolation is weaker than Claude
 > Code's separate context windows — the discipline and the paper trail are the same.
 
