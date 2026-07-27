@@ -104,6 +104,7 @@ while IFS= read -r c; do
   [ -z "$c" ] && continue
   script="$(printf '%s' "$c" | sed -n 's/.*hooks\/\([a-z-]*\.sh\).*/\1/p')"
   if [ -z "$script" ]; then bad "Codex hooks command has no hooks/<script>.sh: $c"; continue; fi
+  # shellcheck disable=SC2016
   case "$c" in
     *'${PLUGIN_ROOT'*|*'${CLAUDE_PLUGIN_ROOT}'*) ;;
     *) bad "Codex hooks command must use PLUGIN_ROOT/CLAUDE_PLUGIN_ROOT: $c" ;;
